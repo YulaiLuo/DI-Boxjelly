@@ -1,18 +1,19 @@
 # syntax=docker/dockerfile:1
 
-# 设置基础镜像
+# set up the base python image
 FROM python:3.8-slim-buster
 
-# 设置working directory
+# set the working directory
 WORKDIR /src/backend
 
-# 复制requirement到镜像中
+# duplicate the required library into the base image
 COPY requirements.txt requirements.txt
 RUN pip3 install -r requirements.txt
 
-# 复制所有的文件到镜像
+# copy all file into the image
 COPY . .
 
+# start the program
 CMD ["python3" , "app.py"]
 # CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port="]
 
