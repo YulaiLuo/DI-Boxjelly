@@ -17,7 +17,7 @@ CMD ["python3" , "app.py"]
 # CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0", "--port="]
 
 # Build image:
-# sudo docker image build -t corsa_web .
+# sudo docker image build -t di_boxjelly_backend .
 
 # Run the container:
-# sudo docker run -d --name corsa_web -p 0.0.0.0:80:80 corsa_web:latest
+# sudo docker run -d --name di_boxjelly_backend -p 0.0.0.0:80:80 di_boxjelly_backend:latest
