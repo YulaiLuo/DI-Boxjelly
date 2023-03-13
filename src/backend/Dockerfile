@@ -4,7 +4,7 @@
 FROM python:3.8-slim-buster
 
 # 设置working directory
-WORKDIR /webapp
+WORKDIR /src/backend
 
 # 复制requirement到镜像中
 COPY requirements.txt requirements.txt
