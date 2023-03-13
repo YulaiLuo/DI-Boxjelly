@@ -1,3 +1,17 @@
+  - hosts: db
+    vars:
+      ansible_python_interpreter: '{{interpreter_path}}'
+
+    vars_files:
+      - vars/cloud-common.yaml
+    gather_facts: true
+
+    roles:
+      # - role: cloud-setup-security-group
+      - role: cloud-install-docker-dependencies
+      - role: cloud-install-docker
+      - role: cloud-deploy-mongodb
+
   - hosts: dev
     vars:
       ansible_python_interpreter: '{{interpreter_path}}'
@@ -6,3 +20,7 @@
       - vars/cloud-common.yaml
     gather_facts: true
 
+    roles:
+      # - role: cloud-install-docker-dependencies
+      # - role: cloud-install-docker
+      - role: cloud-deploy-web
