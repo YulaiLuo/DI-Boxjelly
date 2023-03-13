@@ -1,0 +1,8 @@
+  - hosts: dev
+    vars:
+      ansible_python_interpreter: '{{interpreter_path}}'
+
+    vars_files:
+      - vars/cloud-common.yaml
+    gather_facts: true
+
