@@ -38,11 +38,11 @@ Ontoserver is a terminology server that supports various standardized terminolog
 ## Installation
 1. Clone the repository:
 
-    `git clone https://github.com/your_username/SNOMED_CT_Mapping_Tool.git`
+    `git clone https://github.com/COMP90082-2023-SM1/DI-Boxjelly.git`
 
 2. Install the required packages:
 
-    `pip install -r requirements.txt`
+    <!-- `pip install -r requirements.txt` -->
 
 3. Set up Ontoserver or a similar terminology server following the provider's guidelines.
 
@@ -70,7 +70,8 @@ The project follows a specific branching model to maintain a clean and organized
 ### Naming Conventions
 1. Branch names: Use lowercase letters and separate words with hyphens (e.g., feature/new-feature).
 2. Commit messages: Write concise and descriptive commit messages, starting with a capital letter and using the imperative mood (e.g., 'Add new feature' or 'Fix bug in feature').
-3. Variable and function names: Follow the PEP 8 style guide for Python code, using snake_case for variables and functions, and CamelCase for class names.
+3. Style guid: 
+    - Python: Use [Google python style guide](https://google.github.io/styleguide/pyguide.html) to write code
 
 ### Pull Requests and Code Review
 When a feature or bugfix is complete, submit a pull request to the develop branch.
