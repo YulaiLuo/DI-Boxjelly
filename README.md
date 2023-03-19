@@ -6,9 +6,13 @@
 <!-- ![Code Coverage](https://img.shields.io/badge/coverage-95%25-green) -->
 <!-- ![Build Status](https://img.shields.io/badge/build-passing-brightgreen) -->
 
-The SNOMED CT Diagnostic and Prescription Mapping Tool is a software solution designed to streamline the conversion of short diagnoses and prescriptions into their corresponding SNOMED CT codes using the power of Ontoserver and similar tools. SNOMED CT (Systematized Nomenclature of Medicine - Clinical Terms) is a comprehensive, multilingual clinical healthcare terminology that provides a standardized and consistent way to represent clinical information.
+Our team is working on the development of a cutting-edge platform designed to enhance the analysis of clinical documentation in the digital health area. The primary objective of this platform is to determine whether medications prescribed to patients are appropriate by normalizing free-text clinical notes and mapping them to canonical clinical terms.
 
-Ontoserver is a terminology server that supports various standardized terminologies, including SNOMED CT. This project leverages the capabilities of Ontoserver to provide accurate mappings for diagnoses and prescriptions.
+The platform's primary function is to simplify the process of associating brief free-text descriptions, which generally explain the reasoning behind prescribing specific medications, onto a standardized knowledge base of clinical terms known as SNOMED CT.
+
+The platform features the integration of a human-in-the-loop system, which allows for manual review and correction of the mapping results. This feedback will be used to continuously enhance the platform's accuracy and performance.
+
+A key component of the platform is the development of a Universal Indication List (UIL), which serves as a subset of the broader SNOMED CT. This curated list will further streamline the mapping process, ensuring that the most relevant and commonly used clinical terms are easily accessible for healthcare professionals and researchers.
 
 ## Table of Contents
 - [Features](#features)
