@@ -1,5 +1,5 @@
 # SNOMED CT Diagnostic and Prescription Mapping Tool with Ontoserver Integration
-[![Sprint Status](https://img.shields.io/badge/sprint1-design-orange)](https://your_project_management_tool.com/sprint_details)
+[![Sprint Status](https://img.shields.io/badge/sprint1-design-orange)](https://your_project_management_tool.com/sprint_details) 
 ![Status Status](https://img.shields.io/badge/user_stories-0/8-green)
 ![Python Version](https://img.shields.io/badge/python-3.9%2B-blue)
 <!-- ![License](https://img.shields.io/badge/license-MIT-green) -->
