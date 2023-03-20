@@ -1,0 +1,175 @@
+1	Sinusitis
+2	Tonsillitis
+3	Skin infection
+4	LRTI
+5	Bacterial vaginosis
+6	Review
+7	???UTI
+8	Dental prophylaxis
+9	Infective exacerbation of asthma
+10	Atypical pneumonia
+11	Travel advice
+12	"Sinusitis, frontal"
+13	Perioral dermatitis
+14	Administrative procedure
+15	Prescription
+16	Perianal abscess
+17	Probable Hypertension - Borderline
+18	Travel vaccination
+19	"Cough, post infective"
+20	STI screen
+21	Vaginal discharge - episiotomy.
+22	"Cellulitis, leg"
+23	Diverticulitis
+24	URTI
+25	Left Eye injury
+26	"URTI, viral"
+27	Left Otitis media
+28	Keratoacanthoma
+29	Pharyngitis
+30	Paronychia
+31	Giardiasis
+32	HSV1 Infection
+33	Viral illness
+34	"Pharyngitis, bacterial"
+35	Bronchitis
+36	Cellulitis
+37	Stye
+38	Influenza like illness
+39	Vulvo-vaginitis
+40	Bronchiectasis
+41	Eye discomfort
+42	Oral candidiasis
+43	T2DM
+43	Nipple candidiasis
+44	Otitis externa
+45	Right Ingrown toenail
+46	Dermatitis, ALlergic?
+47	Scalp dermatitis
+48	Chlamydia trachomatis infection
+49	"Sinusitis, maxillary / URTI"
+50	Right Otitis media
+51	Seborrhoeic dermatitis
+52	"PrEP, HIV"
+53	Sore throat
+54	Otitis media
+55	Irregular menses
+56	Cystitis
+57	"Thrush, vaginal"
+58	Thrush
+59	"Sebaceous cyst, infected"
+60	Wound breakdown
+61	Cough
+62	Gingivitis
+63	Herpes zoster
+64	"UTI, recurrent"
+65	Left Parotitis
+66	Gout
+67	Abdominal pain
+68	"Lesion, skin"
+69	Right Shoulder impingement syndrome
+70	"Conjunctivitis, bacterial"
+71	"Sinusitis, maxillary"
+72	"Moderate, Chronic  Right Otitis media"
+73	Pilonidal abscess
+74	Orchitis
+75	Nausea
+76	Rosacea
+77	Infected eczema
+78	Diarrhoea
+79	Periorbital cellulitis
+80	Genital warts
+81	Hay fever
+82	Hysterectomy
+83	Hypothyroidism
+84	Oral thrush
+85	"Bronchitis, acute"
+86	Acute Chlamydia Infection
+87	"Script written, no consultation"
+88	Impetigo
+89	Compartment syndrome
+90	Acute Bilateral Infected earlobe - piercing
+91	Boil
+92	Urinary tract infection
+93	GORD
+94	Abscess
+95	Molluscum contagiosum
+96	Lymphadenitis
+97	Eczema
+98	Asthma
+99	Constipation
+100	Chest infection
+101	Iron deficiency
+102	Pertussis prophylaxis
+103	Chronic Left Varicose veins
+104	Wisdom tooth pain
+105	Prostatitis
+106	"Mild, Acute Right Paronychia"
+107	Tarsal cyst
+108	Wound dehiscence
+109	Facial rash
+110	Carbuncle
+111	Travel advice and vaccination.
+112	"Abscess, skin"
+113	Blepharitis
+114	Colonoscopy - referral
+115	Staphylococcal scalded skin syndrome
+116	Results follow up - left message
+117	"Pharyngitis, streptococcal"
+118	Abscess - left lower conjunctiva
+119	Acute Left Skin infection - ear
+120	Viral URTI
+121 	Refill
+121	Vaginal discharge
+122	"Fever, prolonged"
+123	Bilateral Hearing aid
+124	Right Ganglion foot
+125	Left Tonsillitis
+126	Onychomycosis
+127	Vulval lesion
+128	Herpes Simplex genitalis
+129	Referral letter
+130	Migraine with aura
+131	STD fear
+132	Fibromyalgia
+133	"Warts, genital"
+134	Left Paronychia
+135	malar rash
+136	Mycoplasma genitalium cervicitis
+137	Folliculitis
+138	Acute  Submandibular space infection
+139	Ischio-rectal abscess
+140	Bacteuria
+141	Wound care
+142	Acute Left Otitis media
+143	"Moderate, Acute Bilateral Barotrauma to ear"
+144	"Sebaceous cyst, infected? - early"
+145	Follow up
+146	Glandular fever ?
+147	Rash
+148	Nose pain
+149	Areolar gland blockage
+150	Skin lesion
+151	Chronic Bilateral Tinnitus
+152	Right Otitis externa
+153	Tenesmus
+154	Hair loss
+155	Malaria prophylaxis
+156	"Acute UTI, recurrent"
+157	Furuncle
+158	Check up
+159	Wrist injury
+160	Streptococcal pharyngitis
+161	Right Stye
+162	HSV2 Infection
+163	Genital herpes type 1
+164	Lower Respiratory Tract Infection
+165	Vrial infection
+166	Shingles ?
+167	Conjunctivitis
+168	Hypertension
+169	Bilateral Conjunctivitis
+170	"Bilateral Sinusitis, maxillary"
+171	"Moderate, Acute Folliculitis"
+172	Chronic Balanitis
+173	Chlamydia Infection
