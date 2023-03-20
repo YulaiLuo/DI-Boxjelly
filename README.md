@@ -5,7 +5,7 @@
 <!-- ![License](https://img.shields.io/badge/license-MIT-green) -->
 <!-- ![Code Coverage](https://img.shields.io/badge/coverage-95%25-green) -->
 <!-- ![Build Status](https://img.shields.io/badge/build-passing-brightgreen) -->
-
+ 
 Our team is working on the development of a cutting-edge platform designed to enhance the analysis of clinical documentation in the digital health area. The primary objective of this platform is to determine whether medications prescribed to patients are appropriate by normalizing free-text clinical notes and mapping them to canonical clinical terms.
 
 The platform's primary function is to simplify the process of associating brief free-text descriptions, which generally explain the reasoning behind prescribing specific medications, onto a standardized knowledge base of clinical terms known as SNOMED CT.
