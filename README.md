@@ -3,7 +3,7 @@
 ![Status Status](https://img.shields.io/badge/user_stories-0/8-green)
 ![Python Version](https://img.shields.io/badge/python-3.9%2B-blue)
 <!-- ![License](https://img.shields.io/badge/license-MIT-green) -->
-<!-- ![Code Coverage](https://img.shields.io/badge/coverage-95%25-green) -->
+![Code Coverage](https://img.shields.io/badge/code_coverage-0%-red)
 <!-- ![Build Status](https://img.shields.io/badge/build-passing-brightgreen) -->
  
 Our team is working on the development of a cutting-edge platform designed to enhance the analysis of clinical documentation in the digital health area. The primary objective of this platform is to determine whether medications prescribed to patients are appropriate by normalizing free-text clinical notes and mapping them to canonical clinical terms.
