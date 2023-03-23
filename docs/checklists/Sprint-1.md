@@ -46,7 +46,7 @@ Make sure that your Personas satisfies the following criteria:
 
 - [x] Folders are structured (On Canvas, visit Assignment -> "Sprint 1: Confluence Space, project background and elicitation documents" page: you can find requirements for folders' structure.)
 - [ ] Sprint 1 documents were exported from Confluence and added to the repository (and are updated)
-- [] README file is updated and explain the team's repository
+- [x] README file is updated and explain the team's repository
 - [] A baseline tag was generated for this Sprint (On Canvas, visit Assignment -> "Sprint 1: Confluence Space, project background and elicitation documents" page: you can find requirements for the baseline tag)
 
 ## Additional Information

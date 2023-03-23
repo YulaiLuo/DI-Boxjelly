@@ -4,7 +4,6 @@
 ![Python Version](https://img.shields.io/badge/python-3.9%2B-blue)
 ![Code Coverage](https://img.shields.io/badge/coverage-0-red)
 
-
 <!-- ![License](https://img.shields.io/badge/license-MIT-green) -->
 
 <!-- ![Build Status](https://img.shields.io/badge/build-passing-brightgreen) -->
