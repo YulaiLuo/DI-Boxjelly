@@ -138,9 +138,11 @@ A key component of the platform is the development of a Universal Indication Lis
 * Docker  
 Following the [offical docker installation](https://docs.docker.com/engine/install/ubuntu/)
 * Ansible  
-
+        
         pip install ansible  
-        or
+
+    or  
+
         conda install ansible
 
 
