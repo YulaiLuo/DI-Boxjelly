@@ -123,7 +123,7 @@ A key component of the platform is the development of a Universal Indication Lis
 ### Prerequisites
 
 * You need to have the Ontoserver licsence which can be applied [here]().
-* You need to have an account on [NCTS](https://www.healthterminologies.gov.au/) account to get a client id and client secret which will be used to deploy a Ontoserver image.
+* You need to have an account on [NCTS](https://www.healthterminologies.gov.au/) to get a client id and client secret which will be used to deploy a Ontoserver image.
 
 ### System requirments
 
