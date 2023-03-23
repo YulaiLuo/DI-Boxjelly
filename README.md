@@ -153,7 +153,6 @@ Following the [offical docker installation](https://docs.docker.com/engine/insta
 
 ![workflow](./docs/workflow.jpg)
 
-
 ### Branches
 The project follows a specific branching model to maintain a clean and organized repository:
 
