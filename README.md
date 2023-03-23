@@ -5,7 +5,18 @@
 <!-- ![License](https://img.shields.io/badge/license-MIT-green) -->
 ![Code Coverage](https://img.shields.io/badge/code_coverage-0%-red)
 <!-- ![Build Status](https://img.shields.io/badge/build-passing-brightgreen) -->
+
+## Table of Contents
+- [Background](#background)
+- [Repository Structure](#repository-structure)
+- [Features](#features)
+- [Installation](#installation)
+- [Requirements](#requirements)
+- [Usage](#usage)
+- [Workflow](#workflow)
+<!-- - [License](#license) -->
  
+## Background
 Our team is working on the development of a cutting-edge platform designed to enhance the analysis of clinical documentation in the digital health area. The primary objective of this platform is to determine whether medications prescribed to patients are appropriate by normalizing free-text clinical notes and mapping them to canonical clinical terms.
 
 The platform's primary function is to simplify the process of associating brief free-text descriptions, which generally explain the reasoning behind prescribing specific medications, onto a standardized knowledge base of clinical terms known as SNOMED CT.
@@ -14,45 +25,126 @@ The platform features the integration of a human-in-the-loop system, which allow
 
 A key component of the platform is the development of a Universal Indication List (UIL), which serves as a subset of the broader SNOMED CT. This curated list will further streamline the mapping process, ensuring that the most relevant and commonly used clinical terms are easily accessible for healthcare professionals and researchers.
 
-## Table of Contents
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Workflow](#workflow)
-<!-- - [License](#license) -->
+## Repository Structure
+
+### Top-level directory
+    .
+    ├── ansible       # Automated deployment scripts
+    ├── data samples  # Sample input for the prototype 
+    ├── docs          # Documentation files  
+    ├── prototypes    # Designed user interface - prototypes
+    ├── src           # Source code
+    ├── tests         # Automated tests of source code
+    ├── ui            # Designed UI
+    ├── LICENSE       # <Not included for now>
+    ├── README.md
+    └── .gitignore
+
+### Ansible files
+
+    .
+    ├── ...
+    ├── ansible                   
+    │   ├── roles           # ansible roles        
+    │   ├── vars            # ansible scripts configurations
+    │   ├── inventory       # infrastructure configurations
+    │   └── playbook.yaml   # ansible playbook
+    └── ...
+
+### Data samples
+
+    .
+    ├── ...
+    ├── data samples                   
+    │   └── ReasonExample.txt   # inputs of the system providede by client
+    └── ...
+
+### Documentation files
+
+    .
+    ├── ...
+    ├── docs                   
+    │   ├── checklist   # check list of each sprint         
+    │   ├── release notes   # the docs of release
+    │   ├── Expected outcome.pdf   # The expected system sturcture  provided by client  
+    │   └── <There will be more>
+    └── ...
+
+### Prototypes files
+
+    .
+    ├── ...
+    ├── prototypes                   
+    │   └── <There will be prototype images>
+    └── ...
+
+### Source code
+
+    .
+    ├── ...
+    ├── src                   
+    │   ├── di-frontend      # frontend code    
+    │   ├── di-gateway       # microservice gateway 
+    │   ├── di-login         # microservice login 
+    │   ├── di-ontoserver    # microservice ontoserver       
+    │   └── di-...           # more service 
+    └── ...
+
+### Tests 
+
+    .
+    ├── ...
+    ├── tests                   
+    │   └── <There will be tests files>
+    └── ...
 
 ## Features
 * Ontoserver Integration
 * Text Processing and Analysis
-* Mapping to SNOMED CT Codes
+* Mapping to Universal Indication List(UIL - a subset of SNOMED CT)
 * Machine Learning and Continuous Improvement
 * User-friendly Interface
-* Integration with EHR Systems
 * Multilingual Support
 
-## Requirements
-* Python 3.9+
-* Docker
-* Ansible
-<!-- * Docker
-* Ansible
-* Flask
-* React -->
-
-## Deployment
+## Installation
 1. Clone the repository:
 
     `git clone https://github.com/COMP90082-2023-SM1/DI-Boxjelly.git`
 
-2. Use ansible for auto-deployment:
+<!-- 2. Use ansible for auto-deployment:
 
-    ansible-playbook -i inventory playbook.yaml
+    ansible-playbook -i inventory playbook.yaml -->
 
 
-<!-- ## Usage
-1. leave it empty for design sprint -->
+## Requirements
 
+### Prerequisites
+
+* You need to have the Ontoserver licsence which can be applied [here]().
+* You need to have an account on [NCTS](https://www.healthterminologies.gov.au/) account to get a client id and client secret which will be used to deploy a Ontoserver image.
+
+### System requirments
+
+| Resource      	| Minmum 	| Recommended 	|
+|---------------	|--------	|-------------	|
+| CPUs or Cores 	|   4     	|      8      	|
+| RAM           	|   4G     	|     16G      	|
+| Storage/Disk  	|   20G    	|     >=20G    	|
+
+### Environment requirments
+* Python 3.9+
+* Docker  
+Following the [offical docker installation](https://docs.docker.com/engine/install/ubuntu/)
+* Ansible  
+
+        pip install ansible  
+        or
+        conda install ansible
+
+
+## Usage  
+  
+(There will be usage description)
 
 
 ## Workflow
