@@ -34,7 +34,7 @@ Make sure that your Personas satisfies the following criteria:
 
 - [x] A plan (or discussion on what to do next) was provided (requirements to develop, technologies to use, infrastructure to deploy the project) for Sprint 2 and Sprint 3. 
 - [x] Requirements were estimated and prioritised.
-- [ ] Backlog items can be found in Trello (or Github project or JIRA).
+- [x] Backlog items can be found in Trello (or Github project or JIRA).
 
 
 ## Meetings
