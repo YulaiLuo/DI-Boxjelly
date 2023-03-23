@@ -4,7 +4,7 @@ This checklist helps you double check your work for Sprint 1.
 
 ## Background description, client goals, motivation
 - [x] Project overview, background and goals were created.
-- [] DO-BE-FEEL list and GOAL MODEL were created. 
+- [ ] DO-BE-FEEL list and GOAL MODEL were created. 
 - [ ] The goal model is consistent with the client understanding of the problem and with DO-BE-FEEL list.
 
 
@@ -12,7 +12,7 @@ This checklist helps you double check your work for Sprint 1.
 Make sure that your Personas satisfies the following criteria:
 
 - [x] 2-3 personas were validated (from previous/existing ones) or developed to help with requirements validation.
-- [] Personas are based on the research done by students and the discussion with industry partners.
+- [x] Personas are based on the research done by students and the discussion with industry partners.
 - [x] Personas are inclusive and diverse.
 
 
@@ -47,7 +47,7 @@ Make sure that your Personas satisfies the following criteria:
 - [x] Folders are structured (On Canvas, visit Assignment -> "Sprint 1: Confluence Space, project background and elicitation documents" page: you can find requirements for folders' structure.)
 - [ ] Sprint 1 documents were exported from Confluence and added to the repository (and are updated)
 - [x] README file is updated and explain the team's repository
-- [] A baseline tag was generated for this Sprint (On Canvas, visit Assignment -> "Sprint 1: Confluence Space, project background and elicitation documents" page: you can find requirements for the baseline tag)
+- [ ] A baseline tag was generated for this Sprint (On Canvas, visit Assignment -> "Sprint 1: Confluence Space, project background and elicitation documents" page: you can find requirements for the baseline tag)
 
 ## Additional Information
 
