@@ -4,12 +4,12 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return "<p>Weclome to DI-Boxjelly</p>"
+    return "<p>Weclome to Ontoserver Microservice</p>"
 
 if __name__ == '__main__':
 
     HOST = '0.0.0.0'
-    PORT= 80
+    PORT= 82
     DEBUG = True
 
     print("-"*70)
