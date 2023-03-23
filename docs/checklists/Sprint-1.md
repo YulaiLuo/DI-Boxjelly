@@ -20,7 +20,7 @@ Make sure that your Personas satisfies the following criteria:
 
 - [x] The analysis of requirements was performed on most of the existing requirements. 
 - [x] The [new set of] requirements is consistent to the scope of the project, completely cover the new capabilities required by the client and are well documented/structured/organized on Confluence.
-- [] The requirements can be documented in the form of user stories or use cases, supplementary specification of design/implementation/deployment requirements, prototypes, and others. It may also be necessary to be explicit about what is not in scope to define the scope boundary more clearly.
+- [x] The requirements can be documented in the form of user stories or use cases, supplementary specification of design/implementation/deployment requirements, prototypes, and others. It may also be necessary to be explicit about what is not in scope to define the scope boundary more clearly.
 - [x] We used ChatGPT to generate user stories to our project. On Confluence Space, we documented the prompt we've used, what user stories were generated WITH and WITHOUT ChatGPT.
 
 ## Development environment
