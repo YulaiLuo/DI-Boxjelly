@@ -9,16 +9,14 @@ class Register(Resource):
     
     def post(self):
         users = self.mongo.db.users
-        username = request.json['username']
+        email = request.json['email']
         password = request.json['password']
         hashed_password = self.bcrypt.generate_password_hash(password).decode('utf-8')
 
-        user = users.find_one({'username': username})
+        if users.find_one({'email': email}):
+            return jsonify(code=409, msg='Email already registered', data={})
 
-        if user:
-            return jsonify(code=409, msg='Username already exists')
+        users.insert_one({'email': username, 'password': hashed_password})
 
-        users.insert_one({'username': username, 'password': hashed_password})
-
-        return jsonify(code=200, msg='success')
+        return jsonify(code=200, msg='success', data={})
 

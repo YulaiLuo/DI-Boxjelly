@@ -1,11 +1,12 @@
 from flask_restful import Resource, Api, reqparse
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, create_refresh_token
 from flask import request, jsonify
 from marshmallow import Schema, fields, ValidationError
+from datetime import datetime, timedelta
 
 class UserSchema(Schema):
-    username = fields.Str(required=True, min_length=3, max_length=20)
+    email = fields.Str(required=True, min_length=3, max_length=20)
     password = fields.Str(required=True, min_length=6, max_length=30)
 
 user_schema = UserSchema()
@@ -22,22 +23,20 @@ class Login(Resource):
             return jsonify(code=400, msg=e.message, data={})
 
         users = self.mongo.db.users
-        username = user_data['username']
+        email = user_data['email']
         password = user_data['password']
 
-        user = users.find_one({'username': username})
+        user = users.find_one({'email': email})
 
         if not user:
-            return jsonify(code=404, msg='User not found',data={})
+            response = jsonify(code=404, msg='User not found',data={})
+            return response
 
         if self.bcrypt.check_password_hash(user['password'], password):
             access_token = create_access_token(identity=str(user['_id']))
-            self.mongo.db.tokens.insert_one({'type':'login',
-                                                'status': 0,    # 0: valid, 1: expired
-                                                'userid': user['_id'],
-                                                'access_token': access_token,
-                                                'generate_time': datetime.datetime.now(),
-                                                'expire_time': datetime.datetime.now() + datetime.timedelta(min=15)})
-            return jsonify(code=200,msg='success',data={'access_token': access_token})
+            refresh_token = create_refresh_token(identity=str(user['_id']))
+
+            response = jsonify(code=200, msg='success', data={'access_token':access_token, 'refresh_token':refresh_token})
+            return response
         else:
-            return jsonify(code=401,msg='Incorrect password',data={})
+            return jsonify(code=401, msg='Incorrect password',data={})
