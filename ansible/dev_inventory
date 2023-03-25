@@ -5,4 +5,4 @@
 ansible_user=ubuntu
 ansible_private_key_file=~/.ssh/soft90082
 username=boxjelly
-password=NOT_SHOWN_HERE
+password=di_boxjelly90082
