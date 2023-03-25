@@ -8,3 +8,7 @@ python src/di-gateway/app.py
 # run the auth service
 python src/di-auth/app.py
 
+# run the frontend  
+conda install yarn
+yarn install
+yarn start
