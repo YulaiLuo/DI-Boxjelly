@@ -16,7 +16,7 @@ class Register(Resource):
         if users.find_one({'email': email}):
             return jsonify(code=409, msg='Email already registered', data={})
 
-        users.insert_one({'email': username, 'password': hashed_password})
+        users.insert_one({'email': email, 'password': hashed_password})
 
         return jsonify(code=200, msg='success', data={})
 
