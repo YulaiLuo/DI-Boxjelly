@@ -1,9 +1,9 @@
-from flask_restful import Resource, Api, reqparse
-from flask_bcrypt import Bcrypt
+from flask_restful import Resource
+# from flask_bcrypt import Bcrypt
 from flask_jwt_extended import create_access_token, create_refresh_token
 from flask import request, jsonify
 from marshmallow import Schema, fields, ValidationError
-from datetime import datetime, timedelta
+# from datetime import datetime, timedelta
 
 class UserSchema(Schema):
     email = fields.Str(required=True, min_length=3, max_length=20)
@@ -12,15 +12,37 @@ class UserSchema(Schema):
 user_schema = UserSchema()
 
 class Login(Resource):
+    """
+    A class to represent a Login API
+
+    Args:
+        mongo (PyMongo): PyMongo instance used to connect to MongoDB
+        bcrypt (Bcrypt): Bcrypt instance used to hash password
+
+    Examples:
+        >>> mongo = PyMongo()
+        >>> bcrypt = Bcrypt()
+        >>> login = Login(mongo, bcrypt)
+    """    
     def __init__(self, mongo, bcrypt):
         self.mongo = mongo
         self.bcrypt = bcrypt
 
     def post(self):
+        """
+        User log in 
+
+        Args:
+        email (str): the email of the user
+        password (str): the original password(unhashed) of the user
+
+        Returns:
+            Response: HTTP Response
+        """        
         try:
             user_data = user_schema.load(request.json)
         except ValidationError as e:
-            return jsonify(code=400, msg=e.message, data={})
+            return jsonify(code=400, msg=e.messages, data={})
 
         users = self.mongo.db.users
         email = user_data['email']
