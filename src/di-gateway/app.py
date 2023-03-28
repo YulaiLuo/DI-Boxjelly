@@ -1,9 +1,9 @@
-from flask import Flask, request, make_response, jsonify
+from flask import Flask, request, jsonify
 import requests
-from flask_jwt_extended import JWTManager, jwt_required,set_access_cookies, set_refresh_cookies, get_jwt_identity, get_jwt
+from flask_jwt_extended import JWTManager, jwt_required,set_access_cookies, set_refresh_cookies
 app = Flask(__name__)
 
-DI_AUTH_URL = "http://localhost:81"
+DI_AUTH_URL = "http://di_auth:8001"
 
 
 jwt_settings = {
@@ -32,8 +32,15 @@ jwt = JWTManager(app)
 
 @app.route('/login', methods=['POST'])
 def login():
+    """
+    Login a user.
+    Returns:
+        Reponse: if status code is 200, return the user info and access token.
+                 if status code is not 200, return the error message.
+    """
     # send the login request to the login service
     s_response = requests.post(f'{DI_AUTH_URL}/di_auth/login', json=request.get_json())
+    print(s_response)
     if s_response.status_code == 200:
 
         # get the cookies from the service response
@@ -52,8 +59,18 @@ def login():
 
 @app.route("/register", methods=["POST"])
 def register():
+    """
+    Register a new user.
+    Try: curl -X POST http://localhost:8000/register -H 'Content-Type: application/json' -d '{"email":"diboxjelly@gmail.com","password":"123"}'
+    Returns:
+        Response: if status code is 200, return the user info and access token.
+                  if status code is not 200, return the error message.
+    """
+    print("in register")
     # send the register request to the register service
+    print("request:", request.json)
     response = requests.post(f'{DI_AUTH_URL}/di_auth/register', json=request.get_json())
+    print(response)
 
     # send the response from the register service to the client
     return jsonify(response.json()), response.status_code
@@ -61,6 +78,12 @@ def register():
 @app.route("/logout", methods=["POST"])
 @jwt_required
 def logout():
+    """
+    Logout a user.
+    Returns:
+        Response: if status code is 200, user logout success
+                  if status code is not 200, return the error message.
+    """
     # send the logout request to the register service
     response = requests.post(f'{DI_AUTH_URL}/di_auth/logout', json=request.get_json())
 
@@ -69,13 +92,9 @@ def logout():
 
 if __name__ == "__main__":
     HOST = '0.0.0.0'
-    PORT= 80
+    PORT= 8000
     DEBUG = True
 
-    print("-"*70)
-    print("""Welcome to DI-Boxjelly\n
-             Please open your browser to:
-             http://{}:{}""".format(HOST,PORT))
     print("-"*70)
 
     app.run(debug=DEBUG, host=HOST, port=PORT)

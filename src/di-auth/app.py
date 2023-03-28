@@ -4,9 +4,6 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from flask_mail import Mail
-# from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity,
-from flask_jwt_extended import get_jwt
-# from marshmallow import Schema, fields, ValidationError
 from resources.regitser import Register
 from resources.login import Login
 from resources.logout import Logout
@@ -36,7 +33,6 @@ jwt_settings = {
     'JWT_ACCESS_TOKEN_EXPIRES':3600,
 }
 
-
 # Initialize
 app.config.update(mail_settings)
 app.config.update(db_settings)
@@ -58,7 +54,7 @@ api.add_resource(Logout, '/di_auth/logout', resource_class_args=(mongo, mail))
 if __name__ == '__main__':
 
     HOST = '0.0.0.0'
-    PORT= 81
+    PORT= 8001
     DEBUG = True
 
     app.run(debug=DEBUG, host=HOST, port=PORT)
