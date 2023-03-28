@@ -1,7 +1,22 @@
-- hosts: all
+# - hosts: all
+#   become: true
+#   vars_files:
+#       - vars/dev-common.yaml
+#   roles:
+#     - role: linux-install-docker
+    
+# - hosts: mongodb
+#   become: true
+#   vars_files:
+#     - vars/dev-common.yaml
+#   roles:
+#     - role: linux-install-docker
+#     - role: linux-deploy-mongodb
+
+- hosts: di_gateway
   become: true
   vars_files:
-      - vars/dev-common.yaml
+    - vars/dev-common.yaml
   roles:
-    - role: linux-install-docker
-    
+    # - role: linux-install-docker
+    - role: linux-deploy-di-gateway
