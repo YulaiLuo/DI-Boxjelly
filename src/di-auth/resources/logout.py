@@ -1,5 +1,6 @@
 from flask_restful import Resource
 from flask import jsonify
+from flask_jwt_extended import unset_jwt_cookies
 
 class Logout(Resource):
     """
@@ -21,7 +22,14 @@ class Logout(Resource):
          User can log out of the system by calling this endpoint.
 
         Returns:
-            res: _description_
+            res (Response): HTTP Response
         """        
-        response = jsonify(code=200,msg="success",data={})
+        response = jsonify(code=200,msg="success")
+        response.status_code = 200
+
+        # This step remove the access token and refresh token from the cookies on the client side
+        unset_jwt_cookies(response)
+
+        # TODO: add the jti token to the blacklist
+
         return response
