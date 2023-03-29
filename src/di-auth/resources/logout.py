@@ -10,8 +10,8 @@ class Logout(Resource):
         mongo (PyMongo): The MongoDB connection object.
 
     Example:
-        >>> logout = Logout(mongo)
-        >>> logout.post()
+        >>> api = Api(app)
+        >>> api.add_resource(Logout, '/di_auth/logout', resource_class_args=(mongo,))
     """
 
     def __init__(self, mongo):
@@ -23,13 +23,21 @@ class Logout(Resource):
 
         Returns:
             res (Response): HTTP Response
-        """        
+        
+        Example:
+            >>> url = <logout_url>
+            >>> headers: headers should have the cookie
+            >>> requests.post(url, headers=headers)
+            {'code': 200, 'msg': 'success'} with status code 200, and remove the access token and refresh token from the cookies
+        """
+        # TODO: check if the header has the cookie
+        # TODO: add the tokens to the blacklist on the server side
+
+        # Generate the success logout response
         response = jsonify(code=200,msg="success")
         response.status_code = 200
 
         # This step remove the access token and refresh token from the cookies on the client side
         unset_jwt_cookies(response)
-
-        # TODO: add the jti token to the blacklist
 
         return response
