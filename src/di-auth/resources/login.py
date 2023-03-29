@@ -1,17 +1,15 @@
 from flask_restful import Resource
-# from flask_bcrypt import Bcrypt
-from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_jwt_extended import create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies
 from flask import request, jsonify
-from marshmallow import Schema, fields, ValidationError
-# from datetime import datetime, timedelta
+from marshmallow import Schema, fields, ValidationError, validate
+from datetime import datetime
+from pymongo.errors import OperationFailure
 
-class UserSchema(Schema):
-    email = fields.Str(required=True, min_length=3, max_length=20)
-    password = fields.Str(required=True, min_length=6, max_length=30)
+class EmailLoginSchema(Schema):
+    email = fields.String(required=True, validate=validate.Length(min=1, max=32))
+    password = fields.String(required=True, validate=validate.Length(min=3, max=128))
 
-user_schema = UserSchema()
-
-class Login(Resource):
+class EmailLogin(Resource):
     """
     A class to represent a Login API
 
@@ -39,26 +37,55 @@ class Login(Resource):
         Returns:
             Response: HTTP Response
         """        
+        
+        # Validate the input data
         try:
-            user_data = user_schema.load(request.json)
-        except ValidationError as e:
-            return jsonify(code=400, msg=e.messages, data={})
+            data = request.form
+            login_data = EmailLoginSchema().load(data)
+        except ValidationError:
+            response = jsonify(code=400,err="INVALID_EMAIL_PASSWORD")
+            response.status_code = 400
+            return response
 
-        users = self.mongo.db.users
-        email = user_data['email']
-        password = user_data['password']
+        # Get the email and password from the request
+        email = login_data['email']
+        password = login_data['password']
 
-        user = users.find_one({'email': email})
-
+        # Find the user in the database
+        user = self.mongo.db.users.find_one({'email': email})
         if not user:
-            response = jsonify(code=404, msg='User not found',data={})
+            response = jsonify(code=404,err="USER_NOT_FOUND")
+            response.status_code = 404
             return response
 
-        if self.bcrypt.check_password_hash(user['password'], password):
-            access_token = create_access_token(identity=str(user['_id']))
-            refresh_token = create_refresh_token(identity=str(user['_id']))
-
-            response = jsonify(code=200, msg='success', data={'access_token':access_token, 'refresh_token':refresh_token})
+        # Check the password
+        if not self.bcrypt.check_password_hash(user['password'], password):
+            response = jsonify(code=401,err="INCORRECT_PASSWORD")
+            response.status_code = 401
             return response
-        else:
-            return jsonify(code=401, msg='Incorrect password',data={})
+
+        # If the user is found and the password is correct, we start the transaction to update the last login time
+        try:
+            with self.mongo.cx.start_session() as session:
+                with session.start_transaction():
+                    
+                    # Update the last login time
+                    self.mongo.db.users.update_one({'email': email}, {'$set': {'last_login_time':datetime.utcnow()}})
+
+                    # Generate the token here
+                    access_token = create_access_token(identity=str(user['_id']))
+                    refresh_token = create_refresh_token(identity=str(user['_id']))
+
+                    # If user exist, password is correct and update success, return 200 status code 
+                    response = jsonify(code=200,msg='ok')
+
+                    # Set the JWT cookies in the response
+                    set_access_cookies(response, access_token)
+                    set_refresh_cookies(response, refresh_token)
+
+                    response.status_code = 200
+                    return response
+        except Exception:
+            response = jsonify(code=400,err="Try Again Later")
+            response.status_code = 400
+            return response
