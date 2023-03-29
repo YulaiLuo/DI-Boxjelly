@@ -1,13 +1,21 @@
+from datetime import datetime
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies
 from flask import request, jsonify
 from marshmallow import Schema, fields, ValidationError, validate
-from datetime import datetime
 from pymongo.errors import OperationFailure
 
 class EmailLoginSchema(Schema):
-    email = fields.String(required=True, validate=validate.Length(min=1, max=32))
-    password = fields.String(required=True, validate=validate.Length(min=3, max=128))
+    """
+    A class to represent a Email Login Schema, used to validate the input data
+    The input only have email and password
+
+    Example:
+        >>> data = request.form
+        >>> login_data = EmailLoginSchema().load(data)
+    """
+    email = fields.Email(required=True, validate=validate.Length(min=6, max=128))
+    password = fields.String(required=True, validate=validate.Length(min=6, max=128))
 
 class EmailLogin(Resource):
     """
@@ -52,6 +60,7 @@ class EmailLogin(Resource):
         password = login_data['password']
 
         # Find the user in the database
+        print(email)
         user = self.mongo.db.users.find_one({'email': email})
         if not user:
             response = jsonify(code=404,err="USER_NOT_FOUND")
@@ -85,7 +94,7 @@ class EmailLogin(Resource):
 
                     response.status_code = 200
                     return response
-        except Exception:
+        except OperationFailure:
             response = jsonify(code=400,err="Try Again Later")
             response.status_code = 400
             return response
