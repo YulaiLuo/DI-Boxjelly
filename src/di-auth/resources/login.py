@@ -44,7 +44,36 @@ class EmailLogin(Resource):
 
         Returns:
             Response: HTTP Response
-        """        
+
+        Raises:
+            ValidationError: If the input data is invalid
+            OperationFailure: If the database operation failed
+
+        Example:
+            >>> url = <login_url>
+            >>> payload = {'email': 'example@email.com', 'password': 'mypassword'}
+            >>> headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+            >>> requests.post(url, data=payload, headers=headers)
+            {'code': 200, 'msg': 'success'} with status code 200, and set the access token and refresh token in the cookies
+
+            >>> url = <login_url>
+            >>> payload = {'email': 'example', 'password': 'mypassword'}
+            >>> headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+            >>> requests.post(url, data=payload, headers=headers)
+            {'code': 400, 'msg': 'INVALID_EMAIL_PASSWORD'} with status code 400
+
+            >>> url = <login_url>
+            >>> payload = {'email': 'correct@email.com', 'password': 'incorrect_password'}
+            >>> headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+            >>> requests.post(url, data=payload, headers=headers)
+            {'code': 401, 'msg': 'INCORRECT_PASSWORD'} with status code 401
+
+            >>> url = <login_url>
+            >>> payload = {'email': 'user_not_exist@email.com', 'password': 'correct_password'}
+            >>> headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+            >>> requests.post(url, data=payload, headers=headers)
+            {'code': 404, 'msg': 'USER_NOT_FOUND'} with status code 404
+        """
         
         # Validate the input data
         try:
