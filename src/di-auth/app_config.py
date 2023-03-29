@@ -7,7 +7,7 @@ Example:
     >>> from flask import Flask
     >>> from app_config import app_config
     >>> app = Flask(__name__)
-    >>> app.config.from_object(app_config)
+    
 """
 
 # Mail Setting
