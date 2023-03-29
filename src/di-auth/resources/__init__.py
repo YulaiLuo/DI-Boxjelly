@@ -17,6 +17,6 @@ jwt = JWTManager()
 
 # Add route
 api.add_resource(EmailRegister, '/di_auth/register/email',resource_class_args=(mongo, bcrypt))
-api.add_resource(Invite, '/di_auth/invite/<string:access_token>',resource_class_args=(mongo, mail))
+api.add_resource(Invite, '/di_auth/invite/',resource_class_args=(mongo, mail))
 api.add_resource(EmailLogin, '/di_auth/login/email', resource_class_args=(mongo, bcrypt,))
 api.add_resource(Logout, '/di_auth/logout', resource_class_args=(mongo, mail))
