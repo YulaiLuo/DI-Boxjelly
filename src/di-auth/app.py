@@ -1,64 +1,68 @@
-from flask import Flask
-from flask_pymongo import PyMongo
-from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager
-from flask_restful import Api
-from flask_mail import Mail
-# from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity,
-from flask_jwt_extended import get_jwt
-# from marshmallow import Schema, fields, ValidationError
-from resources.regitser import Register
-from resources.login import Login
-from resources.logout import Logout
-from resources.invite import Invite
+"""
+This module is responsible for user authentication and authorization.
 
+The main function including: login, register, logout, and invite member.
 
+Example:
+    >>> from flask import Flask
+    >>> from app_config import app_config
+    >>> app = Flask(__name__)
+    >>> app.run()
+"""
+import consul
+from flask import Flask, jsonify
+from resources import api, mongo, bcrypt, mail, jwt
+import socket
+
+# Initialize the configuration of flask app
+import app_config
 app = Flask(__name__)
+app.config.from_object(app_config)
 
-# Flask-Mail configuration
-mail_settings = {
-    "MAIL_SERVER": 'smtp.sendgrid.net',
-    "MAIL_PORT": 465,
-    # "MAIL_USE_TLS": True,
-    "MAIL_USE_SSL": True,
-    "MAIL_USERNAME": "apikey",
-    "MAIL_PASSWORD": "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"
-    # "MAIL_USERNAME": os.environ['EMAIL_USER'],
-    # "MAIL_PASSWORD": os.environ['EMAIL_PASSWORD']
-}
-db_settings = {
-    "MONGO_URI":'mongodb://boxjelly:di_boxjelly90082@101.43.110.249:27017/di?authSource=admin',
-}
-jwt_settings = {
-    'JWT_TOKEN_LOCATION': ['cookies'],
-    "JWT_SECRET_KEY":"di",
-    "JWT_ALGORITHM":"HS256",
-    'JWT_ACCESS_TOKEN_EXPIRES':3600,
-}
+api.init_app(app)
+mongo.init_app(app)
+bcrypt.init_app(app)
+mail.init_app(app)
+jwt.init_app(app)
 
+@app.route('/health')
+def health():
+    response = jsonify({'code': '200', 'msg': 'success'})
+    response.status_code = 200
+    return response
 
-# Initialize
-app.config.update(mail_settings)
-app.config.update(db_settings)
-app.config.update(jwt_settings)
+# def register_service_to_consul(service_name, service_port, consul_host='127.0.0.1', consul_port=8500):
 
-# Initialize
-mongo = PyMongo(app)
-bcrypt = Bcrypt(app)
-api = Api(app)
-mail = Mail(app)
-jwt = JWTManager(app)
+#     c = consul.Consul(host=consul_host, port=consul_port)
 
-# Add route
-api.add_resource(Register, '/di_auth/register',resource_class_args=(mongo, bcrypt))
-api.add_resource(Invite, '/di_auth/invite/<string:access_token>',resource_class_args=(mongo, mail))
-api.add_resource(Login, '/di_auth/login', resource_class_args=(mongo, bcrypt,))
-api.add_resource(Logout, '/di_auth/logout', resource_class_args=(mongo, mail))
+#     # Get this machine's IP address
+#     ip_address = '127.0.0.1'
+#     # ip_address = socket.getaddrinfo(socket.gethostname(), None)
+
+#     c.agent.service.register(
+#         service_name,
+#         address=ip_address,
+#         port=service_port,
+#         check=consul.Check.http(
+#             f'http://{ip_address}:{service_port}/health',
+#             interval='10s',
+#             timeout='1s'
+#         )
+#     )
 
 if __name__ == '__main__':
 
     HOST = '0.0.0.0'
-    PORT= 81
-    DEBUG = True
+    PORT= 8001
+    app.run(debug=True, host=HOST, port=PORT)
 
-    app.run(debug=DEBUG, host=HOST, port=PORT)
+    # import sys
+    # service_name = sys.argv[1]
+    # # service_host = sys.argv[2]
+    # service_port = int(sys.argv[2])
+
+    # print(service_name, service_port)
+
+    # register_service_to_consul(service_name, service_port,consul_host='127.0.0.1',consul_port=8500)
+
+    # app.run(debug=True, host=service_host, port=service_port)

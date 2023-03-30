@@ -1,0 +1,20 @@
+  - name: Pull the python image
+    community.docker.docker_image:
+      name: '{{base_image}}'
+      source: pull
+      # Select platform for pulling. If not specified, will pull whatever docker prefers.
+      pull:
+        platform: amd64
+
+  
+  # - name: Deploy the mongodb container
+  #   docker_container:
+  #     image: '{{db_image}}'
+  #     name: '{{db_name}}'
+  #     ports: 
+  #       - "27017:27017"
+  #     restart: yes  # if restart is yes, it will not remove the previous container
+  #     env:
+  #         MONGO_INITDB_ROOT_USERNAME: '{{db_username}}'
+  #         MONGO_INITDB_ROOT_PASSWORD: '{{db_password}}'
+  #     state: started
