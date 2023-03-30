@@ -1,3 +1,9 @@
+- name: Install dependencies on localhost
+  hosts: localhost
+  become: true
+  tasks:
+    command: ansible-galaxy install geerlingguy.docker
+
 - name: Deploy the DI-Boxjelly project
   hosts: instance
   become: true
