@@ -5,8 +5,8 @@ app = Flask(__name__)
 
 # Service address
 service_map = {
-    "auth": "http://127.0.0.1:8001/di_auth",
-    "map": "http://127.0.0.1:8002/di_map"
+    "auth": "http://di_auth:8001/di_auth",
+    "map": "http://di_map/di_map"
 }
 
 @app.route("/<path:path>", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
@@ -33,5 +33,5 @@ def gateway(path):
 
 if __name__ == "__main__":
     HOST = '0.0.0.0'
-    PORT = 80
+    PORT = 8080
     app.run(debug=True, host=HOST, port=PORT)

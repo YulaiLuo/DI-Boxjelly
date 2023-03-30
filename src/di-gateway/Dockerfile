@@ -13,7 +13,7 @@ RUN pip3 install -r requirements.txt
 # copy all file into the image
 COPY . .
 
-EXPOSE 8000
+EXPOSE 80
 # start the program
 CMD ["gunicorn" , "app:app", "-c", "gunicorn_config.py"]
 
@@ -21,4 +21,4 @@ CMD ["gunicorn" , "app:app", "-c", "gunicorn_config.py"]
 # sudo docker image build -t di_gateway .
 
 # Run the container:
-# sudo docker run -d --name di_gateway --network di -p 0.0.0.0:8000:8000 di_gateway:latest
+# sudo docker run -d --name di_gateway --network di -p 0.0.0.0:8080:8080 di_gateway:latest
