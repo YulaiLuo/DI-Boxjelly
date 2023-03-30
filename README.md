@@ -49,8 +49,8 @@ A key component of the platform is the development of a Universal Indication Lis
     ├── ansible                   
     │   ├── roles           # ansible roles        
     │   ├── vars            # ansible scripts configurations
-    │   ├── inventory       # infrastructure configurations
-    │   └── playbook.yaml   # ansible playbook
+    │   ├── dev_inventory       # development infrastructure configurations
+    │   └── dev_playbook.yaml   # ansible playbook develop on the development server
     └── ...
 
 ### Data samples
@@ -108,14 +108,24 @@ A key component of the platform is the development of a Universal Indication Lis
 * User-friendly Interface
 * Multilingual Support
 
-## Installation
+## Installation and deployment
 1. Clone the repository:
 
     `git clone https://github.com/COMP90082-2023-SM1/DI-Boxjelly.git`
 
-<!-- 2. Use ansible for auto-deployment:
+2. In the command line, go to the ansible directory
 
-    ansible-playbook -i inventory playbook.yaml -->
+        cd ansible
+
+3. Install the ansible requirments:
+
+        ansible-galaxy install -r requirements.yml
+
+4. Modify the inventory configuration in the *inventory.ini* file to the host your wanna deploy this system
+
+5. Use ansible for auto-deployment:
+
+        ansible-playbook -i inventory playbook.yaml
 
 
 ## Requirements
@@ -148,6 +158,7 @@ Following the [offical docker installation](https://docs.docker.com/engine/insta
 
 ## Usage  
   
+
 (There will be usage description)
 
 
