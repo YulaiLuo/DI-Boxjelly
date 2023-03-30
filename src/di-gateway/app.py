@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager, jwt_required,set_access_cookies, set_
 app = Flask(__name__)
 
 DI_AUTH_URL = "http://di_auth:8001"
+DI_ONTOSERVER_URL = "http://di_ontoserver:8001"
 
 
 jwt_settings = {
