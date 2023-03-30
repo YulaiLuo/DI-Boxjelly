@@ -1,0 +1,11 @@
+- name: Update apt cache
+  apt:
+    update_cache: yes
+  become: true
+  
+- name: Install Yarn
+  apt:
+    name: yarn
+    state: latest
+    update_cache: yes
+  become: true

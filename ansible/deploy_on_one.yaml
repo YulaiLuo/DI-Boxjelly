@@ -1,0 +1,22 @@
+- name: Deploy the DI-Boxjelly project
+  hosts: instance
+  become: true
+  pre_tasks:
+    - name: Install common dependency
+      include_role:
+        name: common
+    - name: Install docker dependency
+      include_role: 
+        name: geerlingguy.docker
+    - name: Create docker network
+      docker_network:
+        name: '{{docker_network_name}}'
+    - name: Pull python image
+      command:  docker pull python:3.9.16-slim-bullseye
+
+  roles:
+    - mongodb
+    - di-gateway
+    - di-auth
+    # - nginx
+    # - web
