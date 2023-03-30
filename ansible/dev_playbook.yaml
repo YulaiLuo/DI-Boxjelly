@@ -1,20 +1,43 @@
 # - hosts: all
 #   become: true
-#   vars_files:
-#       - vars/dev-common.yaml
+#   # vars_files:
+#   #     - vars/dev-common.yaml
 #   roles:
-#     - role: linux-install-docker
-    
-# - hosts: mongodb
-#   become: true
-#   vars_files:
-#     - vars/dev-common.yaml
-#   roles:
-#     - role: linux-deploy-mongodb
+#     - role: geerlingguy.docker
 
-- hosts: di_gateway
+- hosts: mongodb
   become: true
   vars_files:
     - vars/dev-common.yaml
   roles:
-    - role: linux-deploy-di-gateway
+    - role: linux-deploy-mongodb
+
+- hosts: di_gateway
+  become: true
+  vars:
+    - module_dir_name: di-gateway
+    - image_name: di_gateway
+    - local_working_dir: ../src/di-gateway
+    - remote_working_dir: ./DI-Boxjelly/src/
+    - image_name: di_gateway
+    - instance_port: 80
+    - container_port: 80
+  vars_files:
+    - vars/dev-common.yaml
+  roles:
+    - role: deploy-flask-app
+
+- hosts: di_auth
+  become: true
+  vars:
+    - module_dir_name: di-auth
+    - image_name: di_auth
+    - local_working_dir: ../src/di-auth
+    - remote_working_dir: ./DI-Boxjelly/src/
+    - image_name: di_auth
+    - instance_port: 8001
+    - container_port: 8001
+  vars_files:
+    - vars/dev-common.yaml
+  roles:
+    - role: deploy-flask-app

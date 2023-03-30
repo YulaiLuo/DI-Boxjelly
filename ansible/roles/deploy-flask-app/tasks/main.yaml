@@ -11,7 +11,8 @@
       path: '{{remote_working_dir}}'
       state: directory
 
-  - name: Synchronize di-gateway module code with remote server
+  # transfer the target module to the remote instance
+  - name: Synchronize '{{module_dir_name}}' module code with remote server
     ansible.builtin.synchronize:
       src: '{{local_working_dir}}'
       dest: '{{remote_working_dir}}'
@@ -21,21 +22,41 @@
         - "--exclude=.git"
         - "--exclude-from=../.gitignore"
 
-  - name: Create docker di-gateway docker image
+  - name: Stop and remove the existing '{{image_name}}' Docker container
+    docker_container:
+      name: '{{image_name}}'
+      image: '{{image_name}}'
+      state: absent
+
+  - name: Remove the '{{image_name}}' Docker image
+    docker_image:
+      name: '{{image_name}}'
+      state: absent
+
+  - name: Create docker network
+    docker_network:
+      name: '{{docker_network_name}}'
+      state: present
+
+  - name: Create docker '{{image_name}}' docker image
     docker_image:
       name: '{{image_name}}'
       source: build
+      state: present
       build: 
         path: '{{remote_working_dir}}/{{module_dir_name}}'
         nocache: yes
+      
 
-  - name: Run the di-gateway Docker image
+  - name: Run the '{{image_name}}' Docker image
     docker_container:
       name: '{{image_name}}'
       image: '{{image_name}}'
       state: started
+      networks:   # Join the same docker network
+        - name: '{{docker_network_name}}'
       published_ports:
-          - "8080:8080"
+          - '{{instance_port}}:{{container_port}}'  # 8080:8080
         
 
 
