@@ -3,4 +3,7 @@ Flask-Pymongo == 2.3.0
 Flask-Bcrypt == 1.0.1
 marshmallow == 3.12.2
 Flask-JWT-Extended == 4.4.4
-Flask-Mail == 
+Flask-Mail == 0.9.1
+Flask-RESTful == 0.3.9
+gunicorn == 20.1.0
+python-consul == 1.1.0

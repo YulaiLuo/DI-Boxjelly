@@ -1,0 +1,87 @@
+  - name: Pull the base image for python environment
+    community.docker.docker_image:
+      name: '{{base_image}}'
+      source: pull
+      # Select platform for pulling. If not specified, will pull whatever docker prefers.
+      pull:
+        platform: amd64
+
+  - name: Ensure destination directory exists
+    ansible.builtin.file:
+      path: '{{remote_working_dir}}'
+      state: directory
+
+  # transfer the target module to the remote instance
+  - name: Synchronize '{{module_dir_name}}' module code with remote server
+    ansible.builtin.synchronize:
+      src: '{{local_working_dir}}'
+      dest: '{{remote_working_dir}}'
+      delete: yes
+      recursive: yes
+      rsync_opts:
+        - "--exclude=.git"
+        - "--exclude-from=../.gitignore"
+
+  - name: Stop and remove the existing '{{image_name}}' Docker container
+    docker_container:
+      name: '{{image_name}}'
+      image: '{{image_name}}'
+      state: absent
+
+  - name: Remove the '{{image_name}}' Docker image
+    docker_image:
+      name: '{{image_name}}'
+      state: absent
+
+  - name: Create docker network
+    docker_network:
+      name: '{{docker_network_name}}'
+      state: present
+
+  - name: Create docker '{{image_name}}' docker image
+    docker_image:
+      name: '{{image_name}}'
+      source: build
+      state: present
+      build: 
+        path: '{{remote_working_dir}}/{{module_dir_name}}'
+        nocache: yes
+      
+
+  - name: Run the '{{image_name}}' Docker image
+    docker_container:
+      name: '{{image_name}}'
+      image: '{{image_name}}'
+      state: started
+      networks:   # Join the same docker network
+        - name: '{{docker_network_name}}'
+      published_ports:
+          - '{{instance_port}}:{{container_port}}'  # 8080:8080
+        
+
+
+
+  # - name: Update apt cache
+  #   apt:
+  #     update_cache: yes
+  #     cache_valid_time: 86400 
+
+
+  # - name: Install nginx and gunicorn to deploy flask gateway service
+  #   apt:
+  #     name: ['nginx','gunicorn']
+  #     state: absent
+  #     update_cache: yes
+  #   become: true
+
+  # - name: Deploy the mongodb container
+  #   docker_container:
+  #     image: '{{db_image}}'
+  #     name: '{{db_name}}'
+  #     ports: 
+  #       - "27017:27017"
+  #     restart: yes  # if restart is yes, it will not remove the previous container
+  #     env:
+  #         MONGO_INITDB_ROOT_USERNAME: '{{db_username}}'
+  #         MONGO_INITDB_ROOT_PASSWORD: '{{db_password}}'
+  #     state: started
