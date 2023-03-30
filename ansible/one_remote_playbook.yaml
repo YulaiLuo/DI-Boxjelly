@@ -1,8 +1,8 @@
-- name: Install dependencies on localhost
+- name: Install local dependency
   hosts: localhost
-  become: true
   tasks:
-    command: ansible-galaxy install geerlingguy.docker
+    - name: Install docker installer from galaxy
+      command: ansible-galaxy install geerlingguy.docker
 
 - name: Deploy the DI-Boxjelly project
   hosts: instance
@@ -17,12 +17,11 @@
     - name: Create docker network
       docker_network:
         name: '{{docker_network_name}}'
-    - name: Pull python image
+    - name: Pull python flask image
       command:  docker pull python:3.9.16-slim-bullseye
 
   roles:
     - mongodb
     - di-gateway
     - di-auth
-    # - nginx
-    # - web
+    - di-web

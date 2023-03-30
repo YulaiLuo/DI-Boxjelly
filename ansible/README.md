@@ -1,6 +1,6 @@
 # Deployment
 
-ansible-playbook -i dev_inventory.ini dev_playbook.yaml
+ansible-playbook -i tencent_cloud.ini -f 4 one_remote_playbook.yaml
 
 # Requirement
 ansible = 7.3.0
