@@ -6,17 +6,52 @@
       pull:
         platform: amd64
 
-  - name: Update apt cache
-    apt:
-      update_cache: yes
-      cache_valid_time: 86400 
+  - name: Ensure destination directory exists
+    ansible.builtin.file:
+      path: '{{remote_working_dir}}'
+      state: directory
 
-  - name: Install nginx and gunicorn to deploy flask gateway service
-    apt:
-      name: ['nginx','gunicorn']
-      state: absent
-      update_cache: yes
-    become: true
+  - name: Synchronize di-gateway module code with remote server
+    ansible.builtin.synchronize:
+      src: '{{local_working_dir}}'
+      dest: '{{remote_working_dir}}'
+      delete: yes
+      recursive: yes
+      rsync_opts:
+        - "--exclude=.git"
+        - "--exclude-from=../.gitignore"
+
+  - name: Create docker di-gateway docker image
+    docker_image:
+      name: '{{image_name}}'
+      source: build
+      build: 
+        path: '{{remote_working_dir}}/{{module_dir_name}}'
+        nocache: yes
+
+  - name: Run the di-gateway Docker image
+    docker_container:
+      name: '{{image_name}}'
+      image: '{{image_name}}'
+      state: started
+      published_ports:
+          - "8080:8080"
+        
+
+
+
+  # - name: Update apt cache
+  #   apt:
+  #     update_cache: yes
+  #     cache_valid_time: 86400 
+
+
+  # - name: Install nginx and gunicorn to deploy flask gateway service
+  #   apt:
+  #     name: ['nginx','gunicorn']
+  #     state: absent
+  #     update_cache: yes
+  #   become: true
 
   # - name: Deploy the mongodb container
   #   docker_container:

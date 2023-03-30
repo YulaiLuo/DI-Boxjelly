@@ -1,7 +1,7 @@
 
 
 # Bind IP address and port
-bind = "0.0.0.0:8000"
+bind = "127.0.0.1:8080"
 
 # Set the number of worker processes, here set to twice the number of CPU cores
 # workers = multiprocessing.cpu_count() * 2

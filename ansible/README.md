@@ -1,6 +1,6 @@
 # Deployment
 
-ansible-playbook -i inventory playbook.yaml
+ansible-playbook -i dev_inventory.ini dev_playbook.yaml
 
 # Requirement
 ansible = 7.3.0
