@@ -13,7 +13,7 @@ RUN pip3 install -r requirements.txt
 # copy all file into the image
 COPY . .
 
-EXPOSE 80
+EXPOSE 8080
 # start the program
 CMD ["gunicorn" , "app:app", "-c", "gunicorn_config.py"]
 
