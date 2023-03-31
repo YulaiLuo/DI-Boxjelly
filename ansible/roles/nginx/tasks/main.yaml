@@ -7,21 +7,18 @@
       pull:
         platform: amd64
 
-  # transfer the target module to the remote instance
-  # - name: Synchronize '{{di_gateway_module_name}}' module code with remote server
-  #   ansible.builtin.synchronize:
-  #     src: '{{nginx_local_work_dir}}'
-  #     dest: '{{nginx_remote_work_dir}}'
-  #     delete: yes
-  #     recursive: yes
-  #     rsync_opts:
-  #       - "--exclude=.git"
-  #       - "--exclude-from=../.gitignore"
-  # - name: Copy custom nginx.conf file to the remote server
-  #   ansible.builtin.copy:
-  #     src: '{{nginx_local_work_dir}}'
-  #     dest: '{{nginx_remote_work_dir}}'
-  #     mode: '0644'
+  # Create nginx directory on the remote server
+  - name: Create custom_nginx_config directory on the remote server
+    ansible.builtin.file:
+      path: '{{nginx_remote_work_dir}}'
+      state: directory
+      mode: '0755'
+
+  - name: Copy custom nginx.conf file to the remote server
+    ansible.builtin.copy:
+      src: '{{nginx_local_work_dir}}/{{nginx_config_name}}'
+      dest: '{{nginx_remote_work_dir}}/{{nginx_config_name}}'
+      mode: '0644'
 
   - name: Stop and remove the existing '{{nginx_name}}' Docker container
     docker_container:
@@ -40,7 +37,7 @@
       networks: 
         - name: '{{docker_network_name}}'
       volumes:
-        - '{{nginx_conf_path}}:/etc/nginx/conf.d/default.conf'
+        - '{{nginx_remote_work_dir}}/{{nginx_config_name}}:/etc/nginx/conf.d/default.conf'
         # - "/etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf"
 
         # - '{{nginx_remote_work_dir}}:/etc/nginx/conf.d/default.conf'

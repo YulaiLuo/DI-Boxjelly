@@ -9,7 +9,7 @@
 
 # Deploy the project playbook
 - name: Deploy the DI-Boxjelly project
-  hosts: localhost
+  hosts: instance
   become: true
   # pre_tasks:
   #   - name: Install common dependency
@@ -25,10 +25,10 @@
   #     command:  docker pull python:3.9.16-slim-bullseye
 
   roles:
-    # - di-gateway      # Deploy the gateway  service
+    - di-gateway      # Deploy the gateway  service
     - nginx           # Deploy Nginx server
-    # - mongodb         # Deploy MongoDB
-    # - di-auth         # Deploy the authentication service
+    - mongodb         # Deploy MongoDB
+    - di-auth         # Deploy the authentication service
     # - di-web          # Deploy the web
     # - ontoserver      # Deploy the ontoserver and its database
 
