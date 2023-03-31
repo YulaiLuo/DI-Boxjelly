@@ -1,13 +1,13 @@
   - name: Ensure destination directory exists
     ansible.builtin.file:
-      path: '{{di_auth_remote_work_dir}}'
+      path: '{{remote_work_dir}}'
       state: directory
 
   # transfer the target module to the remote instance
   - name: Synchronize '{{di_auth_module_name}}' module code with remote server
     ansible.builtin.synchronize:
-      src: '{{di_auth_local_work_dir}}'
-      dest: '{{di_auth_remote_work_dir}}'
+      src: '{{local_work_dir}}'
+      dest: '{{remote_work_dir}}'
       delete: yes
       recursive: yes
       rsync_opts:
@@ -31,7 +31,7 @@
       source: build
       state: present
       build: 
-        path: '{{di_auth_remote_work_dir}}/{{di_auth_module_name}}'
+        path: '{{remote_work_dir}}/{{di_auth_module_name}}'
         nocache: yes
       
   - name: Run the '{{di_auth_image_name}}' Docker image
