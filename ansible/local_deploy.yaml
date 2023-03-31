@@ -3,6 +3,8 @@
 - name: Deploy the DI-Boxjelly project
   hosts: local
   become: true
+  vars:
+    - work_dir: ../src
   vars_files: 
     - vars/settings.yml
   pre_tasks:
@@ -17,13 +19,19 @@
     - name: Pull python flask image
       command: docker pull python:3.9.16-slim-bullseye
 
-  tasks:
-    - name: nginx             # Deploy Nginx server
-      import_tasks: roles/nginx/tasks/local.yaml
-    - name: di-gateway        # Deploy the gateway  service
-      import_tasks: roles/di-gateway/tasks/local.yaml
-    - name: di-auth           # Deploy di-auth module
-      import_tasks: roles/di-auth/tasks/local.yaml
+  roles:
+    - di-gateway      # Deploy the gateway  service
+    - nginx           # Deploy Nginx server
+    - mongodb         # Deploy MongoDB
+    - di-auth         # Deploy the authentication service
+    - di-web          # Deploy the web
+  # tasks:
+  #   - name: nginx             # Deploy Nginx server
+  #     import_tasks: roles/nginx/tasks/local.yaml
+  #   - name: di-gateway        # Deploy the gateway  service
+  #     import_tasks: roles/di-gateway/tasks/local.yaml
+  #   - name: di-auth           # Deploy di-auth module
+  #     import_tasks: roles/di-auth/tasks/local.yaml
     # - name: di-web            # Deploy Nginx server
     #   import_tasks: roles/di-web/di-web/local.yaml
 

@@ -1,18 +1,18 @@
-  - name: Ensure destination directory exists
-    ansible.builtin.file:
-      path: '{{remote_work_dir}}'
-      state: directory
+  # - name: Ensure destination directory exists
+  #   ansible.builtin.file:
+  #     path: '{{remote_work_dir}}'
+  #     state: directory
 
-  # transfer the target module to the remote instance
-  - name: Synchronize '{{di_gateway_module_name}}' module code with remote server
-    ansible.builtin.synchronize:
-      src: '{{local_work_dir}}'
-      dest: '{{remote_work_dir}}'
-      delete: yes
-      recursive: yes
-      rsync_opts:
-        - "--exclude=.git"
-        - "--exclude-from=../.gitignore"
+  # # transfer the target module to the remote instance
+  # - name: Synchronize '{{di_gateway_module_name}}' module code with remote server
+  #   ansible.builtin.synchronize:
+  #     src: '{{local_work_dir}}'
+  #     dest: '{{remote_work_dir}}'
+  #     delete: yes
+  #     recursive: yes
+  #     rsync_opts:
+  #       - "--exclude=.git"
+  #       - "--exclude-from=../.gitignore"
 
   - name: Stop and remove the existing '{{di_gateway_image_name}}' Docker container
     docker_container:
@@ -31,7 +31,7 @@
       source: build
       state: present
       build: 
-        path: '{{remote_work_dir}}/{{di_gateway_module_name}}'
+        path: '{{work_dir}}/{{di_gateway_module_name}}'
         nocache: yes
       
   - name: Run the '{{di_gateway_image_name}}' Docker image
