@@ -20,10 +20,10 @@ RUN yarn build
 RUN yarn global add serve
 
 # Expose the port; this should match the port used in the serve command
-EXPOSE 8000
+EXPOSE 8002
 
 # Start the application
-CMD ["serve", "-s", "build", "-l", "8000"]
+CMD ["serve", "-s", "build", "-l", "8002"]
 
 # Build image:
 # sudo docker image build -t di_web .

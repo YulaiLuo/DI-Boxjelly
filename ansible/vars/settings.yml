@@ -16,8 +16,8 @@ mongo_db_name: mongo
 di_gateway_module_name: di-gateway
 di_gateway_image_name: di_gateway
 di_gateway_container_name: di_gateway
-di_gateway_container_port: 8080
-di_gateway_host_port: 8080
+di_gateway_container_port: 8000
+di_gateway_host_port: 8000
 
 # di_auth
 di_auth_module_name: di-auth
@@ -30,5 +30,5 @@ di_auth_host_port: 8001
 di_web_module_name: di-web
 di_web_image_name: di_web
 di_web_container_name: di_web
-di_web_container_port: 8000
-di_web_host_port: 8000
+di_web_container_port: 8002
+di_web_host_port: 8002
