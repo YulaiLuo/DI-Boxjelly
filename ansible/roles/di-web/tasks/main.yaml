@@ -1,4 +1,3 @@
-
   - name: Stop and remove the existing '{{di_web_image_name}}' Docker container
     docker_container:
       name: '{{di_web_image_name}}'
