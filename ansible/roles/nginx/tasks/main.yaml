@@ -7,19 +7,6 @@
       pull:
         platform: amd64
 
-  # Create nginx directory on the remote server
-  # - name: Create custom_nginx_config directory on the remote server
-  #   ansible.builtin.file:
-  #     path: '{{remote_work_dir}}/{{nginx_module_name}}'
-  #     state: directory
-  #     mode: '0755'
-
-  # - name: Copy custom nginx.conf file to the remote server
-  #   ansible.builtin.copy:
-  #     src: '{{local_work_dir}}/{{nginx_module_name}}/{{nginx_config_name}}'
-  #     dest: '{{remote_work_dir}}/{{nginx_module_name}}/{{nginx_config_name}}'
-  #     mode: '0644'
-
   - name: Stop and remove the existing '{{nginx_name}}' Docker container
     docker_container:
       name: nginx
