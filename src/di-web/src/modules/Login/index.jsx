@@ -1,17 +1,22 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, Input, Button, message } from 'antd';
+import { Form, Input, Button } from 'antd';
 import { login } from './api';
+import { useMessageStore } from '../../store';
+import { setTokens } from '../../utils/auth';
 
 export default function Login() {
   const navigate = useNavigate();
-  
+  const msgApi = useMessageStore((state) => state.msgApi);
+
+  console.log('login', msgApi);
+
   const onFinish = async (data) => {
-    login(data)
-      .then((res) => {
-        message.success('Login Successfully');
-        navigate('/mapping');
-      })
+    login(data).then((res) => {
+      setTokens();
+      msgApi.success('Login Successfully');
+      navigate('/mapping', { replace: true });
+    });
   };
 
   return (
