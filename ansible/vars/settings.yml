@@ -1,6 +1,7 @@
 docker_network_name: di
-local_work_dir: ../src
-remote_work_dir: ./DI-Boxjelly/src
+
+# local_work_dir: ../src/
+# remote_work_dir: ./DI-Boxjelly/src  # Move the 'src' folder into the remote ./DI-Boxjelly
 
 # nginx setting
 nginx_name: nginx
@@ -25,3 +26,18 @@ di_auth_image_name: di_auth
 di_auth_container_name: di_auth
 di_auth_container_port: 8001
 di_auth_host_port: 8001
+
+# di_web
+di_web_volumn_name: di_web
+di_web_module_name: di-web
+di_web_image_name: di_web
+di_web_container_name: di_web
+di_web_container_port: 80
+di_web_host_port: 80
+
+# di_mapengine
+di_mapengine_module_name: di-mapengine
+di_mapengine_image_name: di_mapengine
+di_mapengine_container_name: di_mapengine
+di_mapengine_container_port: 8003
+di_mapengine_host_port: 8003
