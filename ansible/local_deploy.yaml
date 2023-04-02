@@ -20,11 +20,11 @@
       command: docker pull python:3.9.16-slim-bullseye
 
   roles:
-    - di-gateway      # Deploy the gateway  service
-    - nginx           # Deploy Nginx server
-    - mongodb         # Deploy MongoDB
+    # - di-web          # Deploy the web
+    # - di-gateway      # Deploy the gateway  service
+    # - mongodb         # Deploy MongoDB
     - di-auth         # Deploy the authentication service
-    - di-web          # Deploy the web
+
   # tasks:
   #   - name: nginx             # Deploy Nginx server
   #     import_tasks: roles/nginx/tasks/local.yaml

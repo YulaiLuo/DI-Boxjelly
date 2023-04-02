@@ -5,16 +5,16 @@ import requests
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 
-# Service address
 service_map = {
-    "auth": "http://di_auth:8001/di_auth",
-    "map": "http://di_map/di_map"
+    "auth": "http://di_auth:8001/auth",
+    "mapengine": "http://di_map:8003/mapengine"
 }
 
 @app.route("/<path:path>", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
 def gateway(path):
+
     # Get service name from path
-    service_name = path.split("/")[0]
+    service_name = path.split("/")[0]   # skip api
 
     if service_name not in service_map:
         response = jsonify(code=404 ,err="Service not found")
@@ -35,5 +35,5 @@ def gateway(path):
 
 if __name__ == "__main__":
     HOST = '0.0.0.0'
-    PORT = 8080
+    PORT = 8000
     app.run(debug=True, host=HOST, port=PORT)

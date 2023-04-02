@@ -13,6 +13,9 @@
   become: true
   vars:
     work_dir: ./DI-Boxjelly/src
+  environment:
+    CLIENT_ID: '{{NCTS_client_id}}'
+    CLIENT_SECRET: '{{NCTS_client_secret}}'
   vars_files: 
     - vars/settings.yml
   pre_tasks:
@@ -24,17 +27,15 @@
     # - name: Install docker on instance
     #   include_role: 
     #     name: geerlingguy.docker
-    # - name: Create docker network
-    #   docker_network:
-    #     name: '{{docker_network_name}}'
-    # - name: Pull python flask image
-    #   command:  docker pull python:3.9.16-slim-bullseye
+    - name: Create docker network
+      docker_network:
+        name: '{{docker_network_name}}'
+    - name: Pull python flask image
+      command:  docker pull python:3.9.16-slim-bullseye
 
   roles:
-    - di-web          # Deploy the web
-    - nginx           # Deploy Nginx server
     - di-gateway      # Deploy the gateway  service
-    - mongodb         # Deploy MongoDB
-    - di-auth         # Deploy the authentication service
+    - nginx          # Deploy the web
+    # - mongodb         # Deploy MongoDB
+    # - di-auth         # Deploy the authentication service
     # - ontoserver      # Deploy the ontoserver and its database
-
