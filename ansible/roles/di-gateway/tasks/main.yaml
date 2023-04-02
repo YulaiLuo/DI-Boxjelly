@@ -20,7 +20,7 @@
       
   - name: Run the '{{di_gateway_image_name}}' Docker image
     docker_container:
-      name: '{{di_gateway_image_name}}'
+      name: '{{di_gateway_container_name}}'
       image: '{{di_gateway_image_name}}'
       state: started
       networks:   # Join the same docker network

@@ -34,8 +34,8 @@
       command:  docker pull python:3.9.16-slim-bullseye
 
   roles:
-    - di-gateway      # Deploy the gateway  service
-    - nginx          # Deploy the web
+    # - di-gateway      # Deploy the gateway  service
+    # - nginx          # Deploy the web
     # - mongodb         # Deploy MongoDB
-    # - di-auth         # Deploy the authentication service
+    - di-auth         # Deploy the authentication service
     # - ontoserver      # Deploy the ontoserver and its database

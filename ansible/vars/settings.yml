@@ -14,7 +14,7 @@ di_gateway_container_port: 8000
 di_gateway_host_port: 8000
 
 # mongodb setting
-mongo_db_name: mongo
+mongodb_container_name: mongo
 
 # di_gateway
 di_gateway_module_name: di-gateway

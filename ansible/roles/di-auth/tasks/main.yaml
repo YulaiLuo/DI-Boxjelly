@@ -20,7 +20,7 @@
       
   - name: Run the '{{di_auth_image_name}}' Docker image
     docker_container:
-      name: '{{di_auth_image_name}}'
+      name: '{{di_auth_container_name}}'
       image: '{{di_auth_image_name}}'
       state: started
       networks:   # Join the same docker network
@@ -28,15 +28,3 @@
       # published_ports:
       #   - '{{di_auth_host_port}}:{{di_auth_container_port}}'  # 8080:8080
         
-  # - name: Update apt cache
-  #   apt:
-  #     update_cache: yes
-  #     cache_valid_time: 86400 
-
-
-  # - name: Install nginx and gunicorn to deploy flask gateway service
-  #   apt:
-  #     name: ['nginx','gunicorn']
-  #     state: absent
-  #     update_cache: yes
-  #   become: true

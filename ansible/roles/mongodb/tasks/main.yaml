@@ -10,7 +10,7 @@
   - name: Deploy the mongodb container
     docker_container:
       image: mongo
-      name: '{{mongo_db_name}}'
+      name: '{{mongodb_container_name}}'
       ports: 
         - '{{mongo_db_host_port}}:{{mongo_db_container_port}}'
       restart: yes  # if restart is yes, it will not remove the previous container
