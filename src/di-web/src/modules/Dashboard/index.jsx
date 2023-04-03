@@ -1,22 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { UserOutlined, DownOutlined } from '@ant-design/icons';
+import { UserOutlined, DownOutlined, HomeOutlined, PieChartOutlined } from '@ant-design/icons';
 import { Layout, Menu, Avatar, Space, Dropdown } from 'antd';
-import { removeTokens } from '../../utils/auth'
+import { removeTokens } from '../../utils/auth';
 
 const { Sider, Header, Content } = Layout;
 
 export default function Dashboard() {
+  const [collapsed, setCollapsed] = useState(false);
+
   const navigate = useNavigate();
   const location = useLocation();
   let selectedPath = location.pathname.split('/').pop();
   if (selectedPath === '') selectedPath = 'mapping';
 
   const onMenuItemClick = (item) => {
-    navigate(`/${item.key}`, {replace: true});
+    navigate(`/${item.key}`, { replace: true });
   };
 
-  const getSidebarItem = (label, key, children, icon) => ({
+  const getSidebarItem = (label, key, icon, children) => ({
     label,
     key,
     children,
@@ -24,12 +26,12 @@ export default function Dashboard() {
   });
 
   const sidebarItems = [
-    getSidebarItem('Main', 'mapping'),
-    getSidebarItem('History Status', 'history', [
+    getSidebarItem('Main', 'mapping', <HomeOutlined />),
+    getSidebarItem('History Status', 'history', <PieChartOutlined />, [
       getSidebarItem('Retrain History', 'retrain-history'),
       getSidebarItem('Mapping History', 'mapping-history'),
     ]),
-    getSidebarItem('Account', 'profile'),
+    getSidebarItem('Account', 'profile', <UserOutlined />),
   ];
 
   const ProfileDropdownItems = [
@@ -46,7 +48,7 @@ export default function Dashboard() {
   const onSignOutClick = () => {
     console.log('sign out');
     removeTokens();
-    navigate('/login', {replace: true})
+    navigate('/login', { replace: true });
   };
 
   const onProfileClick = () => {
@@ -61,17 +63,26 @@ export default function Dashboard() {
   return (
     <>
       <Layout style={{ height: '100vh' }}>
-        <Sider>
+        <Sider
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+          theme="light"
+        >
+          <div class="m-4 text-center text-2xl font-bold text-primary">
+            {collapsed ? 'M' : 'Mapping'}
+          </div>
           <Menu
-            style={{ height: '100%' }}
+            style={{ height: '100vh' }}
             onClick={onMenuItemClick}
             defaultSelectedKeys={[selectedPath]}
             mode="inline"
             items={sidebarItems}
+            theme="light"
           />
         </Sider>
         <Layout>
-          <Header class="bg-white px-8 py-3 flex">
+          <Header class="bg-white px-8 py-3 flex sticky top-0 z-10 w-full">
             {/* <span class="self-center">Header</span> */}
 
             <Space class="flex-1 flex justify-end items-center" size={12}>
@@ -86,7 +97,9 @@ export default function Dashboard() {
             </Space>
           </Header>
           <Content>
-            <Outlet />
+            <div class="bg-[#fafafa] h-full">
+              <Outlet />
+            </div>
           </Content>
         </Layout>
       </Layout>
