@@ -1,21 +1,23 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from flask_jwt_extended import JWTManager, jwt_required
 import requests
 from jwt.exceptions import InvalidTokenError
 
 app = Flask(__name__)
 
-load_dotenv()
-app.config.from_pyfile('.env')
+# load_dotenv()
+# app.config.from_pyfile('.env')
+import app_config
+app.config.from_object(app_config)
 
 jwt = JWTManager(app)
 corsa = CORS(app, supports_credentials=True)
 
 service_map = {
     "auth": "http://di_auth:8001/auth",
-    "mapengine": "http://di_map:8003/mapengine"
+    "mapengine": "http://di_map:8003/map"
 }
 # service_map = {
 #     "auth": "http://localhost:8001/auth",
