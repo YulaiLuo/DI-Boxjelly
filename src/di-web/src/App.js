@@ -1,6 +1,6 @@
 import { message } from 'antd';
 import { useMessageStore } from './store';
-import { BrowserRouter as Router, Routes, Route, Navigate, R } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Login, Mapping, Profile, MappingHistory, RetrainHistory, Dashboard } from './modules';
 import { checkAuthentication } from './utils/auth';
 
