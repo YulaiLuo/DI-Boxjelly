@@ -17,7 +17,7 @@ corsa = CORS(app, supports_credentials=True)
 
 service_map = {
     "auth": "http://di_auth:8001/auth",
-    "mapengine": "http://di_map:8003/map"
+    "map": "http://di_map:8003/map"
 }
 # service_map = {
 #     "auth": "http://localhost:8001/auth",

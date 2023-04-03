@@ -37,8 +37,8 @@ di_web_container_name: di_web
 
 
 # di_mapengine
-di_mapengine_module_name: di-mapengine
-di_mapengine_image_name: di_mapengine
-di_mapengine_container_name: di_mapengine
-di_mapengine_container_port: 8003
-di_mapengine_host_port: 8003
+di_map_module_name: di-map
+di_map_image_name: di_map
+di_map_container_name: di_map
+di_map_container_port: 8003
+di_map_host_port: 8003

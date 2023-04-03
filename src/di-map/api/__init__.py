@@ -7,4 +7,4 @@ api = Api()
 mongo = PyMongo()
 
 # Add route
-api.add_resource(Translate, '/map/ontoserver/translate',)
+api.add_resource(Translate, '/map/ontoserver/translate')

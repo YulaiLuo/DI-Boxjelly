@@ -14,21 +14,23 @@ class Translate(Resource):
     def get(self):
 
         # Get the data from the request
-        try:
-            translate_data = TranslateSchema().load(request.args)
-        except ValidationError as e:
-            response = jsonify(code=400,err="INVALID_PARAMETER",msg="The parameter is invalid")
-            response.status_code = 400
-            return response
+        # try:
+        #     translate_data = TranslateSchema().load(request.args)
+        # except ValidationError as e:
+        #     response = jsonify(code=400,err="INVALID_PARAMETER",msg="The parameter is invalid")
+        #     response.status_code = 400
+        #     return response
         
         # Get the code from the request
-        code = translate_data['code']
-
+        code = request.args.get('code')
+        # code = translate_data['code']
+        print(code)
         # Get the translation from the Ontoserver
-        URL = f"https://r4.ontoserver.csiro.au/fhir/ConceptMap/$translate"
-        res = requests.get(url = URL, params = {
-                'url':'http://ontoserver.csiro.au/fhir/ConceptMap/automapstrategy-default',
-                'system': 'http://ontoserver.csiro.au/fhir/CodeSystem/codesystem-terms', 
-                'code': code,
-                'target': 'http://snomed.info/sct?fhir_vs'})
+        url = "https://r4.ontoserver.csiro.au/fhir/ConceptMap/$translate"
+        params = {'url':'http://ontoserver.csiro.au/fhir/ConceptMap/automapstrategy-default',
+                'system': 'http://ontoserver.csiro.au/fhir/CodeSystem/codesystem-terms',
+                'code': f'{code}',
+                'target': 'http://snomed.info/sct?fhir_vs'}
+        res = requests.get(url = url, params = params)
+        print(res.url)
         return res.json()

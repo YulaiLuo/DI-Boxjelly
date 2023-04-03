@@ -37,5 +37,6 @@
     # - di-gateway      # Deploy the gateway  service
     # - nginx          # Deploy the web
     # - mongodb         # Deploy MongoDB
-    - di-auth         # Deploy the authentication service
+    # - di-auth         # Deploy the authentication service
     # - ontoserver      # Deploy the ontoserver and its database
+    - di-map           # Deploy the map engine
