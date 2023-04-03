@@ -1,0 +1,11 @@
+.filepond--root .filepond--credits {
+  display: none;
+}
+
+.filepond--root .filepond--drop-label {
+  min-height: 14em;
+}
+
+.filepond--drop-label label {
+  font-size: 1.5em !important;
+}
