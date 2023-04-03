@@ -1,13 +1,15 @@
 import axios from 'axios';
 import { message } from 'antd';
-import { BASE_URL } from '../constant/url';
+import { BASE_URL } from './constant/url';
 
 const instance = axios.create({
   baseURL: BASE_URL,
   timeout: 8000,
+  withCredentials: true
 });
 
 instance.interceptors.response.use(res => {
+  console.log('response', res.headers['set-cookie'])
   const {code, msg} = res.data;
   if(code !== 200) {
     console.log('error',msg);
@@ -16,7 +18,9 @@ instance.interceptors.response.use(res => {
   }
   return res.data;
 }, error => {
-  message.error(error)
+  console.log('this is error', error)
+  const msg = error.response.data?.msg ?? 'something wrong with the network request'
+  message.error(msg)
   throw error;
 });
 
