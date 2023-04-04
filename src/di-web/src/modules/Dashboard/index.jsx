@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { UserOutlined, DownOutlined, HomeOutlined, PieChartOutlined } from '@ant-design/icons';
 import { Layout, Menu, Avatar, Space, Dropdown } from 'antd';
-import { removeTokens } from '../../utils/auth';
+import { useUserStore } from '../../store';
 
 const { Sider, Header, Content } = Layout;
 
 export default function Dashboard() {
   const [collapsed, setCollapsed] = useState(false);
+  const setLoggedIn = useUserStore((state) => state.setLoggedIn)
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,8 +47,7 @@ export default function Dashboard() {
   ];
 
   const onSignOutClick = () => {
-    console.log('sign out');
-    removeTokens();
+    setLoggedIn(false);
     navigate('/login', { replace: true });
   };
 

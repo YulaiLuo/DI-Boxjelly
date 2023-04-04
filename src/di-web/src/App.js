@@ -1,16 +1,18 @@
 import { message } from 'antd';
-import { useMessageStore } from './store';
+import { useMessageStore, useUserStore } from './store';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Login, Mapping, Profile, MappingHistory, RetrainHistory, Dashboard } from './modules';
-import { checkAuthentication } from './utils/auth';
 
 function App() {
   // global message display
   const [messageApi, contextHolder] = message.useMessage();
+  
+  const loggedIn = useUserStore((state) => state.loggedIn);
   const setMsgApi = useMessageStore((state) => state.setMsgApi);
+
   setMsgApi(messageApi);
 
-  const loggedIn = checkAuthentication();
+  // const loggedIn = checkAuthentication();
 
   return (
     <>
