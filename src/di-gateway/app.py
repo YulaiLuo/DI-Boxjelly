@@ -74,7 +74,7 @@ def login(login_way):
     return response
 
 @app.route("/<path:path>", methods=["GET", "POST", "PUT", "DELETE", "PATCH"])
-@jwt_required()
+# @jwt_required()
 def gateway(path):
 
     service = path.split("/")[0]
