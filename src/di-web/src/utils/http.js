@@ -5,11 +5,10 @@ import { BASE_URL } from './constant/url';
 const instance = axios.create({
   baseURL: BASE_URL,
   timeout: 8000,
-  withCredentials: true
+  withCredentials: true,
 });
 
 instance.interceptors.response.use(res => {
-  console.log('response', res.headers['set-cookie'])
   const {code, msg} = res.data;
   if(code !== 200) {
     console.log('error',msg);
