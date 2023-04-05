@@ -16,7 +16,7 @@ COPY . .
 EXPOSE 8001
 
 # start the program
-CMD ["gunicorn" , "app:app", "-c", "gunicorn_config.py"]
+CMD ["gunicorn" , "app:main", "-c", "gunicorn_config.py"]
 
 # Build image:
 # sudo docker image build -t di_auth .

@@ -14,8 +14,9 @@ class Logout(Resource):
         >>> api.add_resource(Logout, '/di_auth/logout', resource_class_args=(mongo,))
     """
 
-    def __init__(self, mongo):
+    def __init__(self, mongo, jwt):
         self.mongo = mongo
+        self.jwt = jwt
 
     def post(self):
         """

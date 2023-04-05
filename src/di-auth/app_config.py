@@ -10,23 +10,27 @@ Example:
     
 """
 
-# Mail Setting
-MAIL_SERVER = 'smtp.sendgrid.net'
-MAIL_PORT = 465
-MAIL_USE_TLS = True
-MAIL_USERNAME = "apikey"
-MAIL_PASSWORD = "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"
+import os 
 
-# MAIL_USE_SSL = True
-# MAIL_USERNAME = os.environ['EMAIL_USER'],
-# MAIL_PASSWORD = os.environ['EMAIL_PASSWORD']
+class Config:
 
-# Database Setting
-MONGO_URI = 'mongodb://boxjelly:di_boxjelly90082@101.43.110.249:27017/di?authSource=admin'
+    # Mail Setting
+    # MAIL_SERVER = 'smtp.sendgrid.net'
+    # MAIL_PORT = 465
+    # MAIL_USE_TLS = True
+    # MAIL_USERNAME = "apikey"
+    # MAIL_PASSWORD = "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"
 
-# JWT Setting
-JWT_TOKEN_LOCATION = ['cookies']
-JWT_SECRET_KEY = "di"
-JWT_ALGORITHM = "HS256"
-JWT_ACCESS_TOKEN_EXPIRES = 3600
+    # MAIL_USE_SSL = True
+    # MAIL_USERNAME = os.environ['EMAIL_USER'],
+    # MAIL_PASSWORD = os.environ['EMAIL_PASSWORD']
+
+    # MongoDB
+    MONGO_URI = os.environ.get('MONGO_URI') or 'mongodb://boxjelly:di_boxjelly90082@101.43.110.249:27017/di?authSource=admin'
+
+    # JWT Setting
+    JWT_TOKEN_LOCATION = os.environ.get('JWT_TOKEN_LOCATION') or ['cookies']
+    JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'di'
+    JWT_ALGORITHM = os.environ.get('JWT_ALGORITHM') or 'HS256'
+    JWT_ACCESS_TOKEN_EXPIRES = os.environ.get('JWT_ACCESS_TOKEN_EXPIRES') or 3600
 
