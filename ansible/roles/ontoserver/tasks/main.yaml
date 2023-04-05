@@ -1,0 +1,6 @@
+  - name: Run Ontoserver Docker Compose
+    community.docker.docker_compose:
+      project_src: '{{work_dir}}/{{di_mapengine_module_name}}/tools/ontoserver.yml'
+      state: present
+      recreate: always
+      remove_orphans: yes

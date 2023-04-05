@@ -1,0 +1,27 @@
+  - name: Update apt cache
+    apt:
+      update_cache: yes
+    become: true
+  - name: Ensure destination directory exists
+    ansible.builtin.file:
+      path: '{{work_dir}}'
+      state: directory
+
+  # transfer the target module to the remote instance
+  - name: Synchronize code in '{{local_work_dir}}' to remote server
+    ansible.builtin.synchronize:
+      src: '{{local_work_dir}}'
+      dest: '{{work_dir}}'
+      delete: yes
+      recursive: yes
+      rsync_opts:
+        - "--exclude=.git"
+        - "--exclude-from=../.gitignore"
+
+  # transfer the build file to the remote instance
+  # - name: Synchronize '{{di_web_module_name}}' static file module code
+  #   ansible.builtin.synchronize:
+  #     src: '{{local_work_dir}}/{{di_web_module_name}}/build'
+  #     dest: '{{work_dir}}/{{di_web_module_name}}'
+  #     delete: yes
+  #     recursive: yes

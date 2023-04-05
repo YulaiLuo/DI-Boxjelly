@@ -20,7 +20,7 @@ Make sure that your Confluence satisfies the following criteria:
 ## Task Tracking
 Make sure that your task tracking satisfy the following criteria:
 
-- [ ] Students organized a product backlog and a lower-level sprint backlog. 
+- [x] Students organized a product backlog and a lower-level sprint backlog. 
 - [ ] Tasks in the sprint backlog were estimated, have an appropriate due date and have a sufficiently low level of granularity. 
 - [ ] Tasks are also clear, linked to their user stories (Confluence) and offer additional description when necessary.
 
@@ -34,7 +34,7 @@ Make sure that your version control satisfy the following criteria:
 Make sure that your product satisfy the following criteria:
 
 - [ ] Product outcomes for this dev Sprint commensurate with project difficulty.
-- [ ] Product is deployed and an URL is available on Github README so client can access current version of this software.
+- [x] Product is deployed and an URL is available on Github README so client can access current version of this software.
 
 
 ## Meetings
@@ -46,7 +46,7 @@ Make sure your meetings (team meetings, supervision meetings and meetings with i
 ## GitHub
 Make sure that: 
 
-- [ ] Folders are structured.
+- [x] Folders are structured.
 - [ ] Sprint 2 documents were exported from Confluence and added to the repository (and are updated)
 - [ ] README file is updated and explain the team's repository and new release
 - [ ] A baseline tag was generated for this Sprint

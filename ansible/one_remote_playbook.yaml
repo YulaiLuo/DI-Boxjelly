@@ -1,0 +1,42 @@
+# Play tasks on the local host
+# - name: Install local dependency
+#   hosts: localhost
+#   tasks:
+#     # Install docker installer from community, so we can install docker
+#     # on remote instance
+#     - name: Install docker installer from galaxy
+#       command: ansible-galaxy install geerlingguy.docker
+
+# Deploy the project playbook
+- name: Deploy the DI-Boxjelly project
+  hosts: instance
+  become: true
+  vars:
+    work_dir: ./DI-Boxjelly/src
+  environment:
+    CLIENT_ID: '{{NCTS_client_id}}'
+    CLIENT_SECRET: '{{NCTS_client_secret}}'
+  vars_files: 
+    - vars/settings.yml
+  pre_tasks:
+    - name: Install common dependency
+      include_role:
+        name: common
+      vars:
+        local_work_dir: ../src/
+    # - name: Install docker on instance
+    #   include_role: 
+    #     name: geerlingguy.docker
+    - name: Create docker network
+      docker_network:
+        name: '{{docker_network_name}}'
+    - name: Pull python flask image
+      command:  docker pull python:3.9.16-slim-bullseye
+
+  roles:
+    # - di-gateway      # Deploy the gateway  service
+    # - nginx          # Deploy the web
+    # - mongodb         # Deploy MongoDB
+    # - di-auth         # Deploy the authentication service
+    # - ontoserver      # Deploy the ontoserver and its database
+    - di-map           # Deploy the map engine

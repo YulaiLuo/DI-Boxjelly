@@ -1,8 +1,8 @@
 # SNOMED CT Diagnostic and Prescription Mapping Tool with Ontoserver Integration
-[![Sprint Status](https://img.shields.io/badge/sprint1-design-orange)](https://your_project_management_tool.com/sprint_details) 
-![Status Status](https://img.shields.io/badge/user_stories-0/8-green)
+[![Sprint Status](https://img.shields.io/badge/sprint2-dev-orange)](https://your_project_management_tool.com/sprint_details) 
+![Status Status](https://img.shields.io/badge/user_stories-1/8-green)
 ![Python Version](https://img.shields.io/badge/python-3.9%2B-blue)
-![Code Coverage](https://img.shields.io/badge/coverage-0-red)
+![Code Coverage](https://img.shields.io/badge/coverage-10%-red)
 
 <!-- ![License](https://img.shields.io/badge/license-MIT-green) -->
 
@@ -29,7 +29,10 @@ A key component of the platform is the development of a Universal Indication Lis
 
 ## Repository Structure
 
-### Top-level directory
+Here we list the top-level directory of this repository
+
+More details about the sub-directories can be found in docs directory [repository structure](./docs/wikis/repo_structure.md).
+
     .
     ├── ansible       # Automated deployment scripts
     ├── data samples  # Sample input for the prototype 
@@ -42,63 +45,6 @@ A key component of the platform is the development of a Universal Indication Lis
     ├── README.md
     └── .gitignore
 
-### Ansible files
-
-    .
-    ├── ...
-    ├── ansible                   
-    │   ├── roles           # ansible roles        
-    │   ├── vars            # ansible scripts configurations
-    │   ├── inventory       # infrastructure configurations
-    │   └── playbook.yaml   # ansible playbook
-    └── ...
-
-### Data samples
-
-    .
-    ├── ...
-    ├── data samples                   
-    │   └── ReasonExample.txt   # inputs of the system providede by client
-    └── ...
-
-### Documentation files
-
-    .
-    ├── ...
-    ├── docs                   
-    │   ├── checklist   # check list of each sprint         
-    │   ├── release notes   # the docs of release
-    │   ├── Expected outcome.pdf   # The expected system sturcture  provided by client  
-    │   └── <There will be more>
-    └── ...
-
-### Prototypes files
-
-    .
-    ├── ...
-    ├── prototypes                   
-    │   └── <There will be prototype images>
-    └── ...
-
-### Source code
-
-    .
-    ├── ...
-    ├── src                   
-    │   ├── di-frontend      # frontend code    
-    │   ├── di-gateway       # microservice gateway 
-    │   ├── di-login         # microservice login 
-    │   ├── di-ontoserver    # microservice ontoserver       
-    │   └── di-...           # more service 
-    └── ...
-
-### Tests 
-
-    .
-    ├── ...
-    ├── tests                   
-    │   └── <There will be tests files>
-    └── ...
 
 ## Features
 * Ontoserver Integration
@@ -108,14 +54,24 @@ A key component of the platform is the development of a Universal Indication Lis
 * User-friendly Interface
 * Multilingual Support
 
-## Installation
+## Installation and deployment
 1. Clone the repository:
 
     `git clone https://github.com/COMP90082-2023-SM1/DI-Boxjelly.git`
 
-<!-- 2. Use ansible for auto-deployment:
+2. In the command line, go to the ansible directory
 
-    ansible-playbook -i inventory playbook.yaml -->
+        cd ansible
+
+3. Install the ansible requirments:
+
+        ansible-galaxy install -r requirements.yml
+
+4. Modify the inventory configuration in the *inventory.ini* file to the host your wanna deploy this system
+
+5. Use ansible for auto-deployment:
+
+        ansible-playbook -i inventory playbook.yaml
 
 
 ## Requirements
@@ -131,7 +87,7 @@ A key component of the platform is the development of a Universal Indication Lis
 |---------------	|--------	|-------------	|
 | CPUs or Cores 	|   4     	|      8      	|
 | RAM           	|   4G     	|     16G      	|
-| Storage/Disk  	|   20G    	|     >=20G    	|
+| Storage/Disk  	|   20G    	|     >=40G    	|
 
 ### Environment requirments
 * Python 3.9+
@@ -147,34 +103,26 @@ Following the [offical docker installation](https://docs.docker.com/engine/insta
 
 
 ## Usage  
-  
-(There will be usage description)
+
+Project preview: [Mapping](http://101.43.110.249:8000/map/ontoserver/translate?code=Tonsillitis)
+
+### Login Page
+![workflow](./docs/images/login.png)
 
 
-## Workflow
+### Main Page
+![workflow](./docs/images/main_page.png)
 
-![workflow](./docs/workflow.jpg)
 
-### Branches
-The project follows a specific branching model to maintain a clean and organized repository:
+## Project Workflow
 
-1. `main` or `master`: The main branch represents the stable, production-ready version of the application. **Direct commits to this branch are not allowed.**
-2. `develop`: The develop branch is used for make develop commits. It used to integrate features and bugfixes before they are merged into the main branch. It is checked out from main branch, and **it will not be merged into any other branch.**
-3. `test`: The test branch is used by the tester to do testing which is checked out from the `develop` branch by the end of a sprint. After the testing is done, the tester give the feedback wheather it pass the tests, then the team decide to create a release branch. **Note that `test` branch will not be merged into other branch.**
-4. `feature/<feature name>`: Feature branches are created for each new feature or enhancement. They should be named `feature/login` for login feature. It is checked out from the `develop` branch.
-5. `fix/<bug name>`: Bug branches are created for fixing bugs and issues. It is followed by the bug name or issue id, for example: `fix/issue202`. They should based on the `develope` branch, and sometimes it is checked out from main branch for emergency hotfix.
-6. `release/<version number>`: Release branches are created for preparing new releases which follow by version number, such as `release/v1.0.0`. They are checked out from the `develop` branch. After the release is complete, developer make a pull request to the QA which will be merged into `main` branch with tag, and then be deleted.
+Team members please follow the following version control convention and branch naming convention when developing code.
 
-### Naming Conventions
-1. Branch names: Use lowercase letters and separate words with hyphens (e.g., feature/new-feature).
-2. Commit messages: Write concise and descriptive commit messages, starting with a capital letter and using the imperative mood (e.g., 'Add new feature' or 'Fix bug in feature').
-3. Style guid: 
-    - Python: [Google python style guide](https://google.github.io/styleguide/pyguide.html)
-    - Javascript: [Google JavaScript Style Guide](https://google.github.io/styleguide/jsguide.html
-)
+More detail how to follow the workflow please visits [workflow](./docs/wikis/workflow.md)
 
-### Pull Requests and Code Review
-When a feature or bugfix is complete, submit a pull request to the develop branch.
-Request a code review from a team member.
-Address any comments or requested changes.
-After approval, merge the pull request into the develop branch and delete the feature or bugfix branch.
+
+![workflow](./docs/images/workflow.jpg)
+
+
+
+
