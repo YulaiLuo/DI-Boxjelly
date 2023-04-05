@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Col, Row, Button, Radio, Input, Spin } from 'antd';
 import { FileUploader } from '../../components';
+import { mapSingleText } from './api';
 
 const { Search } = Input;
 
@@ -21,18 +22,23 @@ export default function Mapping() {
       console.log(`Map ${value}`);
       setSingleMappingLoading(true);
       // TODO: single text mapping
-      new Promise((resolve, reject) => {
-        setTimeout(() => {
-          resolve('this is the mapping result');
-        }, 1000);
+      mapSingleText('ACNE').then((res) => {
+        console.log(res);
+        setShowSingleMapping(false);
       })
-        .then((res) => {
-          setSingleMappingLoading(false);
-          setSingleMappingResult(res);
-        })
-        .catch((err) => {
-          setSingleMappingResult('Failed to Map!');
-        });
+
+      // new Promise((resolve, reject) => {
+      //   setTimeout(() => {
+      //     resolve('this is the mapping result');
+      //   }, 1000);
+      // })
+      //   .then((res) => {
+      //     setSingleMappingLoading(false);
+      //     setSingleMappingResult(res);
+      //   })
+      //   .catch((err) => {
+      //     setSingleMappingResult('Failed to Map!');
+      //   });
     }else {
       setShowSingleMapping(false);
     }
