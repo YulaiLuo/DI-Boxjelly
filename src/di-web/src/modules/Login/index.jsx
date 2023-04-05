@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useRequest } from 'ahooks';
 import { Form, Input, Button } from 'antd';
 import { login } from './api';
 import { useMessageStore, useUserStore } from '../../store';
@@ -9,19 +10,20 @@ export default function Login() {
   const msgApi = useMessageStore((state) => state.msgApi);
   const setLoggedIn = useUserStore((state) => state.setLoggedIn);
 
-  const onFinish = async (data) => {
-    login(data).then((res) => {
+  const { loading, run } = useRequest(login, {
+    manual: true,
+    onSuccess: (res) => {
       setLoggedIn(true);
       msgApi.success('Login Successfully');
       navigate('/mapping', { replace: true });
-    });
-  };
+    }
+  })
 
   return (
     <div class="h-screen flex justify-center items-center">
       <div class="w-96">
         <h1 class="mb-6 text-center text-primary">Mapping</h1>
-        <Form onFinish={onFinish} layout="vertical">
+        <Form onFinish={(data) => run(data)} layout="vertical">
           <Form.Item
             label="Email"
             name="email"
@@ -39,7 +41,7 @@ export default function Login() {
           </Form.Item>
           <Form.Item>
             <div class="mt-3">
-              <Button type="primary" htmlType="submit" block>
+              <Button type="primary" htmlType="submit" loading={loading} block>
                 Login
               </Button>
             </div>
