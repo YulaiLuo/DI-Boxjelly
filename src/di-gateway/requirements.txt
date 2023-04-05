@@ -11,5 +11,4 @@ Flask-JWT-Extended
 Flask-RESTful
 requests
 flask_cors
-# python-dotenv
 pyjwt
