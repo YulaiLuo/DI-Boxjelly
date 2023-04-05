@@ -9,8 +9,8 @@ const instance = axios.create({
 });
 
 instance.interceptors.response.use(res => {
-  const {code, msg} = res.data;
-  if(code !== 200) {
+  const { msg } = res.data;
+  if(res.status !== 200) {
     console.log('error',msg);
     message.error(msg)
     throw msg;

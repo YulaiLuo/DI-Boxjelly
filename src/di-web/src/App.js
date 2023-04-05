@@ -11,7 +11,7 @@ function App() {
   const setMsgApi = useMessageStore((state) => state.setMsgApi);
 
   setMsgApi(messageApi);
-
+  // document.cookie = "cookieName=cookieValue; SameSite=None; Secure";
   // const loggedIn = checkAuthentication();
 
   return (
