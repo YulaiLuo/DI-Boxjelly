@@ -1,0 +1,7 @@
+flask
+Flask-Pymongo
+Flask-Bcrypt
+marshmallow
+Flask-Mail
+Flask-RESTful
+gunicorn
