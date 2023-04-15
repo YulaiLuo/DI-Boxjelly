@@ -11,4 +11,5 @@ Flask-JWT-Extended
 Flask-RESTful
 requests
 flask_cors
+flask_pymongo
 pyjwt
