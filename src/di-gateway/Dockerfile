@@ -15,7 +15,7 @@ COPY . .
 
 EXPOSE 8000
 # start the program
-CMD ["gunicorn" , "app:main", "-c", "gunicorn_config.py"]
+CMD ["gunicorn" , "main:app", "-c", "gunicorn_config.py"]
 
 # Build image:
 # sudo docker image build -t di_gateway .
