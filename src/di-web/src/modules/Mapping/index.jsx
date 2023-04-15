@@ -19,27 +19,13 @@ export default function Mapping() {
   const onSingleTextSearch = (value) => {
     if (value.trim() !== '') {
       setShowSingleMapping(true);
-      console.log(`Map ${value}`);
       setSingleMappingLoading(true);
       // TODO: single text mapping
-      mapSingleText('ACNE').then((res) => {
-        console.log(res);
-        setShowSingleMapping(false);
-      })
-
-      // new Promise((resolve, reject) => {
-      //   setTimeout(() => {
-      //     resolve('this is the mapping result');
-      //   }, 1000);
-      // })
-      //   .then((res) => {
-      //     setSingleMappingLoading(false);
-      //     setSingleMappingResult(res);
-      //   })
-      //   .catch((err) => {
-      //     setSingleMappingResult('Failed to Map!');
-      //   });
-    }else {
+      mapSingleText(value).then((res) => {
+        setSingleMappingLoading(false);
+        setSingleMappingResult(res.display);
+      });
+    } else {
       setShowSingleMapping(false);
     }
   };
@@ -50,6 +36,8 @@ export default function Mapping() {
       setShowSingleMapping(false);
     }
   };
+
+  console.log('files', files[0]?.file)
 
   return (
     <Row>
