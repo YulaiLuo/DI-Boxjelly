@@ -16,8 +16,8 @@ import { AUTH } from './constant/constants';
 //   Cookies.remove(AUTH.REFRESH_TOKEN_COOKIE);
 // }
 
-// export const checkAuthentication = () => {
-//   const hasAccessToken = !!Cookies.get(AUTH.ACCESS_TOKEN_COOKIE);
-//   const hasRefreshToken = !!Cookies.get(AUTH.REFRESH_TOKEN_COOKIE);
-//   return hasAccessToken || hasRefreshToken;
-// };
+export const checkAuthentication = () => {
+  const hasAccessToken = !!Cookies.get(AUTH.ACCESS_TOKEN_COOKIE);
+  const hasRefreshToken = !!Cookies.get(AUTH.REFRESH_TOKEN_COOKIE);
+  return hasAccessToken || hasRefreshToken;
+};
