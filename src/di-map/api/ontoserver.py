@@ -27,7 +27,7 @@ class Translate(Resource):
 
         # Get the translation from the Ontoserver
         url = "https://r4.ontoserver.csiro.au/fhir/ConceptMap/$translate"
-        params = {'url':'http://ontoserver.csiro.au/fhir/ConceptMap/automapstrategy-seq;automapstrategy-strict;automapstrategy-MML;automapstrategy-default',
+        params = {'url':'http://ontoserver.csiro.au/fhir/ConceptMap/automapstrategy-MML',
                 'system': 'http://ontoserver.csiro.au/fhir/CodeSystem/codesystem-terms',
                 'code': f'{code}',
                 'target': 'http://snomed.info/sct?fhir_vs'}
