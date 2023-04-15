@@ -1,13 +1,22 @@
 import { message } from 'antd';
-import { useMessageStore, useUserStore } from './store';
+import { useMessageStore } from './store';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Login, Mapping, Profile, MappingHistory, RetrainHistory, Dashboard } from './modules';
+import {
+  Login,
+  Mapping,
+  Profile,
+  MappingHistory,
+  RetrainHistory,
+  Dashboard,
+  MappingResult,
+} from './modules';
+import { checkAuthentication } from './utils/auth';
 
 function App() {
   // global message display
   const [messageApi, contextHolder] = message.useMessage();
-  
-  const loggedIn = useUserStore((state) => state.loggedIn);
+
+  const loggedIn = process.env.NODE_ENV === 'development' || checkAuthentication();
   const setMsgApi = useMessageStore((state) => state.setMsgApi);
 
   setMsgApi(messageApi);
@@ -31,6 +40,11 @@ function App() {
             <Route
               path="/mapping"
               element={loggedIn ? <Mapping /> : <Navigate to="/login" replace />}
+            />
+
+            <Route
+              path="/mapping-result"
+              element={loggedIn ? <MappingResult /> : <Navigate to="/login" replace />}
             />
             <Route
               path="/mapping-history"
