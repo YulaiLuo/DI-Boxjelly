@@ -1,32 +1,73 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Col, Row, Button, Radio, Input, Spin } from 'antd';
+import Papa from 'papaparse';
+import { useRequest } from 'ahooks';
 import { FileUploader } from '../../components';
-import { mapSingleText } from './api';
+import { mapSingleText, mapMultipleText } from './api';
+import { useMessageStore } from '../../store';
 
 const { Search } = Input;
 
 export default function Mapping() {
+  const msgApi = useMessageStore((state) => state.msgApi);
+  const navigate = useNavigate();
+
   // 0: Inference mode; 1: Training mode
   const [mappingMode, setMappingMode] = useState(0);
   const [files, setFiles] = useState([]);
   const [showSingleMapping, setShowSingleMapping] = useState(false);
-  const [singleMappingLoading, setSingleMappingLoading] = useState(false);
   const [singleMappingResult, setSingleMappingResult] = useState('');
 
   // ref of single text search input
   const inputRef = useRef(null);
 
+  const { loading: multiMapLoading, run: handleMapMultipleText } = useRequest(mapMultipleText, {
+    manual: true,
+    onSuccess: (res, params) => {
+      console.log('sfsf', res, params);
+      // TODO: OntoServer api does not return the original text in the response data
+      const mappingRes = res.map((v, i) => {
+        return {
+          ...v,
+          originalDisplay: params[0][i],
+        };
+      });
+      msgApi.success('Mapping successfully');
+      navigate('/mapping-result', { state: { mappingMode, mappingRes } });
+    },
+  });
+
+  const { loading: singleMapLoading, run: handleMapSingleText } = useRequest(mapSingleText, {
+    manual: true,
+    onSuccess: (res) => {
+      setSingleMappingResult(res.display);
+    },
+  });
+
+  const onMapClick = () => {
+    Papa.parse(files[0]?.file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: function (results) {
+        if (!results.data.length) {
+          msgApi.error('There is no data in CSV file!');
+          return;
+        }
+        if (results.data[0].Text === undefined) {
+          msgApi.error('Wrong CSV format! The header of the CSV file must include Text');
+          return;
+        }
+        const textArray = results.data.map((v) => v.Text);
+        handleMapMultipleText(textArray);
+      },
+    });
+  };
+
   const onSingleTextSearch = (value) => {
     if (value.trim() !== '') {
       setShowSingleMapping(true);
-      setSingleMappingLoading(true);
-      // TODO: single text mapping
-      mapSingleText(value).then((res) => {
-        setSingleMappingLoading(false);
-        setSingleMappingResult(res.display);
-      });
-    } else {
-      setShowSingleMapping(false);
+      handleMapSingleText(value);
     }
   };
 
@@ -37,7 +78,9 @@ export default function Mapping() {
     }
   };
 
-  console.log('files', files[0]?.file)
+  const onFileUpdate = (files) => {
+    setFiles(files);
+  };
 
   return (
     <Row>
@@ -53,12 +96,19 @@ export default function Mapping() {
               </Radio.Group>
             </div>
             <div class=" w-24">
-              <Button type="primary" size="large" disabled={!files.length} block>
+              <Button
+                type="primary"
+                size="large"
+                disabled={!files.length}
+                block
+                onClick={onMapClick}
+                loading={multiMapLoading}
+              >
                 Map
               </Button>
             </div>
           </div>
-          <FileUploader files={files} onFileUpdate={setFiles} />
+          <FileUploader files={files} onFileUpdate={onFileUpdate} />
           <div class="mt-16 mb-14 text-center text-slate-400 text-lg">
             Or input a single text for test
           </div>
@@ -71,7 +121,7 @@ export default function Mapping() {
           />
           {showSingleMapping && (
             <div class="mt-12 w-full flex justify-center">
-              {singleMappingLoading ? (
+              {singleMapLoading ? (
                 <Spin />
               ) : (
                 <div class="text-center">
