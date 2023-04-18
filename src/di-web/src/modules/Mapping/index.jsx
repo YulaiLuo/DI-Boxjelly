@@ -25,12 +25,13 @@ export default function Mapping() {
   const { loading: multiMapLoading, run: handleMapMultipleText } = useRequest(mapMultipleText, {
     manual: true,
     onSuccess: (res, params) => {
-      console.log('sfsf', res, params);
       // TODO: OntoServer api does not return the original text in the response data
       const mappingRes = res.map((v, i) => {
         return {
           ...v,
           originalDisplay: params[0][i],
+          // TODO: fake data
+          curatedCategory: null,
         };
       });
       msgApi.success('Mapping successfully');
