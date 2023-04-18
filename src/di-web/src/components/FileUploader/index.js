@@ -1,4 +1,5 @@
 import React from 'react';
+import { PropTypes } from 'prop-types';
 import { FilePond, registerPlugin } from 'react-filepond';
 import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
 import 'filepond/dist/filepond.min.css';
@@ -6,17 +7,17 @@ import './index.css';
 
 registerPlugin(FilePondPluginFileValidateType);
 
-export default function FileUploader({files, onFileUpdate}) {
-  
+export default function FileUploader({ files, onFileUpdate }) {
   return (
     <>
       <FilePond
         files={files}
         required
-        acceptedFileTypes={[ // can only upload .csv, .xls, and .xlsx file
+        acceptedFileTypes={[
+          // can only upload .csv file
           'text/csv',
-          'application/vnd.ms-excel',
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          // 'application/vnd.ms-excel',
+          // 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ]}
         fileValidateTypeDetectType={(source, type) =>
           // Note: we need this here to activate the file type validations and filtering
@@ -33,3 +34,8 @@ export default function FileUploader({files, onFileUpdate}) {
     </>
   );
 }
+
+FileUploader.propTypes = {
+  files: PropTypes.array.isRequired,
+  onFileUpdate: PropTypes.func.isRequired,
+};
