@@ -2,7 +2,7 @@
 [![Sprint Status](https://img.shields.io/badge/sprint2-dev-orange)](https://your_project_management_tool.com/sprint_details) 
 ![Status Status](https://img.shields.io/badge/user_stories-1/8-green)
 ![Python Version](https://img.shields.io/badge/python-3.9%2B-blue)
-![Code Coverage](https://img.shields.io/badge/coverage-10%-red)
+![Code Coverage](https://img.shields.io/badge/coverage-10%25-red)
 
 <!-- ![License](https://img.shields.io/badge/license-MIT-green) -->
 
