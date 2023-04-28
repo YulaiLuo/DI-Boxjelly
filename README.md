@@ -104,7 +104,7 @@ Following the [offical docker installation](https://docs.docker.com/engine/insta
 
 ## Usage  
 
-Project preview: [Mapping](http://101.43.110.249:8000/map/ontoserver/translate?code=Tonsillitis)
+Project preview: [Mapping](http://101.43.110.249/)
 
 ### Login Page
 ![workflow](./docs/images/login.png)
@@ -112,6 +112,15 @@ Project preview: [Mapping](http://101.43.110.249:8000/map/ontoserver/translate?c
 
 ### Main Page
 ![workflow](./docs/images/main_page.png)
+
+## Video Demos
+
+### Sprint 2 Demo
+
+
+
+https://user-images.githubusercontent.com/67616322/235067513-8060098a-a458-4f19-80a3-cb553d260d1f.mp4
+
 
 
 ## Project Workflow
