@@ -19,7 +19,7 @@ const _mapParametersToRes = (parameters) => {
   const mappedRes = disorders.map((disorder) => ({
     code: disorder.code,
     display: disorder.display.split(' (')[0],
-    mappingSuccess: true
+    mappingSuccess: true,
   }));
   // TODO: currently we haven't found a way to select the most appropriate result among multiple possible mappings
   return Promise.resolve(mappedRes[0]);
@@ -30,7 +30,7 @@ export const mapSingleText = (code) =>
   instance
     .get(ONTOSERVER_TRANSLATE, {
       params: {
-        url: 'http://ontoserver.csiro.au/fhir/ConceptMap/automapstrategy-MML',
+        url: 'http://ontoserver.csiro.au/fhir/ConceptMap/automapstrategy-seq;automapstrategy-strict;automapstrategy-MML;automapstrategy-default',
         system: 'http://ontoserver.csiro.au/fhir/CodeSystem/codesystem-terms',
         code,
         target: 'http://snomed.info/sct?fhir_vs',
@@ -44,7 +44,7 @@ export const mapSingleText = (code) =>
       return {
         code: null,
         display: e,
-        mappingSuccess: false
+        mappingSuccess: false,
       };
     });
 
@@ -98,7 +98,7 @@ export const mapMultipleText = (codes) => {
             return {
               code: null,
               display: value.reason,
-              mappingSuccess: false
+              mappingSuccess: false,
             };
         });
         return result;
@@ -106,6 +106,6 @@ export const mapMultipleText = (codes) => {
       return settledRes;
     })
     .catch((e) => {
-      return e
+      return e;
     });
 };

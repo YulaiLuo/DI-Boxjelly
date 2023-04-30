@@ -1,4 +1,4 @@
-import { Space, Badge, Tooltip, Cascader, Input } from 'antd';
+import { Space, Badge, Tooltip } from 'antd';
 import { EyeOutlined, ToolOutlined } from '@ant-design/icons';
 import { UNIVERSAL_INDICATION_LIST } from '../../../utils/constant/indicationList';
 
@@ -18,10 +18,10 @@ const options = UNIVERSAL_INDICATION_LIST.map((item) => {
  */
 export const columns = [
   {
-    title: 'Original Text',
+    title: 'Raw text',
     dataIndex: 'originalDisplay',
     key: 'originalDisplay',
-    width: '25%',
+    width: '20%',
     ellipsis: {
       showTitle: true,
     },
@@ -36,16 +36,17 @@ export const columns = [
     ),
   },
   {
-    title: 'Mapping Category',
+    title: 'Output of the mapping tool',
     dataIndex: 'display',
     key: 'display',
-    width: '25%',
+    width: '20%',
     ellipsis: {
       showTitle: true,
     },
     readonly: true,
     render: (text, record) => {
-      if (record.mappingSuccess)
+      console.log('record', record);
+      if (record.mappingSuccess === true)
         return (
           <Tooltip
             placement="topLeft"
@@ -55,6 +56,24 @@ export const columns = [
           </Tooltip>
         );
       else return '-';
+    },
+  },
+  {
+    title: 'Similarity / confidence score',
+    key: 'similarity',
+    dataIndex: 'similarity',
+    readonly: true,
+    render: () => {
+      return '-';
+    },
+  },
+  {
+    title: 'Source',
+    key: 'source',
+    dataIndex: 'source',
+    readonly: true,
+    render: () => {
+      return 'SNOMED-CT';
     },
   },
   {
@@ -72,10 +91,9 @@ export const columns = [
     },
   },
   {
-    title: 'Mapping Status',
+    title: 'Status',
     dataIndex: 'mappingSuccess',
     key: 'mappingSuccess',
-    width: '15%',
     ellipsis: true,
     readonly: true,
     render: (_, record) => {
@@ -85,7 +103,7 @@ export const columns = [
   },
   {
     title: 'Action',
-    width: '15%',
+    width: '7%',
     valueType: 'option',
     render: (text, record, _, action) => (
       <Space size="middle">
@@ -93,7 +111,6 @@ export const columns = [
           class="cursor-pointer"
           key="editable"
           onClick={() => {
-            console.log(action?.startEditable);
             action?.startEditable?.(record.id);
           }}
         >
