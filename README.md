@@ -102,11 +102,13 @@ Following the [offical docker installation](https://docs.docker.com/engine/insta
 
 
 ## Demo and preview
-A demo video is available at MedCAT, and the preview website is available at [here](http://101.43.110.249:8000/map/ontoserver/translate?code=Tonsillitis).
+A demo video is available at MedCAT, and the preview website is available at [here](http://101.43.110.249:8000/map/ontoserver/translate?code=Tonsillitis). 
 [![Watch the video](./docs/images/login.png)](https://www.youtube.com/watch?v=1i55TeItS0Q)
 
 
-### Main Page
+## Prototypes
+The following is the main page of this project, and more prototypes available in the prototype directory.
+
 ![workflow](./docs/images/main_page.png)
 
 
