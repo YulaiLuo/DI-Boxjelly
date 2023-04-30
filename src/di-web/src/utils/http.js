@@ -59,5 +59,5 @@ const postFormData = (api, data, headers = {}) => {
   headers['Content-Type'] = 'multipart/form-data';
   return _post(api, data, headers);
 };
-
+// eslint-disable-next-line
 export default { get, post, postFormData };

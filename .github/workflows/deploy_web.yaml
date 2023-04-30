@@ -1,0 +1,53 @@
+name: Deploy di-web
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'src/di-web/**'
+
+jobs:
+  DEV_build_and_deploy:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: 18
+
+    - name: Install yarn 
+      run: |
+        npm install -g yarn
+
+    - name: Install dependencies and build app
+      working-directory: src/di-web
+      run: |
+        yarn install
+        yarn build 
+
+    - name: copy nginx config file
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.DEV_SERVER_IP }}
+        username: ${{ secrets.DEV_SERVER_USERNAME }}
+        key: ${{ secrets.DEV_SERVER_PRIVATE_KEY }}
+        source: "src/di-web/nginx.conf, src/di-web/build"
+        target: "etc"
+
+    - name: Remove old nginx container and Deploy new nginx server
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.DEV_SERVER_IP }}
+        username: ${{ secrets.DEV_SERVER_USERNAME }}
+        key: ${{ secrets.DEV_SERVER_PRIVATE_KEY }}
+        script: |
+          sudo docker pull nginx:stable
+          sudo docker stop nginx
+          sudo docker rm nginx
+          sudo docker run --network=di --name nginx -p 80:80 -v ./etc/src/di-web/nginx.conf:/etc/nginx/conf.d/default.conf -v ./etc/src/di-web/build:/usr/share/nginx/html:ro -d nginx:stable
+ 

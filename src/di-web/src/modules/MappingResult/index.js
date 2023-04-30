@@ -28,6 +28,7 @@ export default function MappingResult() {
     if (state === null) {
       navigate('/', { replace: true });
     }
+    // eslint-disable-next-line
   }, []);
 
   return (
