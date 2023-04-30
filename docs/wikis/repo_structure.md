@@ -7,15 +7,18 @@
     ├── ansible                   
     │   ├── roles           # ansible roles        
     │   ├── vars            # ansible scripts configurations
-    │   ├── dev_inventory       # development infrastructure configurations
-    │   └── dev_playbook.yaml   # ansible playbook develop on the development server
+    │   ├── local_deploy.yaml            # ansible playbook to deploy on local machine
+    │   ├── localhost.ini            # deploy local configurations
+    │   ├── tencent_cloud.ini       # development infrastructure configurations
+    │   └── one_remote_playbook.yaml   # ansible playbook develop on the development server
     └── ...
 
 ## Data samples
 
     .
     ├── ...
-    ├── data samples                   
+    ├── data samples     
+    │   ├── Indications (AMS)_Australia_19.xlsx indication list samples
     │   └── ReasonExample.txt   # inputs of the system providede by client
     └── ...
 
@@ -26,8 +29,11 @@
     ├── docs                   
     │   ├── checklist   # check list of each sprint         
     │   ├── release notes   # the docs of release
-    │   ├── Expected outcome.pdf   # The expected system sturcture  provided by client  
-    │   └── <There will be more>
+    │   ├── wiki   # the additional documentation of project
+    │   │    └── <Markdown pages>
+    │   ├── images   # the images which will be used in markdown files
+    │   │    └── <image files>
+    │   └── Expected outcome.pdf   # The expected system sturcture  provided by client  
     └── ...
 
 ## Prototypes files
@@ -43,11 +49,12 @@
     .
     ├── ...
     ├── src                   
-    │   ├── di-frontend      # frontend code    
-    │   ├── di-gateway       # microservice gateway 
-    │   ├── di-login         # microservice login 
-    │   ├── di-ontoserver    # microservice ontoserver       
-    │   └── di-...           # more service 
+    │   ├── di-web          # frontend code    
+    │   ├── di-auth          # microservice authentication and authorization 
+    │   ├── di-common       # microservice common services: email... 
+    │   ├── di-gateway      # microservice login 
+    │   ├── di-map          # microservice map       
+    │   └── di-uil          # microservice UIL   
     └── ...
 
 ## Tests 
@@ -55,5 +62,5 @@
     .
     ├── ...
     ├── tests                   
-    │   └── <There will be tests files>
+    │   └── <There will be code pieces and tests files>
     └── ...
