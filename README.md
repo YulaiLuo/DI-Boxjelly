@@ -77,8 +77,7 @@ More details about the sub-directories can be found in docs directory [repositor
 4.  Modify the inventory configuration in the _inventory.ini_ file to the host your wanna deploy this system
 
 5.  Use ansible for auto-deployment:
-
-        ansible-playbook -i inventory playbook.yaml
+    - Follow [ansible README](./ansible/README.md)
 
 ## Requirements
 
@@ -116,11 +115,11 @@ The following prototypes show the main page and the mapping results of this proj
 
 ![workflow](./docs/images/main_page.png)
 
-##### Mapping result(Inference Mode):
+##### Mapping result (Inference Mode):
 
 ![workflow](./docs/images/mapping_result_inference.png)
 
-##### Mapping result(Training Mode):
+##### Mapping result (Training Mode):
 
 ![workflow](./docs/images/mapping_result_training.png)
 
