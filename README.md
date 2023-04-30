@@ -77,8 +77,7 @@ More details about the sub-directories can be found in docs directory [repositor
 4.  Modify the inventory configuration in the _inventory.ini_ file to the host your wanna deploy this system
 
 5.  Use ansible for auto-deployment:
-
-        ansible-playbook -i inventory playbook.yaml
+    - Follow [ansible README](./ansible/README.md)
 
 ## Requirements
 
