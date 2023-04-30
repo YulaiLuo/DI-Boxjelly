@@ -1,6 +1,8 @@
 # SNOMED CT Diagnostic and Prescription Mapping Tool with Ontoserver Integration
+
 <!-- [![Sprint Status](https://img.shields.io/badge/sprint2-dev-orange)](https://your_project_management_tool.com/sprint_details)  -->
 <!-- ![Status Status](https://img.shields.io/badge/user_stories-1/8-green) -->
+
 ![Python Version](https://img.shields.io/badge/python-v3.9.16%2B-blue)
 ![Python Version](https://img.shields.io/badge/flask-v2.2.2%2B-red)
 ![Python Version](https://img.shields.io/badge/react-v18.2.0%2B-red)
@@ -29,7 +31,6 @@ This curation feature will further streamline the mapping process, ensuring that
 - [Usage](#usage)
 - [Workflow](#workflow)
 - [License](#license) -->
- 
 
 ## Repository Structure
 
@@ -39,8 +40,8 @@ More details about the sub-directories can be found in docs directory [repositor
 
     .
     ├── ansible       # Automated deployment scripts
-    ├── data samples  # Sample input for the prototype 
-    ├── docs          # Documentation files  
+    ├── data samples  # Sample input for the prototype
+    ├── docs          # Documentation files
     ├── prototypes    # Designed user interface - prototypes
     ├── src           # Source code
     ├── tests         # Code pieces and automated tests of source code
@@ -50,67 +51,78 @@ More details about the sub-directories can be found in docs directory [repositor
     └── .gitignore
 
 ## Features
-* Map clinical free text to Universal Indication List(UIL - a subset of SNOMED CT)
-* Curate mapping result category
-* Continuously improve mapping performance
-* Download mapping result
-* Collaborate with team members
-* Rollback the system
-* Data protection
+
+- Map clinical free text to Universal Indication List(UIL - a subset of SNOMED CT)
+- Curate mapping result category
+- Continuously improve mapping performance
+- Download mapping result
+- Collaborate with team members
+- Rollback the system
+- Data protection
 
 ## Installation and deployment
-1. Clone the repository:
+
+1.  Clone the repository:
 
     `git clone https://github.com/COMP90082-2023-SM1/DI-Boxjelly.git`
 
-2. In the command line, go to the ansible directory
+2.  In the command line, go to the ansible directory
 
         cd ansible
 
-3. Install the ansible requirments:
+3.  Install the ansible requirments:
 
         ansible-galaxy install -r requirements.yml
 
-4. Modify the inventory configuration in the *inventory.ini* file to the host your wanna deploy this system
+4.  Modify the inventory configuration in the _inventory.ini_ file to the host your wanna deploy this system
 
-5. Use ansible for auto-deployment:
+5.  Use ansible for auto-deployment:
 
         ansible-playbook -i inventory playbook.yaml
-
 
 ## Requirements
 
 ### System requirments
 
-| Resource      	| Minmum 	| Recommended 	|
-|---------------	|--------	|-------------	|
-| CPUs or Cores 	|   4     	|      8      	|
-| RAM           	|   4G     	|     16G      	|
-| Storage/Disk  	|   20G    	|     >=40G    	|
+| Resource      | Minmum | Recommended |
+| ------------- | ------ | ----------- |
+| CPUs or Cores | 4      | 8           |
+| RAM           | 4G     | 16G         |
+| Storage/Disk  | 20G    | >=40G       |
 
 ### Environment requirments
-* Python 3.9+
-* Docker  
-Following the [offical docker installation](https://docs.docker.com/engine/install/ubuntu/)
-* Ansible  
-        
-        pip install ansible  
 
-    or  
+- Python 3.9+
+- Docker  
+  Following the [offical docker installation](https://docs.docker.com/engine/install/ubuntu/)
+- Ansible
+
+        pip install ansible
+
+  or
 
         conda install ansible
 
-
 ## Demo and preview
+
 A demo video is available:
 [![Watch the video](./docs/images/login.png)](https://www.youtube.com/watch?v=1i55TeItS0Q)
 
-
 ## Prototypes
-The following is the main page of this project, and more prototypes available in the prototype directory.
+
+The following prototypes show the main page and the mapping results of this project. More prototypes are available in the prototype directory.
+
+##### Main page:
 
 ![workflow](./docs/images/main_page.png)
 
+##### Mapping result(Inference Mode):
+
+![workflow](./docs/images/mapping_result_inference.png)
+
+##### Mapping result(Training Mode):
+
+![workflow](./docs/images/mapping_result_training.png)
 
 ## Project Workflow
 
@@ -118,9 +130,4 @@ Team members follow the following version control convention and branch naming c
 
 More detail how to follow the workflow please visits [workflow](./docs/wikis/workflow.md)
 
-
 ![workflow](./docs/images/workflow.jpg)
-
-
-
-
