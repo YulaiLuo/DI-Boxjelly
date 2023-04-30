@@ -6,13 +6,13 @@
 ![Python Version](https://img.shields.io/badge/react-v18.2.0%2B-red)
 ![Python Version](https://img.shields.io/badge/release-1.2.0%2B-green)
 
-The primary objective of this project is to determine whether medications prescribed to patients are appropriate by normalizing free-text clinical notes and mapping them to canonical clinical terms.
+The primary objective of this platform is to determine whether medications prescribed to patients are appropriate by normalizing free-text clinical notes and mapping them to canonical clinical terms.
 
-The platform's primary function is to simplify the process of associating brief free-text descriptions, which generally explain the reasoning behind prescribing specific medications, onto a standardized knowledge base of clinical terms known as SNOMED CT.
+The platform's primary function is to simplify the process of associating brief free-text descriptions, which generally explain the reasoning behind prescribing specific medications, onto a Universal Indication List (UIL), which serves as a subset of the broader standardized knowledge base of clinical terms known as SNOMED CT.
 
 The platform features the integration of a human-in-the-loop system, which allows for manual review and correction of the mapping results. This feedback will be used to continuously enhance the platform's accuracy and performance.
 
-A key component of the platform is the development of a Universal Indication List (UIL), which serves as a subset of the broader SNOMED CT. This curated list will further streamline the mapping process, ensuring that the most relevant and commonly used clinical terms are easily accessible for healthcare professionals and researchers.
+This curation feature will further streamline the mapping process, ensuring that the most relevant and commonly used clinical terms are easily accessible for healthcare professionals and researchers.
 
 <!-- ![Code Coverage](https://img.shields.io/badge/coverage-10%-red) -->
 
@@ -102,7 +102,7 @@ Following the [offical docker installation](https://docs.docker.com/engine/insta
 
 
 ## Demo and preview
-A demo video is available at MedCAT, and the preview website is available at [here](http://101.43.110.249:8000/map/ontoserver/translate?code=Tonsillitis). 
+A demo video is available:
 [![Watch the video](./docs/images/login.png)](https://www.youtube.com/watch?v=1i55TeItS0Q)
 
 
