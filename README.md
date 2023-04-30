@@ -105,7 +105,7 @@ More details about the sub-directories can be found in docs directory [repositor
 ## Demo and preview
 
 A demo video is available:
-[![Watch the video](./docs/images/login.png)](https://www.youtube.com/watch?v=1i55TeItS0Q)
+[![Watch the video](./docs/images/login.png)](https://www.youtube.com/watch?v=zaSCr7h_XnI)
 
 ## Prototypes
 
