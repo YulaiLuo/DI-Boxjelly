@@ -25,6 +25,9 @@
     - [Environment requirments](#environment-requirments)
   - [Demo and preview](#demo-and-preview)
   - [Prototypes](#prototypes)
+        - [Main page:](#main-page)
+        - [Mapping result (Inference Mode):](#mapping-result-inference-mode)
+        - [Mapping result (Training Mode):](#mapping-result-training-mode)
   - [Project Workflow](#project-workflow)
 
 ## Background
@@ -56,7 +59,7 @@ More details about the sub-directories can be found in docs directory [repositor
 
 ## Features
 
-- Map clinical free text to Universal Indication List(UIL - a subset of SNOMED CT)
+- Map clinical free text to Universal Indication List (UIL - a subset of SNOMED CT)
 - Curate mapping result category
 - Continuously improve mapping performance
 - Download mapping result
