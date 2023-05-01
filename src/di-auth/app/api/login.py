@@ -124,6 +124,6 @@ class EmailLogin(Resource):
                     response.status_code = 200
                     return response
         except OperationFailure:
-            response = jsonify(code=400,err="Try Again Later")
+            response = jsonify(code=400,err="TRANSACTION_FAILED")
             response.status_code = 400
             return response
