@@ -1,6 +1,7 @@
 # SNOMED CT Diagnostic and Prescription Mapping Tool
 <!-- [![Sprint Status](https://img.shields.io/badge/sprint2-dev-orange)](https://your_project_management_tool.com/sprint_details)  -->
 <!-- ![Status Status](https://img.shields.io/badge/user_stories-1/8-green) -->
+
 ![Python Version](https://img.shields.io/badge/python-v3.9.16%2B-blue)
 ![Python Version](https://img.shields.io/badge/flask-v2.2.2%2B-red)
 ![Python Version](https://img.shields.io/badge/react-v18.2.0%2B-red)
@@ -22,8 +23,11 @@
   - [Requirements](#requirements)
     - [System requirments](#system-requirments)
     - [Environment requirments](#environment-requirments)
-  - [Demo and preview](#demo-and-preview)
-  - [Prototypes](#prototypes)
+  - [Website Demo](#website-demo)
+  - [Website Preview](#website-preview)
+        - [Main page:](#main-page)
+        - [Mapping result (Inference Mode):](#mapping-result-inference-mode)
+        - [Mapping result (Training Mode):](#mapping-result-training-mode)
   - [Project Workflow](#project-workflow)
 
 ## Background
@@ -44,8 +48,8 @@ More details about the sub-directories can be found in docs directory [repositor
 
     .
     ├── ansible       # Automated deployment scripts
-    ├── data samples  # Sample input for the prototype 
-    ├── docs          # Documentation files  
+    ├── data samples  # Sample input for the prototype
+    ├── docs          # Documentation files
     ├── prototypes    # Designed user interface - prototypes
     ├── src           # Source code
     ├── tests         # Code pieces and automated tests of source code
@@ -54,76 +58,77 @@ More details about the sub-directories can be found in docs directory [repositor
     └── .gitignore
 
 ## Features
-* Map clinical free text to Universal Indication List(UIL - a subset of SNOMED CT)
-* Curate mapping result category
-* Continuously improve mapping performance
-* Download mapping result
-* Collaborate with team members
-* Rollback the system
-* Data protection
+
+- Map clinical free text to Universal Indication List (UIL - a subset of SNOMED CT)
+- Curate mapping result category
+- Continuously improve mapping performance
+- Download mapping result
+- Collaborate with team members
+- Rollback the system
+- Data protection
 
 ## Installation and deployment
-1. Clone the repository:
+
+1.  Clone the repository:
 
     `git clone https://github.com/COMP90082-2023-SM1/DI-Boxjelly.git`
 
-2. In the command line, go to the ansible directory
+2.  In the command line, go to the ansible directory
 
         cd ansible
 
-3. Install the ansible requirments:
+3.  Install the ansible requirments:
 
         ansible-galaxy install -r requirements.yml
 
-4. Modify the inventory configuration in the *inventory.ini* file to the host your wanna deploy this system
+4.  Modify the inventory configuration in the _inventory.ini_ file to the host your wanna deploy this system
 
-5. Use ansible for auto-deployment:
-
-        ansible-playbook -i inventory playbook.yaml
-
+5.  Use ansible for auto-deployment:
+    - Follow [ansible README](./ansible/README.md)
 
 ## Requirements
 
 ### System requirments
 
-| Resource      	| Minmum 	| Recommended 	|
-|---------------	|--------	|-------------	|
-| CPUs or Cores 	|   4     	|      8      	|
-| RAM           	|   4G     	|     16G      	|
-| Storage/Disk  	|   20G    	|     >=40G    	|
+| Resource      | Minmum | Recommended |
+| ------------- | ------ | ----------- |
+| CPUs or Cores | 4      | 8           |
+| RAM           | 4G     | 16G         |
+| Storage/Disk  | 20G    | >=40G       |
 
 ### Environment requirments
-* Python 3.9+
-* Docker  
-Following the [offical docker installation](https://docs.docker.com/engine/install/ubuntu/)
-* Ansible  
-        
-        pip install ansible  
 
-    or  
+- Python 3.9+
+- Docker  
+  Following the [offical docker installation](https://docs.docker.com/engine/install/ubuntu/)
+- Ansible
+
+        pip install ansible
+
+  or
 
         conda install ansible
 
+## Website Demo
 
-## Demo and preview
 A demo video is available:
-[![Watch the video](./docs/images/login.png)](https://www.youtube.com/watch?v=1i55TeItS0Q)
+[![Watch the video](./docs/images/login.png)](https://www.youtube.com/watch?v=zaSCr7h_XnI)
 
+## Website Preview
 
-## Prototypes
-The following is the main page of this project, and more prototypes available in the prototype directory.
+The preview below showcases the current version of our website including main page and the mapping results. You can find additional design options and earlier versions in the prototype directory. 
+
+##### Main page:
 
 ![workflow](./docs/images/main_page.png)
 
-## Video Demos
+##### Mapping result (Inference Mode):
 
-### Sprint 2 Demo
+![workflow](./docs/images/mapping_result_inference.png)
 
+##### Mapping result (Training Mode):
 
-
-https://user-images.githubusercontent.com/67616322/235067513-8060098a-a458-4f19-80a3-cb553d260d1f.mp4
-
-
+![workflow](./docs/images/mapping_result_training.png)
 
 ## Project Workflow
 
@@ -131,9 +136,4 @@ Team members follow the following version control convention and branch naming c
 
 More detail how to follow the workflow please visits [workflow](./docs/wikis/workflow.md)
 
-
 ![workflow](./docs/images/workflow.jpg)
-
-
-
-
