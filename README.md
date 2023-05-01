@@ -115,6 +115,15 @@ The following is the main page of this project, and more prototypes available in
 
 ![workflow](./docs/images/main_page.png)
 
+## Video Demos
+
+### Sprint 2 Demo
+
+
+
+https://user-images.githubusercontent.com/67616322/235067513-8060098a-a458-4f19-80a3-cb553d260d1f.mp4
+
+
 
 ## Project Workflow
 
