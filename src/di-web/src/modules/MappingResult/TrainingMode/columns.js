@@ -1,0 +1,125 @@
+import { Space, Badge, Tooltip } from 'antd';
+import { EyeOutlined, ToolOutlined } from '@ant-design/icons';
+import { UNIVERSAL_INDICATION_LIST } from '../../../utils/constant/indicationList';
+
+const options = UNIVERSAL_INDICATION_LIST.map((item) => {
+  return {
+    value: item.group,
+    label: item.group,
+    children: item.children.map((child) => ({
+      value: child,
+      label: child,
+    })),
+  };
+});
+
+/**
+ * @see {@link https://procomponents.ant.design/en-US/components/table#columns-column-definition}
+ */
+export const columns = [
+  {
+    title: 'Raw text',
+    dataIndex: 'originalDisplay',
+    key: 'originalDisplay',
+    width: '20%',
+    ellipsis: {
+      showTitle: true,
+    },
+    readonly: true,
+    render: (text, record) => (
+      <Tooltip
+        placement="topLeft"
+        title={<span style={{ color: '#fff' }}>{record.originalDisplay}</span>}
+      >
+        {text}
+      </Tooltip>
+    ),
+  },
+  {
+    title: 'Output of the mapping tool',
+    dataIndex: 'display',
+    key: 'display',
+    width: '20%',
+    ellipsis: {
+      showTitle: true,
+    },
+    readonly: true,
+    render: (text, record) => {
+      console.log('record', record);
+      if (record.mappingSuccess === true)
+        return (
+          <Tooltip
+            placement="topLeft"
+            title={<span style={{ color: '#fff' }}>{record.display}</span>}
+          >
+            {text}
+          </Tooltip>
+        );
+      else return '-';
+    },
+  },
+  {
+    title: 'Similarity / confidence score',
+    key: 'similarity',
+    dataIndex: 'similarity',
+    readonly: true,
+    render: () => {
+      return '-';
+    },
+  },
+  {
+    title: 'Source',
+    key: 'source',
+    dataIndex: 'source',
+    readonly: true,
+    render: () => {
+      return 'SNOMED-CT';
+    },
+  },
+  {
+    title: 'Curated Category',
+    key: 'curatedCategory',
+    dataIndex: 'curatedCategory',
+    render: (_, row) => {
+      if (row.curatedCategory === null || row.curatedCategory === undefined) return '-';
+      else return row.curatedCategory[row.curatedCategory.length - 1];
+    },
+    valueType: 'cascader',
+    fieldProps: {
+      options,
+      displayRender: (labels) => labels[labels.length - 1], // just show the leaf item
+    },
+  },
+  {
+    title: 'Status',
+    dataIndex: 'mappingSuccess',
+    key: 'mappingSuccess',
+    ellipsis: true,
+    readonly: true,
+    render: (_, record) => {
+      if (record.mappingSuccess === true) return <Badge status="success" text="Success" />;
+      else return <Badge status="error" text="Fail" />;
+    },
+  },
+  {
+    title: 'Action',
+    width: '7%',
+    valueType: 'option',
+    render: (text, record, _, action) => (
+      <Space size="middle">
+        <span
+          class="cursor-pointer"
+          key="editable"
+          onClick={() => {
+            action?.startEditable?.(record.id);
+          }}
+        >
+          <ToolOutlined />
+        </span>
+        <span class="cursor-pointer">
+          <EyeOutlined />
+        </span>
+      </Space>
+    ),
+  },
+];

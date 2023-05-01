@@ -8,20 +8,21 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-instance.interceptors.response.use(res => {
-  const {code, msg} = res.data;
-  if(code !== 200) {
-    console.log('error',msg);
-    message.error(msg)
-    throw msg;
+instance.interceptors.response.use(
+  (res) => {
+    const { msg } = res.data;
+    if (res.status !== 200) {
+      message.error(msg);
+      throw msg;
+    }
+    return res.data;
+  },
+  (error) => {
+    const msg = error.response.data?.msg ?? 'something wrong with the network request';
+    message.error(msg);
+    throw error;
   }
-  return res.data;
-}, error => {
-  console.log('this is error', error)
-  const msg = error.response.data?.msg ?? 'something wrong with the network request'
-  message.error(msg)
-  throw error;
-});
+);
 
 const get = (api, params = {}, headers = {}) => {
   return new Promise((resolve, reject) => {

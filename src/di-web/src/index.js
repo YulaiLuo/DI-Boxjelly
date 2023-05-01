@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { ConfigProvider } from 'antd';
+import enUS from 'antd/lib/locale/en_US';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -14,7 +16,9 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
-  <App />
+  <ConfigProvider locale={enUS}>
+    <App />
+  </ConfigProvider>
   // </React.StrictMode>
 );
 

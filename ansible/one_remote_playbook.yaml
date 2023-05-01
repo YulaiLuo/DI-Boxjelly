@@ -1,11 +1,11 @@
 # Play tasks on the local host
-# - name: Install local dependency
-#   hosts: localhost
-#   tasks:
-#     # Install docker installer from community, so we can install docker
-#     # on remote instance
-#     - name: Install docker installer from galaxy
-#       command: ansible-galaxy install geerlingguy.docker
+- name: Install local dependency
+  hosts: localhost
+  tasks:
+    # Install docker installer from community, so we can install docker
+    # on remote instance
+    - name: Install docker installer from galaxy
+      command: ansible-galaxy install geerlingguy.docker
 
 # Deploy the project playbook
 - name: Deploy the DI-Boxjelly project
@@ -34,9 +34,9 @@
       command:  docker pull python:3.9.16-slim-bullseye
 
   roles:
-    # - di-gateway      # Deploy the gateway  service
-    # - nginx          # Deploy the web
-    # - mongodb         # Deploy MongoDB
-    # - di-auth         # Deploy the authentication service
-    # - ontoserver      # Deploy the ontoserver and its database
+    - di-gateway      # Deploy the gateway  service
+    - nginx          # Deploy the web
+    - mongodb         # Deploy MongoDB
+    - di-auth         # Deploy the authentication service
+    - ontoserver      # Deploy the ontoserver and its database
     - di-map           # Deploy the map engine

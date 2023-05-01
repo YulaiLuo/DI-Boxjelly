@@ -7,11 +7,11 @@
   vars_files: 
     - vars/settings.yml
   pre_tasks:
-    # - name: Install docker installer
-    #   command: ansible-galaxy install geerlingguy.docker
-    # - name: Install docker locally
-    #   include_role: 
-    #     name: geerlingguy.docker
+    - name: Install docker installer
+      command: ansible-galaxy install geerlingguy.docker
+    - name: Install docker locally
+      include_role: 
+        name: geerlingguy.docker
     - name: Create docker network
       docker_network:
         name: '{{docker_network_name}}'
@@ -19,7 +19,7 @@
       command: docker pull python:3.9.16-slim-bullseye
 
   roles:
-    # - nginx          # Deploy the web
-    # - di-gateway      # Deploy the gateway  service
-    # - mongodb         # Deploy MongoDB
+    - nginx          # Deploy the web
+    - di-gateway      # Deploy the gateway  service
+    - mongodb         # Deploy MongoDB
     - di-auth         # Deploy the authentication service

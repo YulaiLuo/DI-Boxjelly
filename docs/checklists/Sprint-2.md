@@ -40,7 +40,7 @@ Make sure that your product satisfy the following criteria:
 ## Meetings
 Make sure your meetings (team meetings, supervision meetings and meetings with industry partners) are documented in Confluence (and only). 
 
-- [ ] Meetings are recorded in Confluence and only. They were NOT exported to Github as they're part of internal process.
+- [x] Meetings are recorded in Confluence and only. They were NOT exported to Github as they're part of internal process.
 
 
 ## GitHub

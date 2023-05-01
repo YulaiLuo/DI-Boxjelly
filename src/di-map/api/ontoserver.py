@@ -24,13 +24,13 @@ class Translate(Resource):
         # Get the code from the request
         code = request.args.get('code')
         # code = translate_data['code']
-        print(code)
+
         # Get the translation from the Ontoserver
         url = "https://r4.ontoserver.csiro.au/fhir/ConceptMap/$translate"
-        params = {'url':'http://ontoserver.csiro.au/fhir/ConceptMap/automapstrategy-default',
+        params = {'url':'http://ontoserver.csiro.au/fhir/ConceptMap/automapstrategy-MML',
                 'system': 'http://ontoserver.csiro.au/fhir/CodeSystem/codesystem-terms',
                 'code': f'{code}',
                 'target': 'http://snomed.info/sct?fhir_vs'}
         res = requests.get(url = url, params = params)
-        print(res.url)
+
         return res.json()
