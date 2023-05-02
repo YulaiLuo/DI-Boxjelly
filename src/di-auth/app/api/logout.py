@@ -11,7 +11,7 @@ class Logout(Resource):
 
     Example:
         >>> api = Api(app)
-        >>> api.add_resource(Logout, '/di_auth/logout', resource_class_args=(mongo,))
+        >>> api.add_resource(Logout, '/di-auth/logout', resource_class_args=(mongo,))
     """
 
     def __init__(self, mongo, jwt):

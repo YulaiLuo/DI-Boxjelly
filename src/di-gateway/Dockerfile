@@ -18,7 +18,7 @@ EXPOSE 8000
 CMD ["gunicorn" , "main:app", "-c", "gunicorn_config.py"]
 
 # Build image:
-# sudo docker image build -t di_gateway .
+# sudo docker image build -t di-gateway .
 
 # Run the container:
-# sudo docker run -d --name di_gateway --network di -p 0.0.0.0:8000:8000 di_gateway:latest
+# sudo docker run -d --name di-gateway --network di di-gateway:latest

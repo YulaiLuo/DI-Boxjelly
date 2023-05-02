@@ -1,0 +1,47 @@
+name: Deploy di-auth on DEV server
+
+on:
+  push:
+    branches:
+      - feature/github-actions
+    # paths:
+    #   - 'src/di-auth/**'
+
+jobs:
+  DEV_build_and_deploy:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Create auth docker image
+      working-directory: src/di-auth
+      run: |
+        sudo docker image build -t di-auth . 
+    
+    - name: Save auth Docker image as a file
+      run: |
+        sudo docker save di-auth -o di-auth.tar
+
+    - name: Copy auth Docker image to instance
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.DEV_SERVER_IP }}
+        username: ${{ secrets.DEV_SERVER_USERNAME }}
+        key: ${{ secrets.DEV_SERVER_PRIVATE_KEY }}
+        source: "di-auth.tar"
+        target: "etc"
+
+    - name: Load and deploy auth image 
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.DEV_SERVER_IP }}
+        username: ${{ secrets.DEV_SERVER_USERNAME }}
+        key: ${{ secrets.DEV_SERVER_PRIVATE_KEY }}
+        script: |
+          sudo docker rm -f di-auth || true
+          sudo docker image rm di-auth || true
+
+          sudo docker load -i ./etc/di-auth.tar
+          sudo docker run --network di --name di-auth -d di-auth:latest

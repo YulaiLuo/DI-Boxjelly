@@ -18,7 +18,7 @@ EXPOSE 8003
 CMD ["gunicorn" , "app:app", "-c", "gunicorn_config.py"]
 
 # Build image:
-# sudo docker image build -t di_map .
+# sudo docker image build -t di-map .
 
 # Run the container:
-# sudo docker run -d --name di_map --network di -p 0.0.0.0:8003:8003 di_map:latest
+# sudo docker run -d --name di-map --network di -p 0.0.0.0:8003:8003 di-map:latest
