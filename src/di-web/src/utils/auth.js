@@ -17,7 +17,9 @@ import { AUTH } from './constant/constants';
 // }
 
 export const checkAuthentication = () => {
-  const hasAccessToken = !!Cookies.get(AUTH.ACCESS_TOKEN_COOKIE);
-  const hasRefreshToken = !!Cookies.get(AUTH.REFRESH_TOKEN_COOKIE);
-  return hasAccessToken || hasRefreshToken;
+  // const hasAccessToken = !!Cookies.get(AUTH.ACCESS_TOKEN_COOKIE);
+  // const hasRefreshToken = !!Cookies.get(AUTH.REFRESH_TOKEN_COOKIE);
+  localStorage.setItem('access_token_cookie', Cookies.get(AUTH.ACCESS_TOKEN_COOKIE));
+  // return hasAccessToken || hasRefreshToken;
+  return localStorage.getItem('loggedIn') === 'true';
 };
