@@ -1,0 +1,47 @@
+name: Deploy di-map on DEV server
+
+on:
+  push:
+    branches:
+      - feature/github-actions
+    # paths:
+    #   - 'src/di-map/**'
+
+jobs:
+  DEV_build_and_deploy:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Create map docker image
+      working-directory: src/di-map
+      run: |
+        sudo docker image build -t di-map . 
+    
+    - name: Save map Docker image as a file
+      run: |
+        sudo docker save di-map -o di-map.tar
+
+    - name: Copy map Docker image to instance
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.DEV_SERVER_IP }}
+        username: ${{ secrets.DEV_SERVER_USERNAME }}
+        key: ${{ secrets.DEV_SERVER_PRIVATE_KEY }}
+        source: "di-map.tar"
+        target: "etc"
+
+    - name: Load and deploy map image 
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.DEV_SERVER_IP }}
+        username: ${{ secrets.DEV_SERVER_USERNAME }}
+        key: ${{ secrets.DEV_SERVER_PRIVATE_KEY }}
+        script: |
+          sudo docker rm -f di-map || true
+          sudo docker image rm di-map || true
+
+          sudo docker load -i ./etc/di-map.tar
+          sudo docker run --network di --name di-map -d di-map:latest
