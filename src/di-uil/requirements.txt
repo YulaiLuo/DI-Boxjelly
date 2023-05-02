@@ -9,3 +9,5 @@ gunicorn
 flask
 Flask-RESTful
 requests
+Flask-Pymongo
+marshmallow
