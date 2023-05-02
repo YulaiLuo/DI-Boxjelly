@@ -1,7 +1,4 @@
-from flask import Blueprint
 from flask_restful import Api
-
-
 
 def init_api(app):
     """

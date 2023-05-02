@@ -1,6 +1,4 @@
-from .cors import init_cors
 from .db import init_db
-from .jwt import init_jwt
 
 def init_utils(app):
     """
