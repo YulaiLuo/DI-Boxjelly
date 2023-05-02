@@ -14,7 +14,5 @@ Flask-Pymongo
 Flask-Bcrypt
 marshmallow
 Flask-JWT-Extended
-Flask-Mail
 Flask-RESTful
 gunicorn
-python-consul

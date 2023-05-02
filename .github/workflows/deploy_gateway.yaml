@@ -44,4 +44,4 @@ jobs:
           sudo docker image rm di-gateway || true
 
           sudo docker load -i ./etc/di-gateway.tar
-          sudo docker run --network di --name di-gateway  -p 0.0.0.0:8000:8000 -d di-gateway:latest
+          sudo docker run --network di --name di-gateway -d di-gateway:latest
