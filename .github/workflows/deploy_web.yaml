@@ -1,4 +1,4 @@
-name: Deploy di-web
+name: Deploy di-web on DEV server
 
 on:
   push:

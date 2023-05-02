@@ -1,0 +1,47 @@
+name: Deploy di-gateway on DEV server
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'src/di-gateway/**'
+
+jobs:
+  DEV_build_and_deploy:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Create gateway docker image
+      working-directory: src/di-gateway
+      run: |
+        sudo docker image build -t di-gateway . 
+    
+    - name: Save gateway Docker image as a file
+      run: |
+        sudo docker save di-gateway -o di-gateway.tar
+
+    - name: Copy gateway Docker image to instance
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.DEV_SERVER_IP }}
+        username: ${{ secrets.DEV_SERVER_USERNAME }}
+        key: ${{ secrets.DEV_SERVER_PRIVATE_KEY }}
+        source: "di-gateway.tar"
+        target: "etc"
+
+    - name: Load and deploy gateway image 
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.DEV_SERVER_IP }}
+        username: ${{ secrets.DEV_SERVER_USERNAME }}
+        key: ${{ secrets.DEV_SERVER_PRIVATE_KEY }}
+        script: |
+          sudo docker rm -f di-gateway || true
+          sudo docker image rm di-gateway || true
+
+          sudo docker load -i ./etc/di-gateway.tar
+          sudo docker run --network di --name di-gateway  -p 0.0.0.0:8000:8000 -d di-gateway:latest
