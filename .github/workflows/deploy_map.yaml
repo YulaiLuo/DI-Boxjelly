@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - feature/github-actions
-    # paths:
-    #   - 'src/di-map/**'
+    paths:
+      - 'src/di-map/**'
 
 jobs:
   DEV_build_and_deploy:
