@@ -22,11 +22,11 @@ class Config:
     MONGO_URI = os.environ.get('MONGO_URI') or 'mongodb://boxjelly:di_boxjelly90082@101.43.110.249:27017/di?authSource=admin'
 
     # Microservice Map
-    # SERVICE_MAP = {
-    #     "auth": "http://di_auth:8001/auth",
-    #     "map": "http://di_map:8003/map"
-    # }
     SERVICE_MAP = {
-        "auth": "http://localhost:8001/auth",
-        "map": "http://localhost:8003/map"
+        "auth": "http://di-auth:8001/auth",
+        "map": "http://di-map:8003/map"
     }
+    # SERVICE_MAP = {
+    #     "auth": "http://localhost:8001/auth",
+    #     "map": "http://localhost:8003/map"
+    # }
