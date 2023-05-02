@@ -4,20 +4,14 @@ import requests
 from marshmallow import Schema, fields, ValidationError, validate
 
 class MapItemSchema(Schema):
-    """
-    A class to represent a Email Login Schema, used to validate the input data
-    The input only have email and password
 
-    Example:
-        >>> data = request.form
-        >>> login_data = EmailLoginSchema().load(data)
-    """
     # TODO:
     pass
 
 class MappedItems(Resource):
    def post(self):
     # TODO: Get mapped items of a task
+
     pass
 
 class CurateMappedUILCategory(Resource):

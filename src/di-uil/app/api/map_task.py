@@ -1,6 +1,13 @@
 from flask import request, Response
 from flask_restful import Resource
 import requests
+from marshmallow import Schema, fields, ValidationError, validate
+
+class MapTaskSchema(Schema):
+
+    # TODO:
+    pass
+
 
 class NewMapTaskResource(Resource):
    def post(self):
