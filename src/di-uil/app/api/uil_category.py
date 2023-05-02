@@ -5,7 +5,6 @@ import requests
 class NewUILCategoryResource(Resource):
    def post(self):
     # TODO: Creae a map task
-    # Main function to do mapping
     pass
 
 class UpdateCategoryResource(Resource):
