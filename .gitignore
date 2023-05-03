@@ -296,4 +296,5 @@ dist
 
 model/
 
+# MedCAT model
 medcat_model/
