@@ -1,4 +1,5 @@
 from flask_restful import Api
+from .map_task import CreateMapTaskResource, MapTaskDetailResource, DeleteMapTaskResource
 
 def init_api(app):
     """
@@ -12,6 +13,7 @@ def init_api(app):
     api = Api()
 
     # TODO: Add resource to path
+    api.add_resource(CreateMapTaskResource, '/uil/tasks')
 
     # Initialize the API
     api.init_app(app)
