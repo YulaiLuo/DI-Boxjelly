@@ -1,1 +1,1 @@
-from .map_task import CreateMapTaskInputSchema
+from .map_task import CreateMapTaskInputSchema, DeleteMapTaskInputSchema

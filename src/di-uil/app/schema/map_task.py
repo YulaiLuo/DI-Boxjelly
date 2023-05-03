@@ -17,3 +17,6 @@ class CreateMapTaskInputSchema(Schema):
     def validate_file(self, file):
         if not allowed_file(file.filename):
             raise ValidationError("File type not allowed. Allowed file types: csv, xlsx, xls")
+        
+class DeleteMapTaskInputSchema(Schema):
+    id = fields.String(required=True)

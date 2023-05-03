@@ -2,7 +2,7 @@ from flask import request, jsonify
 from flask_restful import Resource
 from ..models.map_task import MapTask
 from ..models.map_item import MapItem
-from ..schema.map_task import CreateMapTaskInputSchema
+from ..schema import CreateMapTaskInputSchema, DeleteMapTaskInputSchema
 import threading
 from marshmallow import ValidationError
 
@@ -79,7 +79,30 @@ class MapTaskDetailResource(Resource):
       pass
 
 class DeleteMapTaskResource(Resource):
-   def post(self):
-      # TODO: Get detail of map task
-      pass
+
+   def delete(self, task_id):
+
+      schema = DeleteMapTaskInputSchema()
+      try:
+         # TODO: Check if the task is permitted to be deleted by this user
+
+         # TODO: Check if the task is deleted
+
+         # Change the deleted field as deleted
+         MapTask.objects(id=task_id).update_one(deleted=1)
+
+         response = jsonify(code=200, msg="ok")
+         response.status_code = 200
+         return response
+
+      except ValidationError as err:
+         print(err)
+         response = jsonify(code=400, err="INVALID_INPUT")
+         response.status_code = 400
+         return response
+
+      except Exception as err:
+         response = jsonify(code=500, err="INTERNAL_SERVER_ERROR")
+         response.status_code = 500
+         return response
 

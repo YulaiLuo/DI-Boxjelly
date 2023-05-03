@@ -10,6 +10,7 @@ class MapTask(Document):
     create_by = StringField()                     # user_team_id
     create_at = DateTimeField(default=datetime.utcnow)
     update_at = DateTimeField(default=datetime.utcnow)
+    deleted = IntField(default=0)                   # 0: not deleted, 1: deleted
     
     def save(self, *args, **kwargs):
         self.update_at = datetime.utcnow()

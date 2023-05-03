@@ -14,6 +14,7 @@ def init_api(app):
 
     # TODO: Add resource to path
     api.add_resource(CreateMapTaskResource, '/uil/tasks')
+    api.add_resource(DeleteMapTaskResource, '/uil/tasks/<task_id>')
 
     # Initialize the API
     api.init_app(app)
