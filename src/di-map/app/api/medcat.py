@@ -11,7 +11,7 @@ class MedCatTranslate(Resource):
         self.cat = cat
 
     def get(self):
-        data = TranslateSchema().load(request.form)
+        data = TranslateSchema().load(request.get_json())
         texts = data['texts']
         entities = self.cat.get_entities(texts[0])['entities']
         
@@ -22,7 +22,7 @@ class MedCatTranslate(Resource):
                 
         # Process the texts in parallel using MedCAT's multiprocessing function
         batch_size_chars = 500 # Set the batch size in characters
-        results = self.cat.multiprocessing(data_iterator(texts), batch_size_chars=batch_size_chars, nproc=8)
+        results = self.cat.multiprocessing(data_iterator(texts), batch_size_chars=batch_size_chars, nproc=2)
         
         # # Extract the entities from the results and do further processing
         # entities = []
