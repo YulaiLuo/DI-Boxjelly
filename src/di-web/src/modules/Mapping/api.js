@@ -1,7 +1,6 @@
-// import http from '../../utils/http';
-// import { SINGLE_TEXT_MAPPING_URL } from '../../utils/constant/url';
-import { ONTOSERVER_BASE_URL, ONTOSERVER_TRANSLATE } from '../../utils/constant/url';
+import { ONTOSERVER_BASE_URL, ONTOSERVER_TRANSLATE, MAP_TASK_URL } from '../../utils/constant/url';
 import axios from 'axios';
+import http from '../../utils/http';
 
 const instance = axios.create({
   baseURL: ONTOSERVER_BASE_URL,
@@ -48,7 +47,7 @@ export const mapSingleText = (code) =>
       };
     });
 
-export const mapMultipleText = (codes) => {
+export const mapMultipleText = async (codes) => {
   const entry = codes.map((code) => {
     return {
       resource: {
@@ -108,4 +107,17 @@ export const mapMultipleText = (codes) => {
     .catch((e) => {
       return e;
     });
+};
+
+// Create a mapping task
+export const createMappingTask = (file, teamId) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('teamId', teamId);
+  return http.postFormData(MAP_TASK_URL, formData);
+};
+
+// Get mapping task detail
+export const getMappingTaskDetail = (taskId) => {
+  return http.get(`${MAP_TASK_URL}/${taskId}`);
 };

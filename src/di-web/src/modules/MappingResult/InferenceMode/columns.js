@@ -1,22 +1,22 @@
 export const columns = [
   {
     title: 'Original Text',
-    dataIndex: 'originalDisplay',
-    key: 'originalDisplay',
+    dataIndex: 'originalText',
+    key: 'originalText',
     ellipsis: {
       showTitle: false,
     },
   },
   {
     title: 'Mapping Category',
-    dataIndex: 'display',
-    key: 'display',
+    dataIndex: 'mappedText',
+    key: 'mappedText',
     ellipsis: {
       showTitle: false,
     },
     render: (text, record) => {
-      if (record.mappingSuccess) return text;
-      else return '-';
+      if (record.mappingStatus === 0) return '-';
+      else return text;
     },
   },
 ];
