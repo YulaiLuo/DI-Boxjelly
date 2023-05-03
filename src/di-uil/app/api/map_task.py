@@ -2,10 +2,9 @@ from flask import request, jsonify
 from flask_restful import Resource
 from ..models.map_task import MapTask
 from ..models.map_item import MapItem
-from ..schema import CreateMapTaskInputSchema, DeleteMapTaskInputSchema
+from ..schemas import CreateMapTaskInputSchema, DeleteMapTaskInputSchema
 import threading
 from marshmallow import ValidationError
-
 
 class CreateMapTaskResource(Resource):
 

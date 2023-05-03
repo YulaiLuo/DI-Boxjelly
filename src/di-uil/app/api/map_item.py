@@ -3,11 +3,6 @@ from flask_restful import Resource
 import requests
 from marshmallow import Schema, fields, ValidationError, validate
 
-class MapItemSchema(Schema):
-
-    # TODO:
-    pass
-
 class MappedItems(Resource):
    def post(self):
     # TODO: Get mapped items of a task

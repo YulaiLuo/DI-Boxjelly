@@ -1,5 +1,6 @@
 from flask_restful import Api
 from .map_task import CreateMapTaskResource, MapTaskDetailResource, DeleteMapTaskResource
+from .uil import CreateUILResource, CreateUILGroupResource, GetUILResource, CreateUILCategoryResource
 
 def init_api(app):
     """
@@ -12,7 +13,10 @@ def init_api(app):
     # Create the API instance
     api = Api()
 
-    # TODO: Add resource to path
+    api.add_resource(CreateUILResource, '/uil')
+    api.add_resource(GetUILResource, '/uil/<uil_version>')
+    api.add_resource(CreateUILGroupResource, '/uil/<uil_version>/groups')
+    api.add_resource(CreateUILCategoryResource, '/uil/<uil_version>/categories')
     api.add_resource(CreateMapTaskResource, '/uil/tasks')
     api.add_resource(DeleteMapTaskResource, '/uil/tasks/<task_id>')
 
