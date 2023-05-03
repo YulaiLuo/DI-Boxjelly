@@ -11,9 +11,8 @@ class MedCatTranslate(Resource):
         self.cat = cat
 
     def get(self):
-        data = TranslateSchema().load(request.form)
+        data = TranslateSchema().load(request.get_json())
         texts = data['texts']
-        entities = self.cat.get_entities(texts[0])['entities']
         
         # Create a generator to yield each text and its index
         def data_iterator(texts):
@@ -22,18 +21,16 @@ class MedCatTranslate(Resource):
                 
         # Process the texts in parallel using MedCAT's multiprocessing function
         batch_size_chars = 500 # Set the batch size in characters
-        results = self.cat.multiprocessing(data_iterator(texts), batch_size_chars=batch_size_chars, nproc=8)
+        results = self.cat.multiprocessing(data_iterator(texts), batch_size_chars=batch_size_chars, nproc=2)
         
-        # # Extract the entities from the results and do further processing
-        # entities = []
-        # for result in results:
-        #     entities.extend(result['entities'])
-        
-        # # print(entities)
+        # Extract the entities from the results and do further processing
+        res = []
+        for result in results.values():
+            processed_entities = self.process_entities({'entities': result['entities']})
+            res.append(processed_entities)
 
-        # # Do further processing to UIL and return the results
-        # res = self.process_entities({'entities': entities})
-        return results
+        # Do further processing to UIL and return the results
+        return res
     
     def process_entities(self, entities):
         entities_dict = entities['entities']
@@ -63,6 +60,7 @@ class MedCatTranslate(Resource):
                     "term_name": entity["pretty_name"],
                     "SCTID": entity["cui"], # SNOMED CT ID
                     "type": entity["types"], # semantic tag
+                    'raw_text': entity['source_value'],
                     "start_index": entity["start"],
                     "end_index": entity["end"],
                     "similarity": entity["context_similarity"],
