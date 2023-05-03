@@ -35,7 +35,7 @@ def init_api(app):
     api = Api()
 
     # Add route
-    api.add_resource(MedCatTranslate, '/map/medcat/single-translate', resource_class_kwargs={'cat': cat})   
+    api.add_resource(MedCatTranslate, '/map/medcat/translate', resource_class_kwargs={'cat': cat})   
 
     # Initialize the API
     api.init_app(app)
