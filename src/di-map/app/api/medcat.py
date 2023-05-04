@@ -47,14 +47,20 @@ class MedCatTranslate(Resource):
     def process_entities(self, entities):
         entities_dict = entities['entities']
         # Create a dictionary to hold the sorted entities
-        sorted_entities = {}
-        
+        sorted_entities = {"disorder": [], "organism": [], "finding": [], "procedure": [], "substance": []}
+                
         # Sort entities by type and confidence
         for entity in entities_dict.values():
             if "disorder" in entity["types"]:
-                if "disorder" not in sorted_entities:
-                    sorted_entities["disorder"] = []
                 sorted_entities["disorder"].append(entity)
+            elif "organism" in entity["types"]:
+                sorted_entities["organism"].append(entity)
+            elif "finding" in entity["types"]:
+                sorted_entities["finding"].append(entity)
+            elif "procedure" in entity["types"]:
+                sorted_entities["procedure"].append(entity)
+            elif "substance" in entity["types"]:
+                sorted_entities["substance"].append(entity)
             else:
                 if "other" not in sorted_entities:
                     sorted_entities["other"] = []
@@ -72,7 +78,6 @@ class MedCatTranslate(Resource):
                     "sct_term": entity["pretty_name"],
                     "sct_code": entity["cui"], # SNOMED CT ID
                     "type": entity["types"], # semantic tag
-                    # 'text': entity['source_value'],
                     "start_index": entity["start"],
                     "end_index": entity["end"],
                     "similarity": entity["context_similarity"],
