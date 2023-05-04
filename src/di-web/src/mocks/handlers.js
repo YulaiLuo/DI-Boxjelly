@@ -1,5 +1,4 @@
-import authMockService from "./api/auth";
+import authMockService from './api/auth';
+import uilMockService from './api/uil';
 
-export const handlers = [
-  ...authMockService,
-];
+export const handlers = [...authMockService, ...uilMockService];

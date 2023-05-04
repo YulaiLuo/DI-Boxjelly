@@ -5,10 +5,11 @@ import { Layout, Menu, Avatar, Space, Dropdown } from 'antd';
 import { useUserStore } from '../../store';
 
 const { Sider, Header, Content } = Layout;
+const { PUBLIC_URL } = process.env;
 
 export default function Dashboard() {
   const [collapsed, setCollapsed] = useState(false);
-  const setLoggedIn = useUserStore((state) => state.setLoggedIn)
+  const setLoggedIn = useUserStore((state) => state.setLoggedIn);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -69,8 +70,9 @@ export default function Dashboard() {
           onCollapse={(value) => setCollapsed(value)}
           theme="light"
         >
-          <div class="m-4 text-center text-2xl font-bold text-primary">
-            {collapsed ? 'M' : 'Mapping'}
+          <div class="m-4 flex items-center justify-center">
+            <img src={`${PUBLIC_URL}/logo512.png`} alt="" width={30} />
+            {!collapsed && <span class="font-bold text-primary ml-2 text-xl">Mapping</span>}
           </div>
           <Menu
             style={{ height: '100vh' }}

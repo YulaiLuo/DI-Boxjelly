@@ -1,26 +1,30 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Tabs } from 'antd';
+import { useRequest } from 'ahooks';
 import InferenceMode from './InferenceMode';
 import TrainingMode from './TrainingMode';
+import { getMappingTaskDetail } from '../Mapping/api';
 
 export default function MappingResult() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const defaultActiveKey = state.mappingMode === 1 ? 'training' : 'inference';
   // TODO: should get mappingRes from backend
-  const data = state.mappingRes ?? [];
+  const taskId = state.id;
+  const { data, loading } = useRequest(() => getMappingTaskDetail(taskId));
+  const mappedItems = data?.data.mappedItems ?? [];
 
   const items = [
     {
       key: 'inference',
       label: `Inference`,
-      children: <InferenceMode data={data} />,
+      children: <InferenceMode data={mappedItems} />,
     },
     {
       key: 'training',
       label: `Training`,
-      children: <TrainingMode data={data} />,
+      children: <TrainingMode data={mappedItems} />,
     },
   ];
 

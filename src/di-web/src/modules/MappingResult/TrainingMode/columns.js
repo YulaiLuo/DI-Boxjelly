@@ -19,8 +19,8 @@ const options = UNIVERSAL_INDICATION_LIST.map((item) => {
 export const columns = [
   {
     title: 'Raw text',
-    dataIndex: 'originalDisplay',
-    key: 'originalDisplay',
+    dataIndex: 'originalText',
+    key: 'originalText',
     width: '20%',
     ellipsis: {
       showTitle: true,
@@ -37,52 +37,46 @@ export const columns = [
   },
   {
     title: 'Output of the mapping tool',
-    dataIndex: 'display',
-    key: 'display',
+    dataIndex: 'mappedText',
+    key: 'mappedText',
     width: '20%',
     ellipsis: {
       showTitle: true,
     },
     readonly: true,
     render: (text, record) => {
-      console.log('record', record);
-      if (record.mappingSuccess === true)
+      if (record.mappingStatus === 0) return '-';
+      else {
         return (
           <Tooltip
             placement="topLeft"
-            title={<span style={{ color: '#fff' }}>{record.display}</span>}
+            title={<span style={{ color: '#fff' }}>{record.mappedText}</span>}
           >
             {text}
           </Tooltip>
         );
-      else return '-';
+      }
     },
   },
   {
     title: 'Similarity / confidence score',
-    key: 'similarity',
-    dataIndex: 'similarity',
+    key: 'confidence',
+    dataIndex: 'confidence',
     readonly: true,
-    render: () => {
-      return '-';
-    },
   },
   {
     title: 'Source',
     key: 'source',
     dataIndex: 'source',
     readonly: true,
-    render: () => {
-      return 'SNOMED-CT';
-    },
   },
   {
     title: 'Curated Category',
-    key: 'curatedCategory',
-    dataIndex: 'curatedCategory',
+    key: 'curate',
+    dataIndex: 'curate',
     render: (_, row) => {
-      if (row.curatedCategory === null || row.curatedCategory === undefined) return '-';
-      else return row.curatedCategory[row.curatedCategory.length - 1];
+      if (row.curate === null || row.curate === undefined) return '-';
+      else return row.curate[row.curate.length - 1];
     },
     valueType: 'cascader',
     fieldProps: {
@@ -92,13 +86,21 @@ export const columns = [
   },
   {
     title: 'Status',
-    dataIndex: 'mappingSuccess',
-    key: 'mappingSuccess',
+    dataIndex: 'mappingStatus',
+    key: 'mappingStatus',
     ellipsis: true,
     readonly: true,
-    render: (_, record) => {
-      if (record.mappingSuccess === true) return <Badge status="success" text="Success" />;
-      else return <Badge status="error" text="Fail" />;
+    valueType: 'select',
+    valueEnum: {
+      0: { text: 'Fail', status: 'Error' },
+      1: {
+        text: 'Success',
+        status: 'Success',
+      },
+      2: {
+        text: 'Reviewed',
+        status: 'Default',
+      },
     },
   },
   {
