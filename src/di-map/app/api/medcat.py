@@ -33,7 +33,7 @@ class MedCatTranslate(Resource):
             # Do further processing to UIL and return the results
             
             # Return the response with the appropriate status code
-            response = jsonify({'code': 200, 'res': res})
+            response = jsonify({'code': 200, 'msg': 'ok','data': res})
             response.status_code = 200
 
             return response
@@ -69,10 +69,10 @@ class MedCatTranslate(Resource):
         for key in sorted_entities:
             for entity in sorted_entities[key]:
                 processed_entity = {
-                    "term_name": entity["pretty_name"],
-                    "SCTID": entity["cui"], # SNOMED CT ID
+                    "sct_term": entity["pretty_name"],
+                    "sct_code": entity["cui"], # SNOMED CT ID
                     "type": entity["types"], # semantic tag
-                    'raw_text': entity['source_value'],
+                    'text': entity['source_value'],
                     "start_index": entity["start"],
                     "end_index": entity["end"],
                     "similarity": entity["context_similarity"],
