@@ -5,27 +5,30 @@ from ..schemas import CreateMapTaskInputSchema, DeleteMapTaskInputSchema, GetMap
 import threading
 from marshmallow import ValidationError
 from bson import ObjectId
+import requests
 
 class CreateMapTaskResource(Resource):
 
    # Thread function to process the mapping task
-   def map_items(self, new_map_task, lines):
-      map_items = []
-      for line in lines:
-         new_map_item = MapItem(
-            task_id = new_map_task.id,
-            text = line.decode('utf-8').strip()
-         )
-         map_items.append(new_map_item)
+   def map_items(self, new_map_task, texts):
 
-      # TODO: Invoke the map api to convert the raw text to snomed ct
+      # Invoke the map api to convert the raw text to snomed ct
+      res = requests.get('http://localhost:8003/map/translate', json={'texts': texts}).json()
+
+      if res['msg']!='ok':
+         new_map_task.status = 'failed'
+         new_map_task.save()
+         return
       
+      # Create map items
+      new_map_items = [MapItem(task_id = new_map_task.id, text=texts[i], mapped_info=res['data'][str(i)]) for i in range(len(texts))]
 
-      # TODO: fine the UIL category in the past map items from database
+      # TODO: find the UIL category in the past map items from database
 
-
-      # Save map items
-      MapItem.objects.insert(map_items)
+      # Save
+      new_map_task.status = 'success'
+      new_map_task.save()
+      MapItem.objects.insert(new_map_items)
 
    def post(self):
 
@@ -40,12 +43,11 @@ class CreateMapTaskResource(Resource):
       try: 
          # load the data
          create_map_task_data = schema.load(data)
-         file = create_map_task_data['file']
-         
-         lines = file.readlines()
-      
+         texts = create_map_task_data['file'].readlines()
+         texts = [text.decode('utf-8').strip() for text in texts]
+
          new_map_task = MapTask(
-            num = len(lines),
+            num = len(texts),
             create_by = ObjectId(create_map_task_data['create_by']),
             # created_by = request.user_team_id
          )
@@ -54,7 +56,7 @@ class CreateMapTaskResource(Resource):
          new_map_task.save()
 
          # Create a new thread to process the mapping task
-         thread = threading.Thread(target=self.map_items, args=(new_map_task, lines))
+         thread = threading.Thread(target=self.map_items, args=(new_map_task, texts))
          thread.start()
 
          response = jsonify(code=200,
@@ -145,3 +147,7 @@ class MapTaskResource(Resource):
          response.status_code = 500
          return response
 
+
+class MapTaskListResource(Resource):
+   def get(self, task_id):
+      pass

@@ -2,12 +2,18 @@ from mongoengine import Document, StringField, IntField, EmbeddedDocument, Embed
 from datetime import datetime
 
 class MappedInfo(EmbeddedDocument):
-    system = StringField()                  # code system: UIL, Snomed CT, ...
+    start_index = IntField()                # start index of the mapped item
+    end_index = IntField()                  # end index of the mapped item
+    sct_code = StringField()                # id of the mapped item
+    sct_term = StringField()                # term of the mapped item
+    type = StringField()                    # semantic tag of the mapped item
+    similarity = FloatField()               # similarity score of the mapping
+    confidence = FloatField()          # confidence score of the mapping
+
     source = StringField()                  # mapper name: Medcat, Self, ...
-    mappedCode = StringField()              # id of the mapped item
-    curatedCode = StringField()             # curated code
-    confidenceScore = FloatField()          # confidence score of the mapping
-    status = IntField()                     # 0: success, 1: failed, 2: reviewed
+    mapped_uil_id = StringField()              # id of the mapped item
+    curated_uil_id = StringField()             # curated code
+    status = StringField()                  # success, failed, reviewed, mapping
 
 class MapItem(Document):
 

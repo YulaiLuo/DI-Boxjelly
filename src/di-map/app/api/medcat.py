@@ -72,7 +72,7 @@ class MedCatTranslate(Resource):
                     "sct_term": entity["pretty_name"],
                     "sct_code": entity["cui"], # SNOMED CT ID
                     "type": entity["types"], # semantic tag
-                    'text': entity['source_value'],
+                    # 'text': entity['source_value'],
                     "start_index": entity["start"],
                     "end_index": entity["end"],
                     "similarity": entity["context_similarity"],
