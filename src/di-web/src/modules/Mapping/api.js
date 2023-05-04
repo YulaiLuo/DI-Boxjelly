@@ -113,11 +113,11 @@ export const mapMultipleText = async (codes) => {
 export const createMappingTask = (file, teamId) => {
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('teamId', teamId);
+  formData.append('create_by', '60c879e72cb0e6f96d6b0f65');
   return http.postFormData(MAP_TASK_URL, formData);
 };
 
 // Get mapping task detail
-export const getMappingTaskDetail = (taskId) => {
-  return http.get(`${MAP_TASK_URL}/${taskId}`);
+export const getMappingTaskDetail = (taskId, page = 0, size = 10) => {
+  return http.get(`${MAP_TASK_URL}/${taskId}`, { page, size });
 };

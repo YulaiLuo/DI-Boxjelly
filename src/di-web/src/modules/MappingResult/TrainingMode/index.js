@@ -8,12 +8,8 @@ export default function TrainingMode({ data }) {
   const [editableKeys, setEditableRowKeys] = useState([]);
   const [dataSource, setDataSource] = useState(() =>
     data.map((v, i) => {
-      let source;
-      if (!v.source) source = '-';
-      else source = v.source.status === 0 ? 'SNOMED CT' : 'UIL';
       return {
         ...v,
-        source,
         id: i,
       };
     })

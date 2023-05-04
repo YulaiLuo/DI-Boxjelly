@@ -15,6 +15,8 @@ export const createTaskMockService = rest.post(
       ctx.json({
         data: {
           id: '123456',
+          num: 1,
+          status: 'pending',
         },
         msg: 'success',
         code: 200,

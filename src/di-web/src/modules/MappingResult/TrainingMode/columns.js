@@ -29,7 +29,7 @@ export const columns = [
     render: (text, record) => (
       <Tooltip
         placement="topLeft"
-        title={<span style={{ color: '#fff' }}>{record.originalDisplay}</span>}
+        title={<span style={{ color: '#fff' }}>{record.originalText}</span>}
       >
         {text}
       </Tooltip>
@@ -59,7 +59,7 @@ export const columns = [
     },
   },
   {
-    title: 'Similarity / confidence score',
+    title: 'Confidence',
     key: 'confidence',
     dataIndex: 'confidence',
     readonly: true,

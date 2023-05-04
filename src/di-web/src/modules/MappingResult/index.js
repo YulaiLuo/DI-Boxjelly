@@ -13,18 +13,35 @@ export default function MappingResult() {
   // TODO: should get mappingRes from backend
   const taskId = state.id;
   const { data, loading } = useRequest(() => getMappingTaskDetail(taskId));
-  const mappedItems = data?.data.mappedItems ?? [];
+  const mappedItems = data?.data.items ?? [];
+
+  // TODO: wait for backend response update
+  const transformedItems = mappedItems.map((item) => {
+    const mappedInfo = item.mapped_info[0];
+    const mappingStatus = mappedInfo ? 1 : 0;
+    const source = mappedInfo ? 'SNOMED_CT' : null;
+    const confidence = mappedInfo ? Number(mappedInfo.confidence * 100).toFixed(2) + '%' : null;
+
+    return {
+      originalText: item.text,
+      mappedText: mappedInfo?.sct_term,
+      curate: null,
+      confidence,
+      source,
+      mappingStatus,
+    };
+  });
 
   const items = [
     {
       key: 'inference',
       label: `Inference`,
-      children: <InferenceMode data={mappedItems} />,
+      children: <InferenceMode data={transformedItems} />,
     },
     {
       key: 'training',
       label: `Training`,
-      children: <TrainingMode data={mappedItems} />,
+      children: <TrainingMode data={transformedItems} />,
     },
   ];
 
