@@ -8,6 +8,8 @@ from bson import ObjectId
 import requests
 from flask import current_app as app
 from collections import Counter
+from datetime import datetime
+import math
 
 class MapTasksResource(Resource):
 
@@ -75,6 +77,7 @@ class MapTasksResource(Resource):
                                  'status': new_map_task.status
                            })
          response.status_code = 200
+         print(response)
          return response
 
       except ValidationError as err:
@@ -105,21 +108,23 @@ class MapTasksResource(Resource):
          page = input['page']
          size = input['size']
          map_tasks = MapTask.objects(deleted=False).all().skip((page-1)*size).limit(size)
-
          # Convert the tasks to a list of dictionaries
-         tasks = [
-            {
-                "id": str(task.id),
-                "status": task.status,
-                "num": task.num,
-                "create_by": str(task.create_by),
-                "create_at": task.create_at,
-                "update_at": task.update_at
-            }
-            for task in map_tasks
-         ]
+         data = {
+               'page': page,
+               'size': size,
+               'page_num': math.ceil(len(map_tasks)/size),
+               'tasks':[{
+                  "id": str(task.id),
+                  "status": task.status,
+                  "num": task.num,
+                  "create_by": str(task.create_by),
+                  "create_at": task.create_at,
+                  "update_at": task.update_at
+               } 
+               for task in map_tasks]
+         }
          
-         response = jsonify(code=200, msg="ok", data={'tasks': tasks})
+         response = jsonify(code=200, msg="ok", data=data)
          response.status_code = 200
          return response
 
@@ -154,7 +159,10 @@ class MapTaskResource(Resource):
          data = {
             'id': str(map_task.id),       # task id
             'status': map_task.status,
-            'items': items
+            'items': items,
+            'page': page,
+            'size': size,
+            'page_num': math.ceil(map_task.num/size)
          }
 
          response = jsonify(code=200, msg="ok", data=data)
@@ -241,3 +249,67 @@ class MapTaskMetaResource(Resource):
          response.status_code = 500
          return response
    
+
+class DownloadMapTaskResource(Resource):
+   pass
+   # def export_map_task_to_csv(self, map_task, map_items):
+   #    total_num = map_task.num
+   #    creation_date = map_task.create_at
+
+   #    # Get the status count of map items
+   #    status_ctr = Counter([item.status for item in map_items])
+   #    success_count = status_ctr['success']
+   #    fail_count = status_ctr['fail']
+   #    reviewed_count = status_ctr['reviewed']
+
+   #    with open(f"map_task_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", mode='w', newline='', encoding='utf-8') as csv_file:
+         # # Meta Data
+         # csv_writer.writerow(['Total Number', 'Success Count', 'Failure Count', 'Review Count', 'Creation Date'])
+         # csv_writer.writerow([total_num, success_count, fail_count, reviewed_count, creation_date])
+
+
+         # Add space between meta data and map items
+         # csv_writer.writerow([])
+
+         # Map Items
+         # csv_writer.writerow(['Text', 'Mapped Info', 'Source', 'Status'])
+         # for item in map_items:
+         #    map_info = item['mapped_info']
+         #    if map_info:
+         #       csv_writer.writerow([item['text'], 
+         #                            item['mapped_info'], 
+                                    
+         #                            'UIL' if 
+         #                            item['status']])
+         #    else:
+         #       csv_writer.writerow([item['text'], 
+         #                            item['mapped_info'], 
+                                    
+         #                            'UIL' if 
+         #                            item['status']])
+
+
+
+
+   # def get(self, task_id):
+   #    try:
+   #       map_task = MapTask.objects(id=task_id, deleted=False).first()
+   #       if not map_task:
+   #          response = jsonify(code=404, err="MAP_TASK_NOT_FOUND")
+   #          response.status_code = 404
+   #          return response
+         
+   #       map_items = MapItem.objects(task_id=task_id).all()
+   #       if not map_items:
+   #          response = jsonify(code=404, err="MAP_ITEM_NOT_FOUND")
+   #          response.status_code = 404
+   #          return response
+         
+   #       # Generate the csv file
+   #       file = self.export_map_task_to_csv(map_task, map_items)
+
+   #    except Exception as err:
+   #       response = jsonify(code=500, err="INTERNAL_SERVER_ERROR")
+   #       response.status_code = 500
+   #       return response
+      

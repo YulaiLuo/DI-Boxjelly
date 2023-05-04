@@ -20,6 +20,7 @@ def init_api(app):
     api.add_resource(MapTasksResource, '/uil/tasks')
     api.add_resource(MapTaskResource, '/uil/tasks/<task_id>')
     api.add_resource(MapTaskMetaResource, '/uil/tasks/<task_id>/meta')
+    api.add_resource(DownloadMapTaskResource, '/uil/tasks/<task_id>/download')
     
     # Initialize the API
     api.init_app(app)
