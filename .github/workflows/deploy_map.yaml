@@ -3,7 +3,7 @@ name: Deploy di-map on DEV server
 on:
   push:
     branches:
-      - feature/github-actions
+      - feature/uil
     # paths:
     #   - 'src/di-map/**'
 
