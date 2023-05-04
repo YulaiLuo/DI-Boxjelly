@@ -225,7 +225,7 @@ class MapTaskMetaResource(Resource):
             'create_at': map_task.create_at,
             'update_at': map_task.update_at,
             'num_success': status_ctr.get('success', 0),
-            'num_failed': status_ctr.get('failed', 0),
+            'num_failed': status_ctr.get('fail', 0),
             'num_reviewed': status_ctr.get('reviewed', 0)
          }
 
