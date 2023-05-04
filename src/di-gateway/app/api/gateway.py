@@ -21,7 +21,7 @@ class GatewayResource(Resource):
     def __init__(self):
         self.service_map = app.config['SERVICE_MAP']
 
-    @jwt_required()
+    # @jwt_required()
     def _gateway(self, path):
 
         # Get user id from token
