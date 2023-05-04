@@ -9,19 +9,19 @@ class MappedInfo(EmbeddedDocument):
     type = StringField()                    # semantic tag of the mapped item
     similarity = FloatField()               # similarity score of the mapping
     confidence = FloatField()          # confidence score of the mapping
-
+    status = StringField()
     source = StringField()                  # mapper name: Medcat, Self, ...
     mapped_uil_id = ObjectIdField()         # mapped code
     curated_uil_id = ObjectIdField()        # curated code
-    status = StringField()                  # success, failed, reviewed, mapping
 
 class MapItem(Document):
 
     task_id = ObjectIdField(required=True)                       # id of the map task
     text = StringField(required=True, index=True)                        # raw text of the clinical text  
     mapped_info = ListField(EmbeddedDocumentField(MappedInfo))   # mapped information
-    createAt = DateTimeField(default=datetime.utcnow)
-    updateAt = DateTimeField(default=datetime.utcnow)
+    status = StringField()                  # success, fail, review
+    create_at = DateTimeField(default=datetime.utcnow)
+    update_at = DateTimeField(default=datetime.utcnow)
 
     def save(self, *args, **kwargs):
         self.updateAt = datetime.utcnow()

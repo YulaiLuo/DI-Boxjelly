@@ -1,6 +1,6 @@
 from flask_restful import Api
-from .map_task import MapTasksResource, MapTaskResource
-from .uil import CreateUILResource, CreateUILGroupResource, GetUILResource, CreateUILCategoryResource
+from .map_task import *
+from .uil import *
 
 def init_api(app):
     """
@@ -19,6 +19,7 @@ def init_api(app):
     api.add_resource(CreateUILCategoryResource, '/uil/<uil_version>/categories')
     api.add_resource(MapTasksResource, '/uil/tasks')
     api.add_resource(MapTaskResource, '/uil/tasks/<task_id>')
-
+    api.add_resource(MapTaskMetaResource, '/uil/tasks/<task_id>/meta')
+    
     # Initialize the API
     api.init_app(app)
