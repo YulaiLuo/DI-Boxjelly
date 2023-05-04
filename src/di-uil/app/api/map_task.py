@@ -89,7 +89,11 @@ class MapTaskResource(Resource):
          
          map_task_data = schema.load(request.args)
 
-         map_task = MapTask.objects(id=task_id).first()
+         map_task = MapTask.objects(id=task_id, deleted=False).first()
+         if not map_task:
+            response = jsonify(code=404, err="MAP_TASK_NOT_FOUND")
+            response.status_code = 404
+            return response
 
          page = map_task_data['page']  # min_value 1
          size = map_task_data['size']  # min_value 10
@@ -109,6 +113,7 @@ class MapTaskResource(Resource):
          return response
 
       except Exception as err:
+         print(err)
          response = jsonify(code=500, err="INTERNAL_SERVER_ERROR")
          response.status_code = 500
          return response
