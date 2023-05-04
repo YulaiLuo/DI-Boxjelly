@@ -24,7 +24,9 @@ class Config:
     # Microservice Map
     SERVICE_MAP = {
         "auth": "http://di-auth:8001/auth",
-        "map": "http://di-map:8003/map"
+        "common": "http://di-common:8002/common",
+        "map": "http://di-map:8003/map",
+        "uil": "http://di-ui:8004/uil"
     }
     # SERVICE_MAP = {
     #     "auth": "http://localhost:8001/auth",

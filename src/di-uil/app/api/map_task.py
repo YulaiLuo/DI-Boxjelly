@@ -13,7 +13,8 @@ class CreateMapTaskResource(Resource):
    def map_items(self, new_map_task, texts):
 
       # Invoke the map api to convert the raw text to snomed ct
-      res = requests.get('http://localhost:8003/map/translate', json={'texts': texts}).json()
+      # res = requests.get('http://localhost:8003/map/translate', json={'texts': texts}).json()
+      res = requests.get('http://di-map:8003/map/translate', json={'texts': texts}).json()
 
       if res['msg']!='ok':
          new_map_task.status = 'failed'
@@ -23,7 +24,7 @@ class CreateMapTaskResource(Resource):
       # Create map items
       new_map_items = [MapItem(task_id = new_map_task.id, text=texts[i], mapped_info=res['data'][str(i)]) for i in range(len(texts))]
 
-      # TODO: find the UIL category in the past map items from database
+      # TODO: find the UIL category in the past map items from database  
 
       # Save
       new_map_task.status = 'success'
