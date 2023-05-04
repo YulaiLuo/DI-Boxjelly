@@ -13,7 +13,8 @@ class CreateMapTaskResource(Resource):
    def map_items(self, new_map_task, texts):
 
       # Invoke the map api to convert the raw text to snomed ct
-      res = requests.get('http://localhost:8003/map/translate', json={'texts': texts}).json()
+      # res = requests.get('http://localhost:8003/map/translate', json={'texts': texts}).json()
+      res = requests.get('http://di-map:8003/map/translate', json={'texts': texts}).json()
 
       if res['msg']!='ok':
          new_map_task.status = 'failed'
