@@ -24,7 +24,7 @@ class CreateMapTaskResource(Resource):
       # Create map items
       new_map_items = [MapItem(task_id = new_map_task.id, text=texts[i], mapped_info=res['data'][str(i)]) for i in range(len(texts))]
 
-      # TODO: find the UIL category in the past map items from database
+      # TODO: find the UIL category in the past map items from database  
 
       # Save
       new_map_task.status = 'success'
