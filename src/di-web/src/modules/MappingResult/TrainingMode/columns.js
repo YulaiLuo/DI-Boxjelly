@@ -26,14 +26,6 @@ export const columns = [
       showTitle: true,
     },
     readonly: true,
-    render: (text, record) => (
-      <Tooltip
-        placement="topLeft"
-        title={<span style={{ color: '#fff' }}>{record.originalText}</span>}
-      >
-        {text}
-      </Tooltip>
-    ),
   },
   {
     title: 'Output of the mapping tool',
@@ -44,19 +36,6 @@ export const columns = [
       showTitle: true,
     },
     readonly: true,
-    render: (text, record) => {
-      if (record.mappingStatus === 0) return '-';
-      else {
-        return (
-          <Tooltip
-            placement="topLeft"
-            title={<span style={{ color: '#fff' }}>{record.mappedText}</span>}
-          >
-            {text}
-          </Tooltip>
-        );
-      }
-    },
   },
   {
     title: 'Confidence',

@@ -36,7 +36,7 @@ export default function MappingResult() {
     {
       key: 'inference',
       label: `Inference`,
-      children: <InferenceMode data={transformedItems} />,
+      children: <InferenceMode data={transformedItems} taskId={taskId}/>,
     },
     {
       key: 'training',
