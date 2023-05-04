@@ -11,8 +11,8 @@ class MappedInfo(EmbeddedDocument):
     confidence = FloatField()          # confidence score of the mapping
 
     source = StringField()                  # mapper name: Medcat, Self, ...
-    mapped_uil_id = StringField()              # id of the mapped item
-    curated_uil_id = StringField()             # curated code
+    mapped_uil_id = ObjectIdField()         # mapped code
+    curated_uil_id = ObjectIdField()        # curated code
     status = StringField()                  # success, failed, reviewed, mapping
 
 class MapItem(Document):

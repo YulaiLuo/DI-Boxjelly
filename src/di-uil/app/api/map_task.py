@@ -149,5 +149,5 @@ class MapTaskResource(Resource):
 
 
 class MapTaskListResource(Resource):
-   def get(self, task_id):
-      pass
+   def get(self):
+      return 
