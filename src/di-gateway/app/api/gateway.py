@@ -54,7 +54,7 @@ class GatewayResource(Resource):
             data=request.get_data(),
             params=request.args,
             allow_redirects=False,
-            timeout=5)
+            timeout=20)
         
         return Response(response=response.content,
                 status=response.status_code,
