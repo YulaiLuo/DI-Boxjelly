@@ -11,9 +11,9 @@ class MappedInfo(EmbeddedDocument):
 
 class MapItem(Document):
 
-    taskId = ObjectIdField(required=True)                       # id of the map task
-    rawText = StringField(required=True)                        # raw text of the clinical text  
-    mappedInfo = ListField(EmbeddedDocumentField(MappedInfo))   # mapped information
+    task_id = ObjectIdField(required=True)                       # id of the map task
+    text = StringField(required=True, index=True)                        # raw text of the clinical text  
+    mapped_info = ListField(EmbeddedDocumentField(MappedInfo))   # mapped information
     createAt = DateTimeField(default=datetime.utcnow)
     updateAt = DateTimeField(default=datetime.utcnow)
 

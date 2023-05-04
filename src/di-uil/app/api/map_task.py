@@ -1,10 +1,10 @@
 from flask import request, jsonify
 from flask_restful import Resource
-from ..models.map_task import MapTask
-from ..models.map_item import MapItem
-from ..schemas import CreateMapTaskInputSchema, DeleteMapTaskInputSchema
+from ..models import MapTask, MapItem
+from ..schemas import CreateMapTaskInputSchema, DeleteMapTaskInputSchema, GetMapTaskInputSchema
 import threading
 from marshmallow import ValidationError
+from bson import ObjectId
 
 class CreateMapTaskResource(Resource):
 
@@ -13,8 +13,8 @@ class CreateMapTaskResource(Resource):
       map_items = []
       for line in lines:
          new_map_item = MapItem(
-            taskId = new_map_task.id,
-            rawText = line.decode('utf-8').strip()
+            task_id = new_map_task.id,
+            text = line.decode('utf-8').strip()
          )
          map_items.append(new_map_item)
 
@@ -45,8 +45,8 @@ class CreateMapTaskResource(Resource):
          lines = file.readlines()
       
          new_map_task = MapTask(
-            item_num = len(lines),
-            create_by = 'kunxi'
+            num = len(lines),
+            create_by = ObjectId(create_map_task_data['create_by']),
             # created_by = request.user_team_id
          )
 
@@ -57,7 +57,13 @@ class CreateMapTaskResource(Resource):
          thread = threading.Thread(target=self.map_items, args=(new_map_task, lines))
          thread.start()
 
-         response = jsonify(code=200,msg="ok", data={'id': str(new_map_task.id)})
+         response = jsonify(code=200,
+                           msg="ok",
+                           data={
+                                 'id': str(new_map_task.id),
+                                 'status': new_map_task.status,
+                                 'num': new_map_task.num
+                           })
          response.status_code = 200
          return response
 
@@ -68,17 +74,48 @@ class CreateMapTaskResource(Resource):
          return response
 
       except Exception as err:
+         print(err)
          response = jsonify(code=500, err="INTERNAL_SERVER_ERROR")
          response.status_code = 500
          return response
 
-class MapTaskDetailResource(Resource):
-   def get(self):
-      # TODO: Get detail of map task
-      pass
 
-class DeleteMapTaskResource(Resource):
+class MapTaskResource(Resource):
 
+   # Get map task detail by id
+   def get(self, task_id):
+      schema = GetMapTaskInputSchema()
+      try:
+         
+         map_task_data = schema.load(request.form)
+
+         map_task = MapTask.objects(id=task_id).first()
+
+         print(map_task_data,schema)
+         page = map_task_data['page']  # min_value 1
+         size = map_task_data['size']  # min_value 10
+         map_items = MapItem.objects(task_id=task_id).skip((page-1)*size).limit(size)
+         
+         items = [{'text': map_item['text'], 'mapped_info': map_item['mapped_info']} for map_item in (mi.to_mongo().to_dict() for mi in map_items)]
+
+         data = {
+            'id': str(map_task.id),       # task id
+            'num': map_task.num,          # total item number
+            'status': map_task.status,
+            'items': items
+         }
+
+         response = jsonify(code=200, msg="ok", data=data)
+         response.status_code=200
+         return response
+
+      except Exception as err:
+         print(err)
+         response = jsonify(code=500, err="INTERNAL_SERVER_ERROR")
+         response.status_code = 500
+         return response
+
+   # soft delete the map task
    def delete(self, task_id):
 
       schema = DeleteMapTaskInputSchema()
@@ -88,7 +125,7 @@ class DeleteMapTaskResource(Resource):
          # TODO: Check if the task is deleted
 
          # Change the deleted field as deleted
-         MapTask.objects(id=task_id).update_one(deleted=1)
+         MapTask.objects(id=task_id).update_one(deleted=True)
 
          response = jsonify(code=200, msg="ok")
          response.status_code = 200

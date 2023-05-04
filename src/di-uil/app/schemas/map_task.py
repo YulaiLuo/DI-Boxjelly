@@ -8,6 +8,7 @@ import os
 class CreateMapTaskInputSchema(Schema):
     # user_team_id = fields.String(required=True)
     file = FileField(required=True)
+    create_by = fields.String(required=True)
 
     @validates('file')
     def validate_file(self, file):
@@ -16,3 +17,8 @@ class CreateMapTaskInputSchema(Schema):
         
 class DeleteMapTaskInputSchema(Schema):
     id = fields.String(required=True)
+
+
+class GetMapTaskInputSchema(Schema):
+    page = fields.Integer(required=False,default=1, min_value=1)
+    size = fields.Integer(required=False,default=30, min_value=10)

@@ -1,16 +1,15 @@
 from datetime import datetime
 
-
-from mongoengine import Document, StringField, IntField, DateTimeField, ObjectIdField
+from mongoengine import Document, StringField, IntField, DateTimeField, ObjectIdField, BooleanField
 
 class MapTask(Document):
     
-    status = IntField(default=0)                    # 0: pending, 1: success, 2: rejected, 3: failed
-    item_num = IntField()                           # number of items to map in the task
-    create_by = StringField()                     # user_team_id
+    status = StringField(default='pending')                    # 0: pending, 1: success, 2: rejected, 3: failed
+    num = IntField(required=True, min_value=1)                           # number of items to map in the task
+    create_by = ObjectIdField(required=True)
     create_at = DateTimeField(default=datetime.utcnow)
     update_at = DateTimeField(default=datetime.utcnow)
-    deleted = IntField(default=0)                   # 0: not deleted, 1: deleted
+    deleted = BooleanField(default=False)
     
     def save(self, *args, **kwargs):
         self.update_at = datetime.utcnow()

@@ -3,11 +3,7 @@ from flask_restful import Resource
 import requests
 from marshmallow import Schema, fields, ValidationError, validate
 
-class MappedItems(Resource):
-   def post(self):
-    # TODO: Get mapped items of a task
 
-    pass
 
 class CurateMappedUILCategory(Resource):
    def get(self):
