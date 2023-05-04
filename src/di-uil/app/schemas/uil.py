@@ -23,4 +23,5 @@ class CreateUILInputSchema(Schema):
 
 class CreateUILGroupInputSchema(Schema):
     name = fields.String(required=True)                            # version number
-    create_by = fields.String(required=True)                            # version number
+    create_by = fields.String(required=True) 
+    

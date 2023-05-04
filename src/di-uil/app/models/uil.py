@@ -2,20 +2,19 @@ from mongoengine import Document, StringField, IntField, EmbeddedDocument, Embed
 from datetime import datetime
 
 class SnomedCT(EmbeddedDocument):
-    sct_code = StringField(required=True)
-    sct_term = StringField(required=True)
+    sct_code = StringField(required=False)
+    sct_term = StringField(required=False)
 
 class UILGroup(Document):
     name = StringField(required=True)                               # group name
-    uil_version = StringField(required=True)                           # id of the UIL version
+    uil_id = ObjectIdField(required=True)                              # id of the UIL list
     create_at = DateTimeField(default=datetime.utcnow)              # create time
     update_at = DateTimeField(default=datetime.utcnow)              # update time
     create_by = ObjectIdField(required=False)                       # creator id
-    deleted = IntField(default=0)
 
     meta = {
         'collection': 'uil_group', # The default collection name is u_i_l_group, so change it to uil_group
-        'unique_with': ['name', 'uil_version']
+        # 'unique_with': ['name', 'uil_id']
     }
 
     def save(self, *args, **kwargs):
@@ -24,9 +23,9 @@ class UILGroup(Document):
 
 class UILCategory(Document):
     indication = StringField(unique=True, required=True)                              # the indication name in this version
-    user_alias = StringField(required=False)                        # user alias of the category in this version
-    tags = ListField(StringField(), required=False)                 # tags of the category in this version
-    snomed_ct = EmbeddedDocumentField(SnomedCT, required=False)     # snomed ct info of the category in this version
+    user_alias = StringField(required=False, default='')                        # user alias of the category in this version
+    tags = ListField(StringField(), required=False, default=[])                 # tags of the category in this version
+    snomed_ct = EmbeddedDocumentField(SnomedCT, required=False, default=SnomedCT())     # snomed ct info of the category in this version
     group_id = ObjectIdField(required=False)                            # id of the UIL group
     uil_id = ObjectIdField(required=True)                              # id of the UIL list
     create_at = DateTimeField(default=datetime.utcnow)              # create time
