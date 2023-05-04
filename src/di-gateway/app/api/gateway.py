@@ -25,7 +25,7 @@ class GatewayResource(Resource):
     def _gateway(self, path):
 
         # Get user id from token
-        user_id = get_jwt_identity()  
+        # user_id = get_jwt_identity()  
 
         # Get service name from path
         service = path.split("/")[0]
@@ -40,9 +40,10 @@ class GatewayResource(Resource):
         target_url = self.service_map[service] + "/" + "/".join(path.split("/")[1:])
 
         # Create headers with user id from token
+        content_type = request.content_type
         headers = {
-            "Content-Type": "application/json",
-            "DI-User-Id": str(user_id),
+            "Content-Type": content_type
+            # "DI-User-Id": str(user_id),
         }
 
         # Forward request to target service

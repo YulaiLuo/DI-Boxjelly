@@ -3,8 +3,6 @@ from flask import current_app as app
 from .helper import FileField, allowed_file
 import os
 
-
-
 class CreateMapTaskInputSchema(Schema):
     # user_team_id = fields.String(required=True)
     file = FileField(required=True)
