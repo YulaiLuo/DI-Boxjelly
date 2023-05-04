@@ -250,7 +250,10 @@ class MapTaskMetaResource(Resource):
 
 class DownloadMapTaskResource(Resource):
 
-   def export_map_task_to_csv(self, map_task, map_items, csv_writer):
+   def export_map_task_to_csv(self, map_task, map_items):
+
+      csv_data = io.StringIO()
+      csv_writer = csv.writer(csv_data, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
 
       # Get the meta data of map task
       total_num = map_task.num
@@ -266,7 +269,6 @@ class DownloadMapTaskResource(Resource):
          # Meta Data
          csv_writer.writerow(['Total Number', 'Success Count', 'Failure Count', 'Review Count', 'Creation Date'])
          csv_writer.writerow([total_num, success_count, fail_count, reviewed_count, creation_date])
-
 
          # Add space between meta data and map items
          csv_writer.writerow([])
@@ -290,6 +292,8 @@ class DownloadMapTaskResource(Resource):
                                     '-',                                    
                                     item['status']])
 
+      return csv_data.getvalue()
+
    def get(self, task_id):
       try:
          map_task = MapTask.objects(id=task_id, deleted=False).first()
@@ -304,18 +308,12 @@ class DownloadMapTaskResource(Resource):
             response.status_code = 404
             return response
 
-         csv_data = io.StringIO()
 
-         csv_writer = csv.writer(csv_data, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-         self.export_map_task_to_csv(map_task, map_items, csv_writer)
+         csv_data = self.export_map_task_to_csv(map_task, map_items)
 
-         csv_data.seek(0)
-
-         response = Response(csv_data.getvalue(), content_type='text/csv')
+         response = Response(csv_data, content_type='text/csv')
          response.headers.set('Content-Disposition', 'attachment', filename=f"map_task_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv")
          return response
-         
-         
 
       except Exception as err:
          print(err)
