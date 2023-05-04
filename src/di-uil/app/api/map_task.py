@@ -7,7 +7,7 @@ from marshmallow import ValidationError
 from bson import ObjectId
 import requests
 
-class CreateMapTaskResource(Resource):
+class MapTasksResource(Resource):
 
    # Thread function to process the mapping task
    def map_items(self, new_map_task, texts):
@@ -74,6 +74,40 @@ class CreateMapTaskResource(Resource):
          print(err)
          response = jsonify(code=400, err="INVALID_INPUT")
          response.status_code = 400
+         return response
+
+      except Exception as err:
+         print(err)
+         response = jsonify(code=500, err="INTERNAL_SERVER_ERROR")
+         response.status_code = 500
+         return response
+   
+
+   def get(self):
+      """
+      Generate all the available map tasks
+
+      Returns:
+         Response: tasks list
+      """
+      try:
+         map_tasks = MapTask.objects(deleted=False).all()
+
+         # Convert the tasks to a list of dictionaries
+         tasks = [
+            {
+                "id": str(task.id),
+                "status": task.status,
+                "num": task.num,
+                "create_by": str(task.create_by),
+                "create_at": task.create_at,
+                "update_at": task.update_at
+            }
+            for task in map_tasks
+         ]
+         
+         response = jsonify(code=200, msg="ok", data={'tasks': tasks})
+         response.status_code = 200
          return response
 
       except Exception as err:
@@ -151,4 +185,5 @@ class MapTaskResource(Resource):
 
 class MapTaskListResource(Resource):
    def get(self):
+
       return 
