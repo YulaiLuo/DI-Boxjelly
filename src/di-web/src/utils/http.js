@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { BASE_URL } from './constant/url';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:8004',
+  baseURL: 'http://localhost:8000',
   timeout: 8000,
   withCredentials: true,
 });
