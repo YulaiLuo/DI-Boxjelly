@@ -33,7 +33,7 @@ class MedCatTranslate(Resource):
             # Do further processing to UIL and return the results
             
             # Return the response with the appropriate status code
-            response = jsonify({'code': 200, 'res': res})
+            response = jsonify({'code': 200, 'msg': 'ok','data': res})
             response.status_code = 200
 
             return response
