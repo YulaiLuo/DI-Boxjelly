@@ -153,7 +153,6 @@ class MapTaskResource(Resource):
 
          data = {
             'id': str(map_task.id),       # task id
-            'num': map_task.num,          # total item number
             'status': map_task.status,
             'items': items
          }
