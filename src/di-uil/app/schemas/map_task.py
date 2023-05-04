@@ -16,7 +16,10 @@ class CreateMapTaskInputSchema(Schema):
 class DeleteMapTaskInputSchema(Schema):
     id = fields.String(required=True)
 
-
 class GetMapTaskInputSchema(Schema):
     page = fields.Integer(required=False,default=1, min_value=1)
-    size = fields.Integer(required=False,default=30, min_value=10)
+    size = fields.Integer(required=False,default=20, min_value=10)
+
+class GetAllMapTaskInputSchema(Schema):
+    page = fields.Integer(required=False,default=1, min_value=1)
+    size = fields.Integer(required=False,default=20, min_value=10)
