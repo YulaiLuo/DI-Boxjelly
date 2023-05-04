@@ -7,6 +7,7 @@ from marshmallow import ValidationError
 from bson import ObjectId
 import requests
 from flask import current_app as app
+from collections import Counter
 
 class MapTasksResource(Resource):
 
@@ -195,7 +196,49 @@ class MapTaskResource(Resource):
          return response
 
 
-class MapTaskListResource(Resource):
-   def get(self):
+class MapTaskMetaResource(Resource):
+   def get(self, task_id):
+      
+      try:
+         
+         # map_task = MapTask.objects(id=task_id, deleted=False).first()
+         # if not map_task:
+         #    response = jsonify(code=404, err="MAP_TASK_NOT_FOUND")
+         #    response.status_code = 404
+         #    return response
+         
+         map_task = MapTask.objects(id=task_id, deleted=False).first()
+         map_items = MapItem.objects(task_id=task_id).all()
+         if not map_items:
+            response = jsonify(code=404, err="MAP_ITEM_NOT_FOUND")
+            response.status_code = 404
+            return response
+         
+         # count the status of map items
+         status_ctr = Counter([item.status for item in map_items])
 
-      return 
+         # Get the task meta
+         data = {
+            'id': task_id,       # task id
+            'num': len(map_items),          # total item number
+            'status': map_task.status,
+            'create_at': map_task.create_at,
+            'update_at': map_task.update_at,
+            'num_success': status_ctr.get('success', 0),
+            'num_failed': status_ctr.get('failed', 0),
+            'num_reviewed': status_ctr.get('reviewed', 0)
+         }
+
+
+         response = jsonify(code=200, msg="ok", data=data)
+         response.status_code=200
+         return response
+         
+
+         
+      except Exception as err:
+         print(err)
+         response = jsonify(code=500, err="INTERNAL_SERVER_ERROR")
+         response.status_code = 500
+         return response
+   
