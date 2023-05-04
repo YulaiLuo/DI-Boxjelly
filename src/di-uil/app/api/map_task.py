@@ -87,11 +87,10 @@ class MapTaskResource(Resource):
       schema = GetMapTaskInputSchema()
       try:
          
-         map_task_data = schema.load(request.form)
+         map_task_data = schema.load(request.args)
 
          map_task = MapTask.objects(id=task_id).first()
 
-         print(map_task_data,schema)
          page = map_task_data['page']  # min_value 1
          size = map_task_data['size']  # min_value 10
          map_items = MapItem.objects(task_id=task_id).skip((page-1)*size).limit(size)
@@ -110,7 +109,6 @@ class MapTaskResource(Resource):
          return response
 
       except Exception as err:
-         print(err)
          response = jsonify(code=500, err="INTERNAL_SERVER_ERROR")
          response.status_code = 500
          return response
