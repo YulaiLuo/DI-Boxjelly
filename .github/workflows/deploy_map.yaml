@@ -3,9 +3,9 @@ name: Deploy di-map on DEV server
 on:
   push:
     branches:
-      - feature/uil
-    # paths:
-    #   - 'src/di-map/**'
+      - develop
+    paths:
+      - 'src/di-map/**'
 
 jobs:
   DEV_build_and_deploy:
