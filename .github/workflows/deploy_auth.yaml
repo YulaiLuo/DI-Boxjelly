@@ -3,9 +3,9 @@ name: Deploy di-auth on DEV server
 on:
   push:
     branches:
-      - feature/github-actions
-    # paths:
-    #   - 'src/di-auth/**'
+      - develop
+    paths:
+      - 'src/di-auth/**'
 
 jobs:
   DEV_build_and_deploy:

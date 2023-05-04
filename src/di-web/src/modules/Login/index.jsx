@@ -15,9 +15,10 @@ export default function Login() {
     onSuccess: (res) => {
       setLoggedIn(true);
       msgApi.success('Login Successfully');
+      localStorage.setItem('loggedIn', 'true');
       navigate('/mapping', { replace: true });
-    }
-  })
+    },
+  });
 
   return (
     <div class="h-screen flex justify-center items-center">
