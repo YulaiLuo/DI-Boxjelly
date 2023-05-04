@@ -11,27 +11,39 @@ class MedCatTranslate(Resource):
         self.cat = cat
 
     def get(self):
-        data = TranslateSchema().load(request.get_json())
-        texts = data['texts']
-        
-        # Create a generator to yield each text and its index
-        def data_iterator(texts):
-            for i, text in enumerate(texts):
-                yield (i, str(text))
-                
-        # Process the texts in parallel using MedCAT's multiprocessing function
-        batch_size_chars = 500 # Set the batch size in characters
-        results = self.cat.multiprocessing(data_iterator(texts), batch_size_chars=batch_size_chars, nproc=2)
-        
-        # Extract the entities from the results and do further processing
-        res = []
-        for result in results.values():
-            processed_entities = self.process_entities({'entities': result['entities']})
-            res.append(processed_entities)
+        try:
+            data = TranslateSchema().load(request.get_json())
+            texts = data['texts']
 
-        # Do further processing to UIL and return the results
-        return res
-    
+            # Create a generator to yield each text and its index
+            def data_iterator(texts):
+                for i, text in enumerate(texts):
+                    yield (i, str(text))
+
+            # Process the texts in parallel using MedCAT's multiprocessing function
+            batch_size_chars = 500 # Set the batch size in characters
+            results = self.cat.multiprocessing(data_iterator(texts), batch_size_chars=batch_size_chars, nproc=2)
+
+            # Extract the entities from the results and do further processing
+            res = {}
+            for i, result in results.items():
+                processed_entities = self.process_entities({'entities': result['entities']})
+                res[i] = processed_entities
+
+            # Do further processing to UIL and return the results
+            
+            # Return the response with the appropriate status code
+            response = jsonify({'code': 200, 'res': res})
+            response.status_code = 200
+
+            return response
+            
+        except Exception as e:
+            response = jsonify({'code': 400, 'err': 'INVALID_INPUT'})
+            response.status_code = 400
+
+            return response
+            
     def process_entities(self, entities):
         entities_dict = entities['entities']
         # Create a dictionary to hold the sorted entities
