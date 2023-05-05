@@ -3,7 +3,7 @@
  */
 import { rest } from 'msw';
 import { BASE_URL, MAP_TASK_URL } from '../../utils/constant/url';
-import { mapTaskDetail } from '../data/taskData';
+import { mapTaskDetail, allMappingTasks } from '../data/taskData';
 
 /**
  * Create a new task
@@ -41,6 +41,27 @@ export const getTaskDetailMockService = rest.get(
   }
 );
 
-const uilMockService = [createTaskMockService, getTaskDetailMockService];
+/**
+ * Get all mapping tasks info with pagination
+ */
+export const getAllMappingTasks = rest.get(`${BASE_URL}${MAP_TASK_URL}`, async (req, res, ctx) => {
+  const page = req.url.searchParams.get('page');
+  const size = req.url.searchParams.get('size');
+
+  return res(
+    ctx.json({
+      data: {
+        page: Number(page),
+        size: Number(size),
+        page_num: 6,
+        tasks: allMappingTasks,
+      },
+      msg: 'success',
+      code: 200,
+    })
+  );
+});
+
+const uilMockService = [createTaskMockService, getTaskDetailMockService, getAllMappingTasks];
 
 export default uilMockService;

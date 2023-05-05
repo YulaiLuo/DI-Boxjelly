@@ -8,10 +8,10 @@ import reportWebVitals from './reportWebVitals';
 
 // Mock HTTP request in development mode
 // If you don't want to use the mock data, comment out the following four lines
-// if (process.env.NODE_ENV === 'development') {
-//   const { worker } = require('./mocks/browser');
-//   worker.start();
-// }
+if (process.env.NODE_ENV === 'development') {
+  const { worker } = require('./mocks/browser');
+  worker.start();
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

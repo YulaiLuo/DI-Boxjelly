@@ -1,3 +1,4 @@
+// mapped task detail
 export const mapTaskDetail = {
   id: '645365595b99fdac1cb94d30',
   items: [
@@ -174,3 +175,71 @@ export const mapTaskDetail = {
   num: 175,
   status: 'success',
 };
+
+// all tasks
+export const allMappingTasks = [
+  {
+    id: '47',
+    status: 'pending',
+    num: 8,
+    create_by: 'Vlada',
+    create_at: '2003-12-15 15:17:17',
+    update_at: '',
+  },
+  {
+    id: '52',
+    status: 'success',
+    num: 25,
+    create_by: 'Henry',
+    create_at: '1981-04-26 06:12:29',
+    update_at: '2007-09-20 23:51:33',
+  },
+  {
+    id: '35',
+    status: 'fail',
+    num: 58,
+    create_by: 'Susan',
+    create_at: '1978-03-07 15:46:58',
+    update_at: '',
+  },
+  {
+    id: '25',
+    status: 'success',
+    num: 10,
+    create_by: 'Susan',
+    create_at: '2015-12-17 00:21:47',
+    update_at: '1995-01-16 13:10:39',
+  },
+  {
+    id: '26',
+    status: 'success',
+    num: 10,
+    create_by: 'Susan',
+    create_at: '2015-12-17 00:21:47',
+    update_at: '1995-01-16 13:10:39',
+  },
+  {
+    id: '27',
+    status: 'success',
+    num: 10,
+    create_by: 'Susan',
+    create_at: '2015-12-17 00:21:47',
+    update_at: '1995-01-16 13:10:39',
+  },
+  {
+    id: '28',
+    status: 'success',
+    num: 10,
+    create_by: 'Susan',
+    create_at: '2015-12-17 00:21:47',
+    update_at: '1995-01-16 13:10:39',
+  },
+  {
+    id: '29',
+    status: 'success',
+    num: 10,
+    create_by: 'Susan',
+    create_at: '2015-12-17 00:21:47',
+    update_at: '1995-01-16 13:10:39',
+  },
+];
