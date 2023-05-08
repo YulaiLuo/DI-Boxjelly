@@ -8,6 +8,7 @@ from flask import current_app as app
 from collections import Counter
 from datetime import datetime
 import math, csv, requests, threading, io
+from io import StringIO
 
 class MapTasksResource(Resource):
 
@@ -51,8 +52,25 @@ class MapTasksResource(Resource):
       try: 
          # load the data
          create_map_task_data = schema.load(data)
-         texts = create_map_task_data['file'].readlines()
-         texts = [text.decode('utf-8').strip() for text in texts]
+         file = create_map_task_data['file']
+         file_ext = file.filename.split('.')[-1].lower()
+
+         texts = []
+
+         if file_ext == 'txt':
+            texts = file.readlines()
+            texts = [text.decode('utf-8').strip() for text in texts]
+
+         elif file_ext == 'csv':
+            file_content = file.read().decode('utf-8')
+            text_stream = StringIO(file_content)
+            reader = csv.reader(text_stream, delimiter=',', quotechar='"')
+            # next(reader)  # Skip the header (if there is one)
+            for row in reader:
+               # Assuming the text data is in the first column of the CSV
+               texts.append(row[0])
+         else:
+            print("Invalid file format. Please upload a TXT or CSV file.")
 
          new_map_task = MapTask(
             num = len(texts),
