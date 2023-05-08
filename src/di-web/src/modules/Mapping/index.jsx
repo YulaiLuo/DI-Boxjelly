@@ -22,7 +22,7 @@ export default function Mapping() {
   const { loading: singleMapLoading, run: handleMapSingleText } = useRequest(mapSingleText, {
     manual: true,
     onSuccess: (res) => {
-      setSingleMappingResult(res.display);
+      setSingleMappingResult(res.data['0'][0].sct_term);
     },
   });
 
