@@ -105,12 +105,13 @@ class MapTasksResource(Resource):
 
          page = input['page']
          size = input['size']
+         all_map_tasks = MapTask.objects(deleted=False).all()
          map_tasks = MapTask.objects(deleted=False).all().skip((page-1)*size).limit(size)
          # Convert the tasks to a list of dictionaries
          data = {
                'page': page,
                'size': size,
-               'page_num': math.ceil(len(map_tasks)/size),
+               'page_num': math.ceil(len(all_map_tasks)/size),
                'tasks':[{
                   "id": str(task.id),
                   "status": task.status,
@@ -121,6 +122,7 @@ class MapTasksResource(Resource):
                } 
                for task in map_tasks]
          }
+         print(data['tasks'][0]['create_at'])
          
          response = jsonify(code=200, msg="ok", data=data)
          response.status_code = 200
@@ -265,34 +267,34 @@ class DownloadMapTaskResource(Resource):
       fail_count = status_ctr['fail']
       reviewed_count = status_ctr['reviewed']
 
-      with open(f"map_task_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", mode='w', newline='', encoding='utf-8') as csv_file:
-         # Meta Data
-         csv_writer.writerow(['Total Number', 'Success Count', 'Failure Count', 'Review Count', 'Creation Date'])
-         csv_writer.writerow([total_num, success_count, fail_count, reviewed_count, creation_date])
+      # Meta Data
+      csv_writer.writerow(['Total Number', 'Success Count', 'Failure Count', 'Review Count', 'Creation Date'])
+      csv_writer.writerow([total_num, success_count, fail_count, reviewed_count, creation_date])
 
-         # Add space between meta data and map items
-         csv_writer.writerow([])
+      # Add space between meta data and map items
+      csv_writer.writerow([])
 
-         # Map Items
-         csv_writer.writerow(['Text', 'Output', 'Confidence', 'Source', 'Curated UIL', 'Status'])
-         for item in map_items:
-            map_info = item['mapped_info']
-            if map_info:
-               csv_writer.writerow([item['text'], 
-                                    map_info[0]['sct_term'],
-                                    map_info[0]['confidence'],
-                                    'SNOMED_CT',
-                                    '-',
-                                    item['status']])
-            else:
-               csv_writer.writerow([item['text'], 
-                                    '-',
-                                    '-',
-                                    '-',
-                                    '-',                                    
-                                    item['status']])
+      # Map Items
+      csv_writer.writerow(['Text', 'Output', 'Confidence', 'Source', 'Curated UIL', 'Status'])
+      for item in map_items:
+         map_info = item['mapped_info']
+         if map_info:
+            csv_writer.writerow([item['text'], 
+                                 map_info[0]['sct_term'],
+                                 map_info[0]['confidence'],
+                                 'SNOMED_CT',
+                                 '-',
+                                 item['status']])
+         else:
+            csv_writer.writerow([item['text'], 
+                                 '-',
+                                 '-',
+                                 '-',
+                                 '-',                                    
+                                 item['status']])
 
-      return csv_data.getvalue()
+      csv_data.seek(0)
+      return csv_data.getvalue().encode('utf-8')
 
    def get(self, task_id):
       try:
@@ -311,8 +313,9 @@ class DownloadMapTaskResource(Resource):
 
          csv_data = self.export_map_task_to_csv(map_task, map_items)
 
-         response = Response(csv_data, content_type='text/csv')
+         response = Response(csv_data, content_type='text/csv, utf-8')
          response.headers.set('Content-Disposition', 'attachment', filename=f"map_task_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv")
+         print(response.data)
          return response
 
       except Exception as err:

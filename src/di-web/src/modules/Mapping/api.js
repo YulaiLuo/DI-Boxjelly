@@ -122,6 +122,21 @@ export const getMappingTaskDetail = (taskId, page = 1, size = 10) => {
   return http.get(`${MAP_TASK_URL}/${taskId}`, { page, size });
 };
 
-export const exportFile = (taskId) => {
-  return http.get(`${MAP_TASK_URL}/${taskId}/download`)
+export const exportFile = async(taskId) => {
+  try {
+    const response = await http.get(`${MAP_TASK_URL}/${taskId}/download`, {}, {
+      responseType: 'blob',
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `map_task_export_${new Date().toISOString().slice(0, 10)}_${new Date().toLocaleTimeString('it-IT').replace(/:/g, '')}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    link.parentNode.removeChild(link);
+  } catch (error) {
+    console.error('Error downloading CSV:', error);
+  }
+
 }
