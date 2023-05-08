@@ -38,23 +38,16 @@ export const columns = [
     readonly: true,
   },
   {
-    title: 'Status',
-    dataIndex: 'mappingStatus',
-    key: 'mappingStatus',
-    ellipsis: true,
+    title: 'Confidence',
+    key: 'confidence',
+    dataIndex: 'confidence',
     readonly: true,
-    valueType: 'select',
-    valueEnum: {
-      0: { text: 'Fail', status: 'Error' },
-      1: {
-        text: 'Success',
-        status: 'Success',
-      },
-      2: {
-        text: 'Reviewed',
-        status: 'warning',
-      },
-    },
+  },
+  {
+    title: 'Source',
+    key: 'source',
+    dataIndex: 'source',
+    readonly: true,
   },
   {
     title: 'Curated Category',
@@ -72,16 +65,23 @@ export const columns = [
     },
   },
   {
-    title: 'Confidence',
-    key: 'confidence',
-    dataIndex: 'confidence',
+    title: 'Status',
+    dataIndex: 'mappingStatus',
+    key: 'mappingStatus',
+    ellipsis: true,
     readonly: true,
-  },
-  {
-    title: 'Source',
-    key: 'source',
-    dataIndex: 'source',
-    readonly: true,
+    valueType: 'select',
+    valueEnum: {
+      0: { text: 'Fail', status: 'Error' },
+      1: {
+        text: 'Success',
+        status: 'Success',
+      },
+      2: {
+        text: 'Reviewed',
+        status: 'warning',
+      },
+    },
   },
   {
     title: 'Action',
