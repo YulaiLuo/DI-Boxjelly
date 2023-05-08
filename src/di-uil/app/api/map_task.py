@@ -16,7 +16,7 @@ class MapTasksResource(Resource):
 
       # Invoke the map api to convert the raw text to snomed ct
       # res = requests.get('http://localhost:8003/map/translate', json={'texts': texts}).json()
-      res = requests.get(f'{map_url}/map/translate', json={'texts': texts}).json()
+      res = requests.post(f'{map_url}/map/translate', json={'texts': texts}).json()
 
       if res['msg']!='ok':
          new_map_task.status = 'fail'
