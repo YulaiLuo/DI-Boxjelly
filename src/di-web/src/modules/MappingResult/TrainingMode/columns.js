@@ -50,21 +50,6 @@ export const columns = [
     readonly: true,
   },
   {
-    title: 'Curated Category',
-    key: 'curate',
-    dataIndex: 'curate',
-    width: 260,
-    render: (_, row) => {
-      if (row.curate === null || row.curate === undefined) return '-';
-      else return row.curate[row.curate.length - 1];
-    },
-    valueType: 'cascader',
-    fieldProps: {
-      options,
-      displayRender: (labels) => labels[labels.length - 1], // just show the leaf item
-    },
-  },
-  {
     title: 'Status',
     dataIndex: 'mappingStatus',
     key: 'mappingStatus',
@@ -81,6 +66,21 @@ export const columns = [
         text: 'Reviewed',
         status: 'warning',
       },
+    },
+  },
+  {
+    title: 'Curated Category',
+    key: 'curate',
+    dataIndex: 'curate',
+    width: 260,
+    render: (_, row) => {
+      if (row.curate === null || row.curate === undefined) return '-';
+      else return row.curate[row.curate.length - 1];
+    },
+    valueType: 'cascader',
+    fieldProps: {
+      options,
+      displayRender: (labels) => labels[labels.length - 1], // just show the leaf item
     },
   },
   {
