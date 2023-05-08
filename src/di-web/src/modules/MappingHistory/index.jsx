@@ -4,13 +4,17 @@ import { useRequest } from 'ahooks';
 import { getAllMappingTasks, getMappingTaskDetail } from './api';
 import TaskCard from './components/TaskCard';
 import { Spin } from '../../components';
+import { useNavigate } from 'react-router-dom';
 
 export default function MappingHistory() {
-  const PAGE_SIZE = 4;
+  const PAGE_SIZE = 10;
   const [currentPage, setCurrentPage] = useState(1);
-
+  const navigate = useNavigate();
+  
   const onGetTaskDetailSuccess = (data) => {
     console.log('data', data);
+    const id = data.data?.id;
+    navigate('/mapping-result', { state: { id } });
   };
 
   const { data, loading } = useRequest(() => getAllMappingTasks(currentPage, PAGE_SIZE), {
