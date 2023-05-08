@@ -9,6 +9,7 @@ from collections import Counter
 from datetime import datetime
 import math, csv, requests, threading, io
 from io import StringIO
+import codecs
 
 class MapTasksResource(Resource):
 
@@ -60,9 +61,13 @@ class MapTasksResource(Resource):
          if file_ext == 'txt':
             texts = file.readlines()
             texts = [text.decode('utf-8').strip() for text in texts]
+            if texts and codecs.BOM_UTF8.decode('utf-8') in texts[0]:
+               texts[0] = texts[0].replace(codecs.BOM_UTF8.decode('utf-8'), '')
 
          elif file_ext == 'csv':
             file_content = file.read().decode('utf-8')
+            if codecs.BOM_UTF8.decode('utf-8') in file_content:
+               file_content = file_content.replace(codecs.BOM_UTF8.decode('utf-8'), '')
             text_stream = StringIO(file_content)
             reader = csv.reader(text_stream, delimiter=',', quotechar='"')
             # next(reader)  # Skip the header (if there is one)
