@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { List, Pagination } from 'antd';
 import { useRequest } from 'ahooks';
-import { getAllMappingTasks } from './api';
+import { getAllMappingTasks, getMappingTaskDetail } from './api';
 import TaskCard from './components/TaskCard';
 import { Spin } from '../../components';
 
@@ -9,8 +9,17 @@ export default function MappingHistory() {
   const PAGE_SIZE = 4;
   const [currentPage, setCurrentPage] = useState(1);
 
+  const onGetTaskDetailSuccess = (data) => {
+    console.log('data', data);
+  };
+
   const { data, loading } = useRequest(() => getAllMappingTasks(currentPage, PAGE_SIZE), {
     refreshDeps: [currentPage],
+  });
+
+  const { run: onTaskEditClick } = useRequest(getMappingTaskDetail, {
+    manual: true,
+    onSuccess: onGetTaskDetailSuccess,
   });
 
   const tasks = data?.data?.tasks ?? [];
@@ -40,6 +49,7 @@ export default function MappingHistory() {
                   createBy={item.create_by}
                   createAt={item.create_at}
                   updateAt={item.update_at}
+                  onEditClick={() => onTaskEditClick(item.id)}
                 />
               </List.Item>
             )}

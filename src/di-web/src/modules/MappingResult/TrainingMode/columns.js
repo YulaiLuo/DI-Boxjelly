@@ -21,7 +21,7 @@ export const columns = [
     title: 'Raw text',
     dataIndex: 'originalText',
     key: 'originalText',
-    width: '20%',
+    width: 260,
     ellipsis: {
       showTitle: true,
     },
@@ -31,37 +31,11 @@ export const columns = [
     title: 'Output of the mapping tool',
     dataIndex: 'mappedText',
     key: 'mappedText',
-    width: '20%',
+    width: 260,
     ellipsis: {
       showTitle: true,
     },
     readonly: true,
-  },
-  {
-    title: 'Confidence',
-    key: 'confidence',
-    dataIndex: 'confidence',
-    readonly: true,
-  },
-  {
-    title: 'Source',
-    key: 'source',
-    dataIndex: 'source',
-    readonly: true,
-  },
-  {
-    title: 'Curated Category',
-    key: 'curate',
-    dataIndex: 'curate',
-    render: (_, row) => {
-      if (row.curate === null || row.curate === undefined) return '-';
-      else return row.curate[row.curate.length - 1];
-    },
-    valueType: 'cascader',
-    fieldProps: {
-      options,
-      displayRender: (labels) => labels[labels.length - 1], // just show the leaf item
-    },
   },
   {
     title: 'Status',
@@ -78,13 +52,41 @@ export const columns = [
       },
       2: {
         text: 'Reviewed',
-        status: 'Default',
+        status: 'warning',
       },
     },
   },
   {
+    title: 'Curated Category',
+    key: 'curate',
+    dataIndex: 'curate',
+    width: 260,
+    render: (_, row) => {
+      if (row.curate === null || row.curate === undefined) return '-';
+      else return row.curate[row.curate.length - 1];
+    },
+    valueType: 'cascader',
+    fieldProps: {
+      options,
+      displayRender: (labels) => labels[labels.length - 1], // just show the leaf item
+    },
+  },
+  {
+    title: 'Confidence',
+    key: 'confidence',
+    dataIndex: 'confidence',
+    readonly: true,
+  },
+  {
+    title: 'Source',
+    key: 'source',
+    dataIndex: 'source',
+    readonly: true,
+  },
+  {
     title: 'Action',
-    width: '7%',
+    width: '120',
+    fixed: 'right',
     valueType: 'option',
     render: (text, record, _, action) => (
       <Space size="middle">

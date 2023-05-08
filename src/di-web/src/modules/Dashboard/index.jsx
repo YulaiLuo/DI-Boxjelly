@@ -63,11 +63,13 @@ export default function Dashboard() {
 
   return (
     <>
-      <Layout style={{ height: '100vh' }}>
+      <Layout hasSider>
         <Sider
           collapsible
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
+          breakpoint="md"
+          style={{ position: 'fixed' }}
           theme="light"
         >
           <div class="m-4 flex items-center justify-center">
@@ -78,12 +80,13 @@ export default function Dashboard() {
             style={{ height: '100vh' }}
             onClick={onMenuItemClick}
             defaultSelectedKeys={[selectedPath]}
+            selectedKeys={[selectedPath]}
             mode="inline"
             items={sidebarItems}
             theme="light"
           />
         </Sider>
-        <Layout>
+        <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
           <Header class="bg-white px-8 py-3 flex sticky top-0 z-10 w-full">
             {/* <span class="self-center">Header</span> */}
 

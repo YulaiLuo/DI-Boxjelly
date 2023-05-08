@@ -1,9 +1,9 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
-import { Card, Badge } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Card, Badge, Popconfirm } from 'antd';
+import { EditOutlined, DeleteOutlined, BarChartOutlined } from '@ant-design/icons';
 
-const TaskCard = ({ id, status, num, createBy, createAt, updateAt }) => {
+const TaskCard = ({ id, status, num, createBy, createAt, updateAt, onEditClick }) => {
   const badgeStatus = {
     success: 'success',
     fail: 'error',
@@ -17,11 +17,32 @@ const TaskCard = ({ id, status, num, createBy, createAt, updateAt }) => {
     </div>
   );
 
+  const onVisualizeClick = () => {
+    console.log('visualize');
+  };
+
+  const onDeleteClick = () => {
+    console.log('delete');
+  };
+
   return (
     <Card
       title={title}
-      hoverable={true}
-      actions={[<EditOutlined key="edit" />, <DeleteOutlined key="delete" />]}
+      // hoverable={true}
+      actions={[
+        <EditOutlined key="edit" onClick={onEditClick} />,
+        <BarChartOutlined key="visualization" onClick={onVisualizeClick} />,
+        <Popconfirm
+          placement="bottom"
+          title={'Are you sure you want to delete this task?'}
+          description={'Delete this task'}
+          onConfirm={onDeleteClick}
+          okText="Yes"
+          cancelText="No"
+        >
+          <DeleteOutlined key="delete" />,
+        </Popconfirm>,
+      ]}
     >
       <div class="h-24">
         <div class="flex items-center">
