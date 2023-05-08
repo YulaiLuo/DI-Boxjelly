@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChartOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';
 import { Form, Col, Row, Button, Select, Space, Pagination } from 'antd';
 import { columns as TrainingColumns } from './columns';
 
-export default function TrainingMode({ data }) {
+export default function TrainingMode({ data, taskId, page_num, currentPage, onPageChange }) {
+  const PAGE_SIZE = 10;
   const [editableKeys, setEditableRowKeys] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  
   const [dataSource, setDataSource] = useState(() =>
     data.map((v, i) => {
       return {
@@ -16,7 +17,17 @@ export default function TrainingMode({ data }) {
     })
   );
 
-  console.log(window.innerHeight);
+  useEffect(() => {
+    setDataSource(
+      data.map((v, i) => {
+        return {
+          ...v,
+          id: i,
+        };
+      })
+    );
+    setEditableRowKeys([]);
+  }, [data]); 
 
   return (
     <>
@@ -71,9 +82,10 @@ export default function TrainingMode({ data }) {
       {data.length !== 0 && (
         <Pagination
           current={currentPage}
-          onChange={(page) => setCurrentPage(page)}
-          pageSize={10}
-          total={10 * data.data?.page_num}
+          // onChange={(page) => setCurrentPage(page)}
+          onChange={(page) => onPageChange(page)}
+          pageSize={PAGE_SIZE}
+          total={PAGE_SIZE * page_num}
         />
       )}
     </>
