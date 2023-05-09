@@ -3,10 +3,19 @@ import { BarChartOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';
 import { Form, Col, Row, Button, Select, Space, Pagination, Drawer, Card } from 'antd';
 import { columns as TrainingColumns } from './columns';
+import { getMappingTaskMetaDetail } from '../../Mapping/api';
+import { useRequest } from 'ahooks';
 
-export default function TrainingMode({ data, taskId, page_num, currentPage, onPageChange }) {
+
+export default function TrainingMode({ data, taskId, currentPage, onPageChange }) {
   const PAGE_SIZE = 10;
   const [editableKeys, setEditableRowKeys] = useState([]);
+  const { data:meta_data } = useRequest(() => getMappingTaskMetaDetail(taskId));
+
+  const num = meta_data?.data.num;
+  const num_success = meta_data?.num_success;
+  const num_failed = meta_data?.num_failed;
+  const num_reviewed = meta_data?.num_reviewed;
   
   const [dataSource, setDataSource] = useState(() =>
     data.map((v, i) => {
@@ -165,7 +174,7 @@ export default function TrainingMode({ data, taskId, page_num, currentPage, onPa
           // onChange={(page) => setCurrentPage(page)}
           onChange={(page) => onPageChange(page)}
           pageSize={PAGE_SIZE}
-          total={PAGE_SIZE * page_num}
+          total={num}
         />
       )}
     </>
