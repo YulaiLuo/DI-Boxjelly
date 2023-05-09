@@ -34,11 +34,11 @@ class ConceptGroupResource(Resource):
 
       try:
          # concept groups
-         group = ConceptGroup.objects(id=in_schema['group_id']).first()
+         group = ConceptGroup.objects(id=ObjectId(in_schema['group_id'])).first()
          if not group:
             return make_response(jsonify(code=404, err="GROUP_NOT_FOUND"), 404)
 
-         concepts = Concept.objects(group_id=in_schema['group_id'], child_concept_id=None).all()
+         concepts = Concept.objects(group_id=ObjectId(in_schema['group_id']), child_concept_id=None).all()
 
          response = jsonify(code=200, msg="ok", data={
             'group_id': in_schema['group_id'],
@@ -65,11 +65,11 @@ class ConceptGroupResource(Resource):
          return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
       
       try:
-         code_system = CodeSystem.objects(id=in_schema['code_system_id']).get()
+         code_system = CodeSystem.objects(id=ObjectId(in_schema['code_system_id'])).get()
       except DoesNotExist as err:
          return make_response(jsonify(code=404, err="CODE_SYSTEM_NOT_FOUND"), 404)
-      except MultipleObjectsReturned as err:
-         return make_response(jsonify(code=400, err='MULTIPLE_CODE_SYSTEM_FOUND'), 400)
+      # except MultipleObjectsReturned as err:
+      #    return make_response(jsonify(code=400, err='MULTIPLE_CODE_SYSTEM_FOUND'), 400)
       
       
       # TODO: read user id from request header
@@ -108,13 +108,13 @@ class ConceptGroupResource(Resource):
       try:
 
          # If the group still have items, it cannot be deleted
-         concepts = Concept.objects(group_id=in_schema['group_id']).first()
+         concepts = Concept.objects(group_id=ObjectId(in_schema['group_id'])).first()
          if concepts:
             return make_response(jsonify(code=400, err="GROUP_NOT_EMPTY"), 400)
          
 
          # If the group does not exist, cannot remove it
-         concept_group = ConceptGroup.objects(id=in_schema['group_id']).first()
+         concept_group = ConceptGroup.objects(id=ObjectId(in_schema['group_id'])).first()
          if not concept_group:
             return make_response(jsonify(code=404, err="GROUP_NOT_FOUND"), 404)
 
@@ -144,7 +144,7 @@ class ConceptGroupResource(Resource):
       try:
 
          # If the group does not exist, cannot update it
-         concept_group = ConceptGroup.objects(id=in_schema['group_id']).first()
+         concept_group = ConceptGroup.objects(id=ObjectId(in_schema['group_id'])).first()
          if not concept_group:
             return make_response(jsonify(code=404, err="GROUP_NOT_FOUND"), 404)
 

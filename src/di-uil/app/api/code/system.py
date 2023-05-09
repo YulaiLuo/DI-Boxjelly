@@ -30,11 +30,11 @@ class CodeSystemResource(Resource):
          return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
       
       try:
-         code_system = CodeSystem.objects(id=in_schema['code_system_id']).get()
+         code_system = CodeSystem.objects(id=ObjectId(in_schema['code_system_id'])).get()
       except DoesNotExist as err:
          return make_response(jsonify(code=404, err="CODE_SYSTEM_NOT_FOUND"), 404)
-      except MultipleObjectsReturned as err:
-         return make_response(jsonify(code=400, err='MULTIPLE_CODE_SYSTEM_FOUND'), 400)
+      # except MultipleObjectsReturned as err:
+      #    return make_response(jsonify(code=400, err='MULTIPLE_CODE_SYSTEM_FOUND'), 400)
 
       try:
          pipeline = [
@@ -96,7 +96,7 @@ class CodeSystemResource(Resource):
          return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
       
 
-      existing_code_system = CodeSystem.objects(team_id=in_schema['team_id']).first()
+      existing_code_system = CodeSystem.objects(team_id=ObjectId(in_schema['team_id'])).first()
       if existing_code_system:
          return make_response(jsonify(code=400, err="CODE_SYSTEM_EXIST_IN_TEAM"), 400)
       

@@ -26,7 +26,7 @@ class ConceptResource(Resource):
          return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
       
       try:
-         code_system = CodeSystem.objects(team_id=in_schema['team_id']).get()
+         code_system = CodeSystem.objects(team_id=ObjectId(in_schema['team_id'])).get()
       except DoesNotExist as err:
          return make_response(jsonify(code=404, err="CODE_SYSTEM_NOT_FOUND"), 404)
 

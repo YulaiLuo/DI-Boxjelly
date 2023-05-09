@@ -1,10 +1,10 @@
 from datetime import datetime
 from collections import Counter
 from flask_restful import Resource
-from flask import jsonify
+from flask import jsonify, make_response, Response
 from app.models import MapItem, MapTask
 import csv, io
-
+from bson import ObjectId
 
 class DownloadMapTaskResource(Resource):
 
@@ -53,11 +53,11 @@ class DownloadMapTaskResource(Resource):
 
    def get(self, task_id):
       try:
-         map_task = MapTask.objects(id=task_id, deleted=False).first()
+         map_task = MapTask.objects(id=ObjectId(task_id), deleted=False).first()
          if not map_task:
             return make_response(jsonify(code=404, err="MAP_TASK_NOT_FOUND"),404)
          
-         map_items = MapItem.objects(task_id=task_id).all()
+         map_items = MapItem.objects(task_id=ObjectId(task_id)).all()
          if not map_items:
             return make_response(jsonify(code=404, err="MAP_ITEM_NOT_FOUND"),404)
 

@@ -3,6 +3,7 @@ from flask import jsonify, make_response, request
 from collections import Counter
 from app.models import MapTask, MapItem
 from marshmallow import Schema, fields, ValidationError, validates
+from bson import ObjectId
 
 class GetMapTaskMetaSchema(Schema):
    task_id = fields.String(required=True)
@@ -32,8 +33,8 @@ class MapTaskMetaResource(Resource):
          #    response.status_code = 404
          #    return response
          
-         map_task = MapTask.objects(id=task_id, deleted=False).first()
-         map_items = MapItem.objects(task_id=task_id).all()
+         map_task = MapTask.objects(id=ObjectId(task_id), deleted=False).first()
+         map_items = MapItem.objects(task_id=ObjectId(task_id)).all()
          if not map_items:
             response = jsonify(code=404, err="MAP_ITEM_NOT_FOUND")
             response.status_code = 404

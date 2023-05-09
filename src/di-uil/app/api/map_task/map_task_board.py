@@ -19,7 +19,7 @@ class MapTaskBoardResource(Resource):
     Resource for the map task list
     """
 
-    def get(self, board_id):
+    def get(self):
         """
         Check the permission and get the map task list of a workspace
 
@@ -37,7 +37,8 @@ class MapTaskBoardResource(Resource):
 
             page = in_schema['page']
             size = in_schema['size']
-            all_map_tasks = MapTask.objects(board_id=board_id,deleted=False).all()
+            board_id = in_schema['board_id']
+            all_map_tasks = MapTask.objects(board_id=ObjectId(board_id),deleted=False).all()
             map_tasks_page = all_map_tasks.skip((page-1)*size).limit(size)
             
             # Convert the tasks to a list of dictionaries
@@ -63,6 +64,7 @@ class MapTaskBoardResource(Resource):
             return response
         
         except ValidationError as err:
+            print(err)
             response = jsonify(code=400, err="INVALID_INPUT")
             response.status_code = 400
             return response

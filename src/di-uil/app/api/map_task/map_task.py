@@ -20,7 +20,7 @@ class GetMapTaskInputSchema(Schema):
    page = fields.Integer(required=False,default=1, min_value=1)
    size = fields.Integer(required=False,default=20, min_value=10)
 
-class PostMapTaskBoardInputSchema(Schema):
+class PostMapTaskInputSchema(Schema):
    team_id = fields.String(required=True)
    board_id = fields.String(required=True)
    file = fields.Field(required=True)
@@ -46,17 +46,18 @@ class MapTaskResource(Resource):
          in_schema = GetMapTaskInputSchema()
          in_schema = in_schema.load(request.args)
       except ValidationError as err:
+         print(err)
          return make_response(jsonify(code=400, err="INVALID_INPUT"),404)
       
       try:
          task_id = in_schema['task_id']
-         map_task = MapTask.objects(id=task_id, deleted=False).first()
+         map_task = MapTask.objects(id=ObjectId(task_id), deleted=False).first()
          if not map_task:
             return make_response(jsonify(code=404, err="MAP_TASK_NOT_FOUND"),404)
 
          page = in_schema['page']  # min_value 1
          size = in_schema['size']  # min_value 10
-         map_items = MapItem.objects(task_id=task_id).skip((page-1)*size).limit(size)
+         map_items = MapItem.objects(task_id=ObjectId(task_id)).skip((page-1)*size).limit(size)
          
          # items = [{'text':item.text, 'status':item.status,'mapped_info':item.mapped_info} for item in map_items]
          items = [{'text': map_item['text'], 'status': map_item['status'],'mapped_info': map_item['mapped_info']} for map_item in (mi.to_mongo().to_dict() for mi in map_items)]
@@ -103,7 +104,7 @@ class MapTaskResource(Resource):
          # TODO: Check if the task is deleted
 
          # Change the deleted field as deleted
-         MapTask.objects(id=in_schema['task_id']).update_one(deleted=True)
+         MapTask.objects(id=ObjectId(in_schema['task_id'])).update_one(deleted=True)
 
          response = jsonify(code=200, msg="ok")
          response.status_code = 200
@@ -144,7 +145,7 @@ class MapTaskResource(Resource):
                
       # Create map items
       new_map_items = [
-                           MapItem(task_id = new_map_task.id,
+                           MapItem(task_id = ObjectId(new_map_task.id),
                            text=texts[i],
                            status='success' if len(res['data'][str(i)])>0 else 'fail',
                            mapped_info=res['data'][str(i)]
@@ -159,7 +160,7 @@ class MapTaskResource(Resource):
    def post(self):
 
       # Create schema new map task API input schema
-      in_schema = PostMapTaskBoardInputSchema()
+      in_schema = PostMapTaskInputSchema()
 
       # The data can come from file, form and ...etc
       data = {}
@@ -223,8 +224,10 @@ class MapTaskResource(Resource):
          return response
 
       except ValidationError as err:
+         print(err)
          return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
 
       except Exception as err:
+         print(err)
          return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"),500)
 
