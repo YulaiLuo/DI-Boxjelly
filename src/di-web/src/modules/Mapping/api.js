@@ -92,21 +92,22 @@ export const mapSingleText = (text) => {
 // };
 
 // Create a mapping task
-export const createMappingTask = (file, teamId) => {
+export const createMappingTask = (file, teamId, boardId) => {
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('create_by', '60c879e72cb0e6f96d6b0f65');
+  formData.append('team_id', teamId);
+  formData.append('board_id', boardId);
   return http.postFormData(MAP_TASK_URL, formData);
 };
 
 // Get mapping task detail
-export const getMappingTaskDetail = (taskId, page = 1, size = 10) => {
-  return http.get(`${MAP_TASK_URL}/${taskId}`, { page, size });
+export const getMappingTaskDetail = (taskId, teamId, boardId, page = 1, size = 10) => {
+  return http.get(`${MAP_TASK_URL}`, { taskId, teamId, boardId, page, size });
 };
 
 // Get mapping task meta detail
 export const getMappingTaskMetaDetail = (taskId) => {
-  return http.get(`${MAP_TASK_URL}/${taskId}/meta`);
+  return http.get(`${MAP_TASK_URL}/meta`, { taskId});
 };
 
 export const exportFile = async (taskId) => {

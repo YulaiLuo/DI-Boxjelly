@@ -9,6 +9,8 @@ import { convertKeysToCamelCase } from '../../utils/underlineToCamel';
 import { exportFile } from '../Mapping/api';
 
 export default function MappingHistory() {
+  const team_id = '60c879e72cb0e6f96d6b0f65';
+  const board_id = '60c879e72cb0e6f96d6b0f65';
   const PAGE_SIZE = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
@@ -19,9 +21,12 @@ export default function MappingHistory() {
     navigate('/mapping-result', { state: { id } });
   };
 
-  const { data, loading } = useRequest(() => getAllMappingTasks(currentPage, PAGE_SIZE), {
-    refreshDeps: [currentPage],
-  });
+  const { data, loading } = useRequest(
+    () => getAllMappingTasks(team_id, board_id, currentPage, PAGE_SIZE),
+    {
+      refreshDeps: [currentPage],
+    }
+  );
 
   const { run: onTaskEditClick } = useRequest(getMappingTaskDetail, {
     manual: true,

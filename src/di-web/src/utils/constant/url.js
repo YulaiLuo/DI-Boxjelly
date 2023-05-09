@@ -9,8 +9,11 @@ export const EMAIL_LOGIN_URL = '/auth/login/email';
 export const SINGLE_TEXT_MAPPING_URL = '/map/ontoserver/translate';
 export const ONTOSERVER_TRANSLATE = '/ConceptMap/$translate';
 
-// UIL tasks
-export const MAP_TASK_URL = '/uil/tasks';
+// UIL task
+export const MAP_BOARD_URL = '/uil/board';
+
+// UIL task
+export const MAP_TASK_URL = '/uil/board/task';
 
 // MedCAT mapping
 export const MAP_URL = '/map/translate'
