@@ -105,8 +105,8 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
                 style={{ width: 160 }}
                 allowClear
                 options={[
-                  { value: 'success', label: 'success' },
-                  { value: 'fail', label: 'fail' },
+                  { value: 'success', label: 'Success' },
+                  { value: 'fail', label: 'Fail' },
                 ]}
               />
             </Form.Item>
@@ -168,6 +168,7 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
       />
       {data.length !== 0 && (
         <Pagination
+          style={{ display: 'flex', justifyContent: 'flex-end' }}
           current={currentPage}
           // onChange={(page) => setCurrentPage(page)}
           onChange={(page) => onPageChange(page)}
