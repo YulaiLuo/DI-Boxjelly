@@ -1,11 +1,15 @@
 from flask_restful import Resource
-from flask import jsonify, make_response
+from flask import jsonify, make_response, request
 from collections import Counter
 from app.models import MapTask, MapItem
+from marshmallow import Schema, fields, ValidationError, validates
 
+class GetMapTaskMetaSchema(Schema):
+   task_id = fields.String(required=True)
+                           
 
 class MapTaskMetaResource(Resource):
-   def get(self, task_id):
+   def get(self):
       """Get the meta data of a map task for visualization
 
       Args:
@@ -14,9 +18,14 @@ class MapTaskMetaResource(Resource):
       Returns:
           _type_: _description_
       """
-      
       try:
-         
+         in_schema = GetMapTaskMetaSchema()
+         in_schema = in_schema.load(request.args)
+      except ValidationError as err:
+         return make_response(jsonify(code=400, err="INVALID_INPUT"),404)
+
+      try:
+         task_id = in_schema['task_id']
          # map_task = MapTask.objects(id=task_id, deleted=False).first()
          # if not map_task:
          #    response = jsonify(code=404, err="MAP_TASK_NOT_FOUND")
