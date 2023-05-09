@@ -38,7 +38,7 @@ export const UNIVERSAL_INDICATION_LIST = [
       'Left ventricular assist device infection',
       'Endocarditis: Haemophilus species',
       'Endocarditis: Aggregatibacter species',
-      'Endocarditis: Cardiobacterium species',
+      'Endocarditis: Cardiobacterium species',
       'Endocarditis: Eikenella corrodens',
       'Endocarditis: Kingella species',
     ],
@@ -107,7 +107,7 @@ export const UNIVERSAL_INDICATION_LIST = [
     ],
   },
   {
-    group: 'eye',
+    group: 'Eye',
     children: [
       'Blepharitis',
       'Bacterial conjunctivitis',

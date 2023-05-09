@@ -15,7 +15,6 @@ export default function Mapping() {
   const [files, setFiles] = useState([]);
   const [showSingleMapping, setShowSingleMapping] = useState(false);
   const [singleMappingResult, setSingleMappingResult] = useState('');
-  const [id, setId] = useState(null);
 
   // ref of single text search input
   const inputRef = useRef(null);
@@ -23,7 +22,7 @@ export default function Mapping() {
   const { loading: singleMapLoading, run: handleMapSingleText } = useRequest(mapSingleText, {
     manual: true,
     onSuccess: (res) => {
-      setSingleMappingResult(res.display);
+      setSingleMappingResult(res.data['0'][0].sct_term);
     },
   });
 
@@ -31,11 +30,9 @@ export default function Mapping() {
     createMappingTask,
     {
       manual: true,
-      onSuccess: (res) => {
-        const id = res.data?.id;
-        setId(id);
+      onSuccess: () => {
+        navigate('/mapping-history');
         msgApi.success('Mapping task created successfully');
-        // navigate('/mapping-result', { state: { id } });
       },
     }
   );
@@ -79,17 +76,6 @@ export default function Mapping() {
               loading={createTaskLoading}
             >
               Create a Task
-            </Button>
-            <Button
-              type="primary"
-              size="large"
-              disabled={!files.length}
-              onClick={() => {
-                navigate('/mapping-result', { state: { id } });
-              }}
-              // loading={createTaskLoading}
-            >
-              Mapping
             </Button>
           </div>
           <FileUploader files={files} onFileUpdate={onFileUpdate} />

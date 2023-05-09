@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Tabs } from 'antd';
 import { useRequest } from 'ahooks';
@@ -7,12 +7,21 @@ import TrainingMode from './TrainingMode';
 import { getMappingTaskDetail } from '../Mapping/api';
 
 export default function MappingResult() {
+  const PAGE_SIZE = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const handlePageChange = (page) => {
+    console.log(page);
+    setCurrentPage(page);
+  };
   const navigate = useNavigate();
   const { state } = useLocation();
   const defaultActiveKey = state.mappingMode === 1 ? 'training' : 'inference';
   // TODO: should get mappingRes from backend
   const taskId = state.id;
-  const { data, loading } = useRequest(() => getMappingTaskDetail(taskId));
+  const { data, loading } = useRequest(() => getMappingTaskDetail(taskId, currentPage, PAGE_SIZE), {
+    refreshDeps: [currentPage],
+  });
+
   const mappedItems = data?.data.items ?? [];
 
   // TODO: wait for backend response update
@@ -36,12 +45,26 @@ export default function MappingResult() {
     {
       key: 'inference',
       label: `Inference`,
-      children: <InferenceMode data={transformedItems} taskId={taskId}/>,
+      children: (
+        <InferenceMode
+          data={transformedItems}
+          taskId={taskId}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      ),
     },
     {
       key: 'training',
       label: `Training`,
-      children: <TrainingMode data={transformedItems} />,
+      children: (
+        <TrainingMode
+          data={transformedItems}
+          taskId={taskId}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      ),
     },
   ];
 

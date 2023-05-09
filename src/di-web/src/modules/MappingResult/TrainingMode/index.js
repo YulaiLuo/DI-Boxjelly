@@ -1,11 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BarChartOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';
-import { Form, Col, Row, Button, Select, Space } from 'antd';
+import { Form, Col, Row, Button, Select, Space, Pagination, Drawer, Card } from 'antd';
 import { columns as TrainingColumns } from './columns';
+import { getMappingTaskMetaDetail } from '../../Mapping/api';
+import { useRequest } from 'ahooks';
 
-export default function TrainingMode({ data }) {
+export default function TrainingMode({ data, taskId, currentPage, onPageChange }) {
+  const PAGE_SIZE = 10;
   const [editableKeys, setEditableRowKeys] = useState([]);
+  const { data: meta_data } = useRequest(() => getMappingTaskMetaDetail(taskId));
+
+  const num = meta_data?.data.num;
+  const num_success = meta_data?.num_success;
+  const num_failed = meta_data?.num_failed;
+  const num_reviewed = meta_data?.num_reviewed;
+
   const [dataSource, setDataSource] = useState(() =>
     data.map((v, i) => {
       return {
@@ -14,6 +24,76 @@ export default function TrainingMode({ data }) {
       };
     })
   );
+
+  useEffect(() => {
+    setDataSource(
+      data.map((v, i) => {
+        return {
+          ...v,
+          id: i,
+        };
+      })
+    );
+    setEditableRowKeys([]);
+  }, [data]);
+
+  const [open, setOpen] = useState(false);
+  const showDrawer = () => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
+
+  const numberOfSuccess = useState(() => {
+    return dataSource.filter((item) => item.mappingStatus === 1).length;
+  }, [dataSource]);
+
+  const numberOfFail = useState(() => {
+    return dataSource.filter((item) => item.mappingStatus === 0).length;
+  }, [dataSource]);
+
+  const totalNumber = useState(() => {
+    return (
+      dataSource.filter((item) => item.mappingStatus === 1).length +
+      dataSource.filter((item) => item.mappingStatus === 0).length
+    );
+  }, [dataSource]);
+
+  const SuccessfulMappingRate = useState(() => {
+    const successfulMappings = dataSource.filter((item) => item.mappingStatus === 1).length;
+    const totalMappings =
+      successfulMappings + dataSource.filter((item) => item.mappingStatus === 0).length;
+    const rate = totalMappings > 0 ? (successfulMappings / totalMappings) * 100 : 0;
+    return parseFloat(rate.toFixed(2));
+  }, [dataSource]);
+
+  const GreenDot = () => {
+    const dotGreen = {
+      display: 'inline-block',
+      width: '10px',
+      height: '10px',
+      borderRadius: '50%',
+      backgroundColor: 'green',
+      marginRight: '10px',
+    };
+
+    return <div style={dotGreen}></div>;
+  };
+
+  const RedDot = () => {
+    const dotRed = {
+      display: 'inline-block',
+      width: '10px',
+      height: '10px',
+      borderRadius: '50%',
+      backgroundColor: 'red',
+      marginRight: '10px',
+    };
+
+    return <div style={dotRed}></div>;
+  };
 
   return (
     <>
@@ -38,14 +118,35 @@ export default function TrainingMode({ data }) {
                   Filter
                 </Button>
                 <Button size="large">Reset</Button>
+                <span class="ml-7 cursor-pointer" onClick={showDrawer}>
+                  <BarChartOutlined style={{ fontSize: '23px' }} />
+                </span>
               </Space>
-              <span class="ml-7 cursor-pointer">
-                <BarChartOutlined style={{ fontSize: '23px' }} />
-              </span>
             </div>
           </Col>
         </Row>
       </Form>
+
+      <Drawer title="Overall Performance" width={400} onClose={onClose} open={open}>
+        <Card
+          bordered={false}
+          style={{
+            width: 300,
+          }}
+        >
+          <h2>Total Mapping Text: {totalNumber}</h2>
+          <div>
+            <GreenDot />
+            Number of Success: {numberOfSuccess}
+          </div>
+          <div>
+            <RedDot />
+            Number of failure: {numberOfFail}
+          </div>
+        </Card>
+        <h2>Successful mapping rate: {SuccessfulMappingRate} %</h2>
+      </Drawer>
+
       <EditableProTable
         rowKey="id"
         columns={TrainingColumns}
@@ -56,13 +157,24 @@ export default function TrainingMode({ data }) {
           onSave: async (rowKey, data, row) => {
             // TODO
             console.log(rowKey, data, row);
+            data.mappingStatus = 2;
           },
           onChange: setEditableRowKeys,
           actionRender: (row, config, dom) => [dom.save, dom.cancel],
         }}
         onChange={setDataSource}
         maxLength={dataSource.length}
+        scroll={{ x: 1200 }}
       />
+      {data.length !== 0 && (
+        <Pagination
+          current={currentPage}
+          // onChange={(page) => setCurrentPage(page)}
+          onChange={(page) => onPageChange(page)}
+          pageSize={PAGE_SIZE}
+          total={num}
+        />
+      )}
     </>
   );
 }
