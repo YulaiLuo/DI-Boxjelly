@@ -64,14 +64,12 @@ export default function Profile() {
               dataSource={data}
               renderItem={(item, index) => (
                 <List.Item actions={[<a key="remove">remove</a>, <a key="leave">leave</a>]}>
-                  <List.Item.Meta
+                  <List.Item.Meta style={{ display: 'flex', alignItems: 'center' }}
                     avatar={
-                      <div class="pt-5">
-                        <Avatar
-                          // class="mt-4"
-                          src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`}
-                        />
-                      </div>
+                      <Avatar
+                        // class="mt-4"
+                        src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`}
+                      />
                       // <Avatar class="mt-4" src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`} />
                     }
                     title={item.title}
