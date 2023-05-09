@@ -1,4 +1,4 @@
-from flask import request, jsonify, request, Response
+from flask import request, jsonify, request, Response, make_response
 from flask import current_app as app
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -32,17 +32,15 @@ class GatewayResource(Resource):
 
         # Check if service is supported
         if service not in self.service_map:
-            response = jsonify(code=404 ,err="SERVICE_NOT_FOUND", msg=f"Service {service} is not supported")
-            response.status_code = 404
-            return response
+            return make_response(jsonify(code=404 ,err="SERVICE_NOT_FOUND"),404)
 
         # Create target url
         target_url = self.service_map[service] + "/" + "/".join(path.split("/")[1:])
+        target_url = target_url.rstrip('/') # Remove trailing slash
 
         # Create headers with user id from token
-        content_type = request.content_type
         headers = {
-            "Content-Type": content_type
+            "Content-Type": request.content_type
             # "DI-User-Id": str(user_id),
         }
 
