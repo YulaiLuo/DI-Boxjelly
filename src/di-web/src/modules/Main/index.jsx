@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { UserOutlined, DownOutlined, HomeOutlined, PieChartOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  DownOutlined,
+  HomeOutlined,
+  PieChartOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 import { Layout, Menu, Avatar, Space, Dropdown } from 'antd';
 import { useUserStore } from '../../store';
 
 const { Sider, Header, Content } = Layout;
 const { PUBLIC_URL } = process.env;
 
-export default function Dashboard() {
+export default function Main() {
   const [collapsed, setCollapsed] = useState(false);
   const setLoggedIn = useUserStore((state) => state.setLoggedIn);
 
@@ -27,13 +33,26 @@ export default function Dashboard() {
     icon,
   });
 
+  const getMemberItem = () => {
+    return (
+      <div class="flex justify-between">
+        <span>Members</span>
+        <span>
+          <PlusOutlined />
+        </span>
+      </div>
+    );
+  };
+
   const sidebarItems = [
-    getSidebarItem('Main', 'mapping', <HomeOutlined />),
-    getSidebarItem('History Status', 'history', <PieChartOutlined />, [
-      getSidebarItem('Retrain History', 'retrain-history'),
-      getSidebarItem('Mapping History', 'mapping-history'),
-    ]),
-    getSidebarItem('Account', 'profile', <UserOutlined />),
+    getSidebarItem('Dashboard', 'dashboard', <HomeOutlined />),
+    getSidebarItem(getMemberItem(), 'profile', <UserOutlined />),
+    getSidebarItem('Mapping', 'mapping', <HomeOutlined />),
+    getSidebarItem('Mapping History', 'mapping-history', <PieChartOutlined />),
+    // getSidebarItem('History Status', 'history', <PieChartOutlined />, [
+    //   getSidebarItem('Retrain History', 'retrain-history'),
+    //   getSidebarItem('Mapping History', 'mapping-history'),
+    // ]),
   ];
 
   const ProfileDropdownItems = [

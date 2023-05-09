@@ -104,6 +104,11 @@ export const getMappingTaskDetail = (taskId, page = 1, size = 10) => {
   return http.get(`${MAP_TASK_URL}/${taskId}`, { page, size });
 };
 
+// Get mapping task meta detail
+export const getMappingTaskMetaDetail = (taskId) => {
+  return http.get(`${MAP_TASK_URL}/${taskId}/meta`);
+};
+
 export const exportFile = async(taskId) => {
   try {
     const response = await http.get(`${MAP_TASK_URL}/${taskId}/download`, {}, {

@@ -1,9 +1,12 @@
 import React from 'react';
 import { PropTypes } from 'prop-types';
 import { Card, Badge, Popconfirm } from 'antd';
-import { EditOutlined, DeleteOutlined, BarChartOutlined } from '@ant-design/icons';
+import { DeleteOutlined, BarChartOutlined, DownloadOutlined } from '@ant-design/icons';
 
-const TaskCard = ({ id, status, num, createBy, createAt, updateAt, onEditClick }) => {
+const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisualizeClick }) => {
+  const { id, status, num, createBy, createAt, updateAt } = item;
+  console.log('a', item);
+
   const badgeStatus = {
     success: 'success',
     fail: 'error',
@@ -17,34 +20,39 @@ const TaskCard = ({ id, status, num, createBy, createAt, updateAt, onEditClick }
     </div>
   );
 
-  const onVisualizeClick = () => {
-    console.log('visualize');
-  };
-
-  const onDeleteClick = () => {
-    console.log('delete');
+  const getActions = () => {
+    let actions = [
+      <Popconfirm
+        placement="bottom"
+        title={'Are you sure you want to delete this task?'}
+        description={'Delete this task'}
+        onConfirm={onDeleteClick}
+        okText="Yes"
+        cancelText="No"
+      >
+        <DeleteOutlined key="delete" />,
+      </Popconfirm>,
+    ];
+    if (status === 'success') {
+      actions = [
+        <DownloadOutlined key="download" onClick={onDownloadClick} />,
+        <BarChartOutlined key="visualization" onClick={onVisualizeClick} />,
+        ...actions,
+      ];
+    }
+    return actions;
   };
 
   return (
-    <Card
-      title={title}
-      // hoverable={true}
-      actions={[
-        <EditOutlined key="edit" onClick={onEditClick} />,
-        <BarChartOutlined key="visualization" onClick={onVisualizeClick} />,
-        <Popconfirm
-          placement="bottom"
-          title={'Are you sure you want to delete this task?'}
-          description={'Delete this task'}
-          onConfirm={onDeleteClick}
-          okText="Yes"
-          cancelText="No"
-        >
-          <DeleteOutlined key="delete" />,
-        </Popconfirm>,
-      ]}
-    >
-      <div class="h-24">
+    <Card title={title} bordered={false} actions={getActions()}>
+      <div
+        class={`h-24 ${status === 'success' ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+        onClick={() => {
+          if (status === 'success') {
+            onEditClick();
+          }
+        }}
+      >
         <div class="flex items-center">
           <span>Mapping number:</span>
           <span class="ml-4 text-xl">{num}</span>
@@ -60,10 +68,16 @@ const TaskCard = ({ id, status, num, createBy, createAt, updateAt, onEditClick }
 export default TaskCard;
 
 TaskCard.propTypes = {
-  id: PropTypes.string.isRequired,
-  status: PropTypes.oneOf(['success', 'fail', 'pending']).isRequired,
-  num: PropTypes.number,
-  createBy: PropTypes.string.isRequired,
-  createAt: PropTypes.string.isRequired,
-  updateAt: PropTypes.string,
+  item: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    status: PropTypes.oneOf(['success', 'fail', 'pending']).isRequired,
+    num: PropTypes.number,
+    createBy: PropTypes.string.isRequired,
+    createAt: PropTypes.string.isRequired,
+    updateAt: PropTypes.string,
+  }).isRequired,
+  onEditClick: PropTypes.func,
+  onDownloadClick: PropTypes.func,
+  onDeleteClick: PropTypes.func,
+  onVisualizeClick: PropTypes.func,
 };

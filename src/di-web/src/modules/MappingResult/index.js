@@ -10,7 +10,7 @@ export default function MappingResult() {
   const PAGE_SIZE = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const handlePageChange = (page) => {
-    console.log(page)
+    console.log(page);
     setCurrentPage(page);
   };
   const navigate = useNavigate();
@@ -18,11 +18,11 @@ export default function MappingResult() {
   const defaultActiveKey = state.mappingMode === 1 ? 'training' : 'inference';
   // TODO: should get mappingRes from backend
   const taskId = state.id;
-  const { data, run, loading } = useRequest(() => getMappingTaskDetail(taskId, currentPage, PAGE_SIZE), {
+  const { data, loading } = useRequest(() => getMappingTaskDetail(taskId, currentPage, PAGE_SIZE), {
     refreshDeps: [currentPage],
   });
+
   const mappedItems = data?.data.items ?? [];
-  const page_num = data?.data.page_num;
 
   // TODO: wait for backend response update
   const transformedItems = mappedItems.map((item) => {
@@ -45,12 +45,26 @@ export default function MappingResult() {
     {
       key: 'inference',
       label: `Inference`,
-      children: <InferenceMode data={transformedItems} taskId={taskId} page_num={page_num} currentPage={currentPage} onPageChange={handlePageChange}/>,
+      children: (
+        <InferenceMode
+          data={transformedItems}
+          taskId={taskId}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      ),
     },
     {
       key: 'training',
       label: `Training`,
-      children: <TrainingMode data={transformedItems} taskId={taskId} page_num={page_num} currentPage={currentPage} onPageChange={handlePageChange}/>,
+      children: (
+        <TrainingMode
+          data={transformedItems}
+          taskId={taskId}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      ),
     },
   ];
 
