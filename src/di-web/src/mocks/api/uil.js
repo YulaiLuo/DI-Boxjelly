@@ -14,7 +14,7 @@ export const createTaskMockService = rest.post(
     return res(
       ctx.json({
         data: {
-          id: '47',
+          id: '52',
           num: 1,
           status: 'pending',
         },
@@ -29,7 +29,7 @@ export const createTaskMockService = rest.post(
  * Get task detail
  */
 export const getTaskDetailMockService = rest.get(
-  `${BASE_URL}${MAP_TASK_URL}/47`,
+  `${BASE_URL}${MAP_TASK_URL}/52`,
   async (req, res, ctx) => {
     console.log(req);
     const page = req.url.searchParams.get('page');
@@ -39,7 +39,7 @@ export const getTaskDetailMockService = rest.get(
     return res(
       ctx.json({
         data: {
-          id: '123456',
+          id: '52',
           items: mapTaskDetail,
           page,
           size,

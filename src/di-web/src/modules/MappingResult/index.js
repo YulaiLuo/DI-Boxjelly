@@ -10,7 +10,7 @@ export default function MappingResult() {
   const PAGE_SIZE = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const handlePageChange = (page) => {
-    console.log(page)
+    console.log(page);
     setCurrentPage(page);
   };
   const navigate = useNavigate();
@@ -45,12 +45,26 @@ export default function MappingResult() {
     {
       key: 'inference',
       label: `Inference`,
-      children: <InferenceMode data={transformedItems} taskId={taskId} currentPage={currentPage} onPageChange={handlePageChange}/>,
+      children: (
+        <InferenceMode
+          data={transformedItems}
+          taskId={taskId}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      ),
     },
     {
       key: 'training',
       label: `Training`,
-      children: <TrainingMode data={transformedItems} taskId={taskId} currentPage={currentPage} onPageChange={handlePageChange}/>,
+      children: (
+        <TrainingMode
+          data={transformedItems}
+          taskId={taskId}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      ),
     },
   ];
 

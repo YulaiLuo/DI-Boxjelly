@@ -6,17 +6,16 @@ import { columns as TrainingColumns } from './columns';
 import { getMappingTaskMetaDetail } from '../../Mapping/api';
 import { useRequest } from 'ahooks';
 
-
 export default function TrainingMode({ data, taskId, currentPage, onPageChange }) {
   const PAGE_SIZE = 10;
   const [editableKeys, setEditableRowKeys] = useState([]);
-  const { data:meta_data } = useRequest(() => getMappingTaskMetaDetail(taskId));
+  const { data: meta_data } = useRequest(() => getMappingTaskMetaDetail(taskId));
 
   const num = meta_data?.data.num;
   const num_success = meta_data?.num_success;
   const num_failed = meta_data?.num_failed;
   const num_reviewed = meta_data?.num_reviewed;
-  
+
   const [dataSource, setDataSource] = useState(() =>
     data.map((v, i) => {
       return {
@@ -25,14 +24,14 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
       };
     })
   );
-  
+
   useEffect(() => {
     setDataSource(
       data.map((v, i) => {
         return {
           ...v,
           id: i,
-        }
+        };
       })
     );
     setEditableRowKeys([]);
@@ -56,12 +55,16 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
   }, [dataSource]);
 
   const totalNumber = useState(() => {
-    return dataSource.filter((item) => item.mappingStatus === 1).length + dataSource.filter((item) => item.mappingStatus === 0).length;
+    return (
+      dataSource.filter((item) => item.mappingStatus === 1).length +
+      dataSource.filter((item) => item.mappingStatus === 0).length
+    );
   }, [dataSource]);
 
   const SuccessfulMappingRate = useState(() => {
     const successfulMappings = dataSource.filter((item) => item.mappingStatus === 1).length;
-    const totalMappings = successfulMappings + dataSource.filter((item) => item.mappingStatus === 0).length;
+    const totalMappings =
+      successfulMappings + dataSource.filter((item) => item.mappingStatus === 0).length;
     const rate = totalMappings > 0 ? (successfulMappings / totalMappings) * 100 : 0;
     return parseFloat(rate.toFixed(2));
   }, [dataSource]);
@@ -75,7 +78,7 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
       backgroundColor: 'green',
       marginRight: '10px',
     };
-  
+
     return <div style={dotGreen}></div>;
   };
 
@@ -88,10 +91,10 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
       backgroundColor: 'red',
       marginRight: '10px',
     };
-  
+
     return <div style={dotRed}></div>;
   };
-  
+
   return (
     <>
       <Form layout="vertical">
@@ -118,18 +121,13 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
                 <span class="ml-7 cursor-pointer" onClick={showDrawer}>
                   <BarChartOutlined style={{ fontSize: '23px' }} />
                 </span>
-              </Space>              
+              </Space>
             </div>
           </Col>
         </Row>
       </Form>
-      
-      <Drawer
-        title="Overall Performance"
-        width={400}
-        onClose={onClose}
-        open={open}
-      >
+
+      <Drawer title="Overall Performance" width={400} onClose={onClose} open={open}>
         <Card
           bordered={false}
           style={{
@@ -148,7 +146,7 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
         </Card>
         <h2>Successful mapping rate: {SuccessfulMappingRate} %</h2>
       </Drawer>
-      
+
       <EditableProTable
         rowKey="id"
         columns={TrainingColumns}

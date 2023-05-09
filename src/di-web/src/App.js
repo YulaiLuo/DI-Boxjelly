@@ -7,8 +7,9 @@ import {
   Profile,
   MappingHistory,
   RetrainHistory,
-  Dashboard,
+  Main,
   MappingResult,
+  Dashboard,
 } from './modules';
 import { checkAuthentication } from './utils/auth';
 
@@ -30,12 +31,16 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           {/* <Route path="/" element={<Navigate to="dashboard/mapping"/>} /> */}
-          <Route element={loggedIn ? <Dashboard /> : <Navigate to="/login" replace />}>
+          <Route element={loggedIn ? <Main /> : <Navigate to="/login" replace />}>
             <Route
               path="/"
               element={
-                loggedIn ? <Navigate to="/mapping" replace /> : <Navigate to="/login" replace />
+                loggedIn ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
               }
+            />
+            <Route
+              path="/dashboard"
+              element={loggedIn ? <Dashboard /> : <Navigate to="/login" replace />}
             />
             <Route
               path="/mapping"
