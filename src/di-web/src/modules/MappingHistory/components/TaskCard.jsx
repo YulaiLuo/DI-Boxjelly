@@ -2,6 +2,7 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import { Card, Badge, Popconfirm } from 'antd';
 import { DeleteOutlined, BarChartOutlined, DownloadOutlined } from '@ant-design/icons';
+import formatTime from '../../../utils/formatTime';
 
 const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisualizeClick }) => {
   const { status, num, createBy, createAt, updateAt } = item;
@@ -19,6 +20,9 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
       <Badge status={badgeStatus[status]} text={status}></Badge>
     </div>
   );
+
+  const formattedCreateAt = formatTime(new Date(createAt));
+  const formattedUpdateAt = updateAt ? formatTime(new Date(updateAt)) : null;
 
   const getActions = () => {
     let actions = [
@@ -55,10 +59,10 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
       >
         <div class="flex items-center">
           <span>Mapping number:</span>
-          <span class="ml-4 text-xl">{num}</span>
+          <span class="ml-4 text-lg">{num}</span>
         </div>
-        <div>Created at: {createAt}</div>
-        {updateAt && <div>Last curated at: {updateAt}</div>}
+        <div>Created at: {formattedCreateAt}</div>
+        {updateAt && <div>Last curated at: {formattedUpdateAt}</div>}
       </div>
     </Card>
   );
