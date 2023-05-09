@@ -6,6 +6,7 @@ import { getAllMappingTasks, getMappingTaskDetail } from './api';
 import TaskCard from './components/TaskCard';
 import { Spin } from '../../components';
 import { convertKeysToCamelCase } from '../../utils/underlineToCamel';
+import { exportFile } from '../Mapping/api';
 
 export default function MappingHistory() {
   const PAGE_SIZE = 10;
@@ -51,7 +52,11 @@ export default function MappingHistory() {
             dataSource={mappedTasks}
             renderItem={(item) => (
               <List.Item>
-                <TaskCard item={item} onEditClick={() => onTaskEditClick(item.id)} />
+                <TaskCard
+                  item={item}
+                  onEditClick={() => onTaskEditClick(item.id)}
+                  onDownloadClick={() => exportFile(item.id)}
+                />
               </List.Item>
             )}
           />
