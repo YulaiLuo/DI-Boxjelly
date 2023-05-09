@@ -81,6 +81,7 @@ class MapTasksResource(Resource):
             num = len(texts),
             create_by = ObjectId(create_map_task_data['create_by']),
             # created_by = request.user_team_id
+            file_name = file.filename,
          )
 
          # Save map task
@@ -141,11 +142,11 @@ class MapTasksResource(Resource):
                   "num": task.num,
                   "create_by": str(task.create_by),
                   "create_at": task.create_at,
-                  "update_at": task.update_at
+                  "update_at": task.update_at,
+                  "file_name": str(task.file_name),
                } 
                for task in map_tasks]
          }
-         print(data['tasks'][0]['create_at'])
          
          response = jsonify(code=200, msg="ok", data=data)
          response.status_code = 200

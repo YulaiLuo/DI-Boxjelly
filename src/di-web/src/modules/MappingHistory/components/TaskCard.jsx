@@ -5,7 +5,7 @@ import { DeleteOutlined, BarChartOutlined, DownloadOutlined } from '@ant-design/
 import formatTime from '../../../utils/formatTime';
 
 const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisualizeClick }) => {
-  const { status, num, createBy, createAt, updateAt } = item;
+  const { status, num, createBy, createAt, updateAt, fileName } = item;
   console.log('a', item);
 
   const badgeStatus = {
@@ -61,6 +61,7 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
           <span>Mapping number:</span>
           <span class="ml-4 text-lg">{num}</span>
         </div>
+        <div>File name: {fileName}</div>
         <div>Created at: {formattedCreateAt}</div>
         {updateAt && <div>Last curated at: {formattedUpdateAt}</div>}
       </div>

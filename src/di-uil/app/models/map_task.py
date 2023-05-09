@@ -10,6 +10,7 @@ class MapTask(Document):
     create_at = DateTimeField(default=datetime.utcnow)
     update_at = DateTimeField(default=datetime.utcnow)
     deleted = BooleanField(default=False)
+    file_name = StringField(required=True)
     
     def save(self, *args, **kwargs):
         self.update_at = datetime.utcnow()
