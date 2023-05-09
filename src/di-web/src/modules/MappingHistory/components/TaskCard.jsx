@@ -4,7 +4,7 @@ import { Card, Badge, Popconfirm } from 'antd';
 import { DeleteOutlined, BarChartOutlined, DownloadOutlined } from '@ant-design/icons';
 
 const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisualizeClick }) => {
-  const { id, status, num, createBy, createAt, updateAt } = item;
+  const { status, num, createBy, createAt, updateAt } = item;
   console.log('a', item);
 
   const badgeStatus = {
@@ -15,7 +15,7 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
 
   const title = (
     <div class="flex justify-between">
-      <span>{createBy}</span>
+      <span class="w-3/5 overflow-hidden text-ellipsis">{createBy}</span>
       <Badge status={badgeStatus[status]} text={status}></Badge>
     </div>
   );
@@ -57,9 +57,8 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
           <span>Mapping number:</span>
           <span class="ml-4 text-xl">{num}</span>
         </div>
-        <div>Task ID: {id}</div>
         <div>Created at: {createAt}</div>
-        {updateAt && <div>Updated: at: {updateAt}</div>}
+        {updateAt && <div>Last curated at: {updateAt}</div>}
       </div>
     </Card>
   );
