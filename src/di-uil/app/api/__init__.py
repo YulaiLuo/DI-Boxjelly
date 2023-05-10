@@ -25,11 +25,11 @@ def init_api(app):
     api.add_resource(ConceptResource, '/uil/concepts')
 
     api.add_resource(MapTaskBoardResource, '/uil/board')
-    api.add_resource(MapTaskResource, '/uil/board/task')
-    api.add_resource(MapTaskMetaResource, '/uil/board/task/meta')
+    api.add_resource(MapTaskResource, '/uil/task')
+    api.add_resource(MapTaskMetaResource, '/uil/task/meta')
 
-    api.add_resource(MapTaskItemResource, '/uil/tasks/<task_id>/<index>')
-    api.add_resource(DownloadMapTaskResource, '/uil/tasks/<task_id>/download')
+    api.add_resource(MapTaskItemResource, '/uil/task/<task_id>/<index>')
+    api.add_resource(DownloadMapTaskResource, '/uil/task/<task_id>/download')
     
     # Initialize the API
     api.init_app(app)
