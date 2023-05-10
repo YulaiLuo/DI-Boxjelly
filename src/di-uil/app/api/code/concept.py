@@ -54,9 +54,8 @@ class ConceptResource(Resource):
    
       except Exception as err:
          print(err)
-         response = jsonify(code=500, err="INTERNAL_SERVER_ERROR")
-         response.status_code = 500
-         return response
+         return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 400)
+
 
    def get(self):
       # TODO: Get detail of map task
