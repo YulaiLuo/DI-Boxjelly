@@ -18,7 +18,7 @@ export default function MappingHistory() {
   const onGetTaskDetailSuccess = (data) => {
     console.log('data', data);
     const id = data.data?.id;
-    navigate('/mapping-result', { state: { id } });
+    navigate('/mapping-result', { state: { id, team_id, board_id } });
   };
 
   const { data, loading } = useRequest(
@@ -59,7 +59,7 @@ export default function MappingHistory() {
               <List.Item>
                 <TaskCard
                   item={item}
-                  onEditClick={() => onTaskEditClick(item.id)}
+                  onEditClick={() => onTaskEditClick(item.id, team_id, board_id)}
                   onDownloadClick={() => exportFile(item.id)}
                 />
               </List.Item>

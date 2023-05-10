@@ -1,4 +1,9 @@
-import { ONTOSERVER_BASE_URL, MAP_URL, MAP_TASK_URL } from '../../utils/constant/url';
+import {
+  ONTOSERVER_BASE_URL,
+  MAP_URL,
+  MAP_TASK_URL,
+  MAP_BOARD_URL,
+} from '../../utils/constant/url';
 import axios from 'axios';
 import http from '../../utils/http';
 
@@ -97,23 +102,23 @@ export const createMappingTask = (file, teamId, boardId) => {
   formData.append('file', file);
   formData.append('team_id', teamId);
   formData.append('board_id', boardId);
-  return http.postFormData(MAP_TASK_URL, formData);
+  return http.postFormData(`${MAP_TASK_URL}`, formData);
 };
 
 // Get mapping task detail
-export const getMappingTaskDetail = (taskId, teamId, boardId, page = 1, size = 10) => {
-  return http.get(`${MAP_TASK_URL}`, { taskId, teamId, boardId, page, size });
+export const getMappingTaskDetail = (task_id, team_id, board_id, page = 1, size = 10) => {
+  return http.get(`${MAP_TASK_URL}`, { task_id, team_id, board_id, page, size });
 };
 
 // Get mapping task meta detail
-export const getMappingTaskMetaDetail = (taskId) => {
-  return http.get(`${MAP_TASK_URL}/meta`, { taskId});
+export const getMappingTaskMetaDetail = (task_id) => {
+  return http.get(`${MAP_TASK_URL}/meta`, { task_id });
 };
 
-export const exportFile = async (taskId) => {
+export const exportFile = async (task_id) => {
   try {
     const response = await http.get(
-      `${MAP_TASK_URL}/${taskId}/download`,
+      `${MAP_TASK_URL}/${task_id}/download`,
       {},
       {
         responseType: 'blob',

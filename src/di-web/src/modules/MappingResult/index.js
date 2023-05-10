@@ -18,9 +18,16 @@ export default function MappingResult() {
   const defaultActiveKey = state.mappingMode === 1 ? 'training' : 'inference';
   // TODO: should get mappingRes from backend
   const taskId = state.id;
-  const { data, loading } = useRequest(() => getMappingTaskDetail(taskId, currentPage, PAGE_SIZE), {
-    refreshDeps: [currentPage],
-  });
+  const teamId = state.team_id;
+  const boardId = state.board_id;
+  console.log(state);
+
+  const { data, loading } = useRequest(
+    () => getMappingTaskDetail(taskId, teamId, boardId, currentPage, PAGE_SIZE),
+    {
+      refreshDeps: [currentPage],
+    }
+  );
 
   const mappedItems = data?.data.items ?? [];
 
