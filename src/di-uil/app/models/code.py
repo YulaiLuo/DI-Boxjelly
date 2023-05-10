@@ -10,9 +10,9 @@ class ConceptGroup(DIDocument):
 class Concept(DIDocument):
     code_system_id = ObjectIdField(required=True)                              # id of the code system
     group_id = ObjectIdField(required=False)                              # id of the concept group
+    
     parent_concept_id = ObjectIdField(required=False, default=None)                              # id of the parent concept
     child_concept_id = ObjectIdField(required=False, default=None)      
-    # tag_id = ListField(ObjectIdField(), required=False, default=[])
 
     name = StringField(unique=True, required=True)                              # the indication name in this version
     description = StringField(required=False, default='')                        # user alias of the category in this version

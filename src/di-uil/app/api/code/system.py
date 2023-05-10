@@ -12,6 +12,7 @@ class PostCodeSystemInputSchema(Schema):
    description = fields.String(required=False)     # description of the version
 
 class GetCodeSystemInputSchema(Schema):
+   team_id = fields.String(required=True)
    code_system_id = fields.String(required=True)
 
 class CodeSystemResource(Resource):
@@ -52,12 +53,13 @@ class CodeSystemResource(Resource):
             {
                "$project": {
                      "_id": 0,
+                     "group":{'$arrayElemAt': ['$group.name', 0]},
                      "name": 1,
                      "description": 1,
-                     "group_name": {'$arrayElemAt': ['$group.name', 0]},
                      "create_at": 1,
-                     "update_at": 1,
-                     "create_by": 1
+                     "update_at": 1
+                     # "create_by": 1
+
                }
             }
          ]
