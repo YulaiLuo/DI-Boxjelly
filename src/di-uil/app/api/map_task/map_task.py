@@ -68,7 +68,8 @@ class MapTaskResource(Resource):
             'items': items,
             'page': page,
             'size': size,
-            'page_num': math.ceil(map_task.num/size)
+            'page_num': math.ceil(map_task.num/size),
+            'file_name': map_task.file_name
          }
 
          response = jsonify(code=200, msg="ok", data=data)
