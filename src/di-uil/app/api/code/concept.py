@@ -3,14 +3,14 @@ from flask import jsonify, request, make_response
 from marshmallow import Schema, fields, ValidationError, validates
 from bson import ObjectId
 from app.models import CodeSystem, Concept, ConceptGroup
-from mongoengine.errors import DoesNotExist
+from mongoengine.errors import DoesNotExist, NotUniqueError
 
 class CreateConceptInputSchema(Schema):
 
    team_id = fields.String(required=True)                       
+   group_id = fields.String(required=False)                               # id of the group
    name = fields.String(required=True)                               # latest name of the category
    description = fields.String(required=False)                               # latest user alias of the category
-   group_id = fields.String(required=False)                               # id of the group
 
 class ConceptResource(Resource):
    def post(self):
@@ -21,13 +21,15 @@ class ConceptResource(Resource):
       try:
          # Load data
          in_schema = CreateConceptInputSchema()
-         in_schema = in_schema.load(request.form)
+         in_schema = in_schema.load(request.get_json())
       except ValidationError as err:
+         print(err)
          return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
       
       try:
-         code_system = CodeSystem.objects(team_id=ObjectId(in_schema['team_id'])).get()
+         code_system = CodeSystem.objects(team_id=in_schema['team_id']).get()
       except DoesNotExist as err:
+         print(err)
          return make_response(jsonify(code=404, err="CODE_SYSTEM_NOT_FOUND"), 404)
 
       try:
@@ -39,13 +41,16 @@ class ConceptResource(Resource):
          # create uil and save
          new_concept = Concept(code_system_id=code_system.id,
                            name = in_schema['name'], 
-                           description = in_schema['description'], 
+                           description = in_schema.get('description',None), 
                            group_id = in_schema.get('group_id',None), 
                            create_by=ObjectId(user_id)
          )
          new_concept.save()
 
-         return make_response(jsonify(code=201,msg="ok"),201)
+         return make_response(jsonify(code=201,msg="ok",data={"id":str(new_concept.id),"name":new_concept.name, "description":new_concept.description}),201)
+      except NotUniqueError as err:
+         print(err)
+         return make_response(jsonify(code=400, err="NOT_UNIQUE_NAME"), 400)
    
       except Exception as err:
          print(err)
