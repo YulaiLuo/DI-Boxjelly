@@ -39,6 +39,8 @@ class MapTaskBoardResource(Resource):
             size = in_schema['size']
             board_id = in_schema['board_id']
             all_map_tasks = MapTask.objects(board_id=ObjectId(board_id),deleted=False).all()
+            if not all_map_tasks:
+                return make_response(jsonify(code=404, err="MAP_TASKS_NOT_FOUND"),404)
             map_tasks_page = all_map_tasks.skip((page-1)*size).limit(size)
             
             # Convert the tasks to a list of dictionaries
