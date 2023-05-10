@@ -1,10 +1,10 @@
 from flask_restful import Resource
 from flask import jsonify, request, make_response
 from mongoengine.errors import DoesNotExist
-from bson import ObjectId
-from app.models import CodeSystem, Concept
+from bson import ObjectId, json_util
+from app.models import CodeSystem, ConceptGroup
 from marshmallow import Schema, fields, ValidationError
-
+import json
 
 class PostCodeSystemInputSchema(Schema):
    team_id = fields.String(required=True)          # team id
@@ -15,7 +15,14 @@ class GetCodeSystemInputSchema(Schema):
    team_id = fields.String(required=True)
    code_system_id = fields.String(required=True)
 
+   
+
 class CodeSystemResource(Resource):
+
+   def _handle_objectid(self,obj):
+      if isinstance(obj, ObjectId):
+         return str(obj)
+      raise TypeError("Unserializable object {} of type {}".format(obj, type(obj)))
 
    def get(self):
       """return the list of code system concept given the team id
@@ -38,38 +45,40 @@ class CodeSystemResource(Resource):
       #    return make_response(jsonify(code=400, err='MULTIPLE_CODE_SYSTEM_FOUND'), 400)
 
       try:
-         pipeline = [
-            {
-               "$match": {"code_system_id": code_system.id}
-            },
-            {
-               "$lookup": {
-                     "from": "concept_group",
-                     "localField": "group_id",
-                     "foreignField": "_id",
-                     "as": "group"
-               }
-            },
-            {
-               "$project": {
-                     "_id": 0,
-                     "group":{'$arrayElemAt': ['$group.name', 0]},
-                     "name": 1,
-                     "description": 1,
-                     "create_at": 1,
-                     "update_at": 1
-                     # "create_by": 1
 
-               }
-            }
+         pipeline = [
+            {"$match": {"code_system_id": ObjectId(code_system.id)}},
+            {"$lookup": {
+               "from": "concept",
+               "let": {"group_id": "$_id"},
+               "pipeline": [
+                  {"$match": {
+                     "$and": [
+                        {"$expr": {"$eq": ["$group_id", "$$group_id"]}},
+                        {"$or": [{"child_concept_id": None}, {"child_concept_id": {"$exists": False}}]}
+                     ]
+                  }}
+               ],
+               "as": "concepts"}},
+            {"$project": {
+                  "_id": 0,
+                  "group": "$name",
+                  "group_id": "$_id",
+                  "concepts.name": 1,
+                  "concepts.description": 1,
+                  # "concepts.create_at":1   # has error
+            }}
          ]
 
-         concepts = Concept.objects.aggregate(*pipeline)
+         groups = list(ConceptGroup.objects.aggregate(*pipeline))
+         groups = json.loads(json.dumps(groups, default=self._handle_objectid))
 
          data = {
             'name':  code_system.name,
+            'code_system_id': str(code_system.id),
+            'create_at': code_system.create_at,
             'description': code_system.description,
-            'concepts':list(concepts)
+            'groups':groups
          }
 
          response = jsonify(code=200, msg="ok", data=data)
@@ -80,7 +89,7 @@ class CodeSystemResource(Resource):
          return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
       
    def update(self):
-      # TODO: Update detail of uil
+      # TODO: Update detail of code system
       pass
 
    def post(self):
