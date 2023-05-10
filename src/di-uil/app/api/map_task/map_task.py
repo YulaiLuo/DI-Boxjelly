@@ -11,7 +11,8 @@ from bson import ObjectId
 
 class DeleteMapTaskInputSchema(Schema):
    task_id = fields.String(required=True)
-   id = fields.String(required=True)
+   team_id = fields.String(required=True)
+   board_id = fields.String(required=True)
 
 class GetMapTaskInputSchema(Schema):
    task_id = fields.String(required=True)

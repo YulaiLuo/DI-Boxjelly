@@ -12,6 +12,7 @@ class PostCodeSystemInputSchema(Schema):
    description = fields.String(required=False)     # description of the version
 
 class GetCodeSystemInputSchema(Schema):
+   team_id = fields.String(required=True)
    code_system_id = fields.String(required=True)
 
 class CodeSystemResource(Resource):
