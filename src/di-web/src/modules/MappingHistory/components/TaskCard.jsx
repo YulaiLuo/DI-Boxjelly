@@ -6,7 +6,6 @@ import formatTime from '../../../utils/formatTime';
 
 const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisualizeClick }) => {
   const { status, num, createBy, createAt, updateAt, fileName } = item;
-  console.log('a', item);
 
   const badgeStatus = {
     success: 'success',
@@ -16,7 +15,8 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
 
   const title = (
     <div class="flex justify-between">
-      <span class="w-3/5 overflow-hidden text-ellipsis">{createBy}</span>
+      {/* <span class="w-3/5 overflow-hidden text-ellipsis">{createBy}</span> */}
+      <span class="w-3/5 overflow-hidden text-ellipsis">{'User'}</span>
       <Badge status={badgeStatus[status]} text={status}></Badge>
     </div>
   );
@@ -50,7 +50,9 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
   return (
     <Card title={title} bordered={false} actions={getActions()}>
       <div
-        class={`h-24 ${status === 'success' ? 'cursor-pointer' : 'cursor-not-allowed'}`}
+        class={`min-h-24 overflow-auto ${
+          status === 'success' ? 'cursor-pointer' : 'cursor-not-allowed'
+        }`}
         onClick={() => {
           if (status === 'success') {
             onEditClick();
