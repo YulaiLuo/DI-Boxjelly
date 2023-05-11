@@ -22,7 +22,11 @@ export default function Mapping() {
   const { loading: singleMapLoading, run: handleMapSingleText } = useRequest(mapSingleText, {
     manual: true,
     onSuccess: (res) => {
-      setSingleMappingResult(res.data['0'][0].sct_term);
+      if (res.data['0'] && res.data['0'].length > 0) {
+        setSingleMappingResult(res.data['0'][0].sct_term);
+      } else {
+        setSingleMappingResult('No mapping result');
+      }
     },
   });
 
