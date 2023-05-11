@@ -5,7 +5,6 @@ import {
   DownOutlined,
   HomeOutlined,
   PieChartOutlined,
-  PlusOutlined,
   InsertRowAboveOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, Avatar, Space, Dropdown } from 'antd';
@@ -38,9 +37,6 @@ export default function Main() {
     return (
       <div class="flex justify-between">
         <span>Members</span>
-        <span>
-          <PlusOutlined />
-        </span>
       </div>
     );
   };

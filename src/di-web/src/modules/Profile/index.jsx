@@ -32,9 +32,7 @@ export default function Profile() {
 
   const sidebarItems = [
     getSidebarItem('All members', 'all'),
-    getSidebarItem('Research Group', 'research'),
-    getSidebarItem('Curate Group', 'curate'),
-    getSidebarItem('Normal User', 'normal'),
+    getSidebarItem('Pending', 'pending')
   ];
 
   return (
