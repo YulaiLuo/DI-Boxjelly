@@ -49,7 +49,7 @@ export default function Main() {
     getSidebarItem(getMemberItem(), 'profile', <UserOutlined />),
     getSidebarItem('Code System', 'code-system', <HomeOutlined />),
     // getSidebarItem('Mapping', 'mapping', <HomeOutlined />),
-    getSidebarItem('Mapping History', 'mapping-history', <PieChartOutlined />),
+    getSidebarItem('Task Board', 'mapping-history', <PieChartOutlined />),
     // getSidebarItem('History Status', 'history', <PieChartOutlined />, [
     //   getSidebarItem('Retrain History', 'retrain-history'),
     //   getSidebarItem('Mapping History', 'mapping-history'),
