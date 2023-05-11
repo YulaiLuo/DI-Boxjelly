@@ -38,6 +38,18 @@ export const columns = [
     readonly: true,
   },
   {
+    title: 'Confidence',
+    key: 'confidence',
+    dataIndex: 'confidence',
+    readonly: true,
+  },
+  {
+    title: 'Source',
+    key: 'source',
+    dataIndex: 'source',
+    readonly: true,
+  },
+  {
     title: 'Status',
     dataIndex: 'mappingStatus',
     key: 'mappingStatus',
@@ -70,18 +82,6 @@ export const columns = [
       options,
       displayRender: (labels) => labels[labels.length - 1], // just show the leaf item
     },
-  },
-  {
-    title: 'Confidence',
-    key: 'confidence',
-    dataIndex: 'confidence',
-    readonly: true,
-  },
-  {
-    title: 'Source',
-    key: 'source',
-    dataIndex: 'source',
-    readonly: true,
   },
   {
     title: 'Action',
