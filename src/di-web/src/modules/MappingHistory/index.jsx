@@ -44,14 +44,14 @@ export default function MappingHistory() {
         <Spin />
       ) : (
         <div>
-          <div class="flex flex-row-reverse mb-4">
+          <div class="flex flex-row-reverse mb-4 mt-2">
             <Button
               type="primary"
               onClick={() => {
                 navigate('/mapping');
               }}
             >
-              Create a Task
+              Create Task
             </Button>
           </div>
           <List
@@ -78,6 +78,7 @@ export default function MappingHistory() {
           {tasks.length !== 0 && (
             <div class="flex flex-row-reverse">
               <Pagination
+                showQuickJumper
                 current={currentPage}
                 onChange={(page) => setCurrentPage(page)}
                 pageSize={PAGE_SIZE}

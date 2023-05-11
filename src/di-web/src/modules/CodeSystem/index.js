@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Collapse, Button, Layout, Menu, Modal, Input, Dropdown } from 'antd';
+import { Collapse, Button, Layout, Menu, Modal, Input, Dropdown, Space, Tooltip } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import CodeCard from './components/CodeCard';
@@ -16,8 +16,11 @@ export default function CodeSystem() {
   const [newGroupName, setNewGroupName] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data: codeSystemList } = useRequest(() =>
-    getCodeSystemList('60c879e72cb0e6f96d6b0f65', '645a4f69203d1d8b3fbb80b4')
+  const { data: codeSystemList } = useRequest(
+    () => getCodeSystemList('60c879e72cb0e6f96d6b0f65', '645a4f69203d1d8b3fbb80b4'),
+    {
+      initialData: [],
+    }
   );
 
   const { loading: conceptsLoading, run: runCodeSystemListByGroup } = useRequest(
@@ -67,7 +70,9 @@ export default function CodeSystem() {
       return {
         label: (
           <div class="flex justify-between">
-            <span>{group.group}</span>
+            <Tooltip title={group.group}>
+              <span className="overflow-hidden overflow-ellipsis">{group.group}</span>
+            </Tooltip>
 
             <Dropdown
               menu={{
@@ -109,14 +114,19 @@ export default function CodeSystem() {
 
   return (
     <div class="p-4">
-      <div class="mb-4 flex justify-between items-center">
+      <div class="mb-4 flex justify-between items-center" style={{ flex: '0 0 66.6%' }}>
         <div>
           <h2 class="inline mr-4">{codeSystemList?.data?.name}</h2>
           <h3 class="text-gray-400">{codeSystemList?.data?.description}</h3>
         </div>
-        <Button type="primary" onClick={() => setIsModalOpen(true)}>
-          Add a new group
-        </Button>
+        <Space>
+          <Button type="primary" onClick={() => setIsModalOpen(true)}>
+            Add a new group
+          </Button>
+          <Button type="primary" onClick={() => setIsModalOpen(true)}>
+            Update UIL
+          </Button>
+        </Space>
       </div>
       <Layout>
         <Sider breakpoint="md" theme="light" style={{ background: '#fafafa' }}>
