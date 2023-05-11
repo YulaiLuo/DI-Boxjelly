@@ -126,7 +126,7 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
             </Form.Item>
           </Col>
           <Col span={8}>
-            <div class="pt-3">
+            <div class="pt-3 flex justify-end">
               <Space>
                 <Button type="primary" size="large">
                   Filter
