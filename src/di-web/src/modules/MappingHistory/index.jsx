@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { List, Pagination } from 'antd';
+import { List, Pagination, Button } from 'antd';
 import { useRequest } from 'ahooks';
 import { getAllMappingTasks, getMappingTaskDetail } from './api';
 import TaskCard from './components/TaskCard';
@@ -39,11 +39,21 @@ export default function MappingHistory() {
   });
 
   return (
-    <div class="m-4 h-full">
+    <div class="p-4 h-full">
       {loading ? (
         <Spin />
       ) : (
-        <>
+        <div>
+          <div class="flex flex-row-reverse mb-4">
+            <Button
+              type="primary"
+              onClick={() => {
+                navigate('/mapping');
+              }}
+            >
+              Create a Task
+            </Button>
+          </div>
           <List
             grid={{
               gutter: 25,
@@ -66,14 +76,17 @@ export default function MappingHistory() {
             )}
           />
           {tasks.length !== 0 && (
-            <Pagination
-              current={currentPage}
-              onChange={(page) => setCurrentPage(page)}
-              pageSize={PAGE_SIZE}
-              total={PAGE_SIZE * data.data?.page_num}
-            />
+            <div class="flex flex-row-reverse">
+              <Pagination
+                current={currentPage}
+                onChange={(page) => setCurrentPage(page)}
+                pageSize={PAGE_SIZE}
+                total={PAGE_SIZE * data.data?.page_num}
+                showSizeChanger={false}
+              />
+            </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );
