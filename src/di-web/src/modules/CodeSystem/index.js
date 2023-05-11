@@ -130,7 +130,7 @@ export default function CodeSystem() {
         </Space>
       </div>
       <Layout class="p-4">
-        <div class="flex flex-col items-stretch" style={{ height: '85vh' }}>
+        <div class="flex flex-col items-stretch" style={{ height: '80vh' }}>
           <Button
             type="primary"
             style={{ marginBottom: '6px' }}
@@ -138,20 +138,22 @@ export default function CodeSystem() {
           >
             Add a new group
           </Button>
-          <Sider breakpoint="md" theme="light" style={{ background: '#fafafa' }}>
-            <Menu
-              style={{ background: '#fafafa' }}
-              onClick={onMenuItemClick}
-              defaultSelectedKeys={['all']}
-              // selectedKeys={[selectedPath]}
-              mode="inline"
-              items={sidebarItems}
-              theme="light"
-            />
-          </Sider>
+          <div class="flex flex-col items-stretch overflow-scroll" style={{ flex: '0 auto' }}>
+            <Sider breakpoint="md" theme="light" style={{ background: '#fafafa' }}>
+              <Menu
+                style={{ background: '#fafafa' }}
+                onClick={onMenuItemClick}
+                defaultSelectedKeys={['all']}
+                // selectedKeys={[selectedPath]}
+                mode="inline"
+                items={sidebarItems}
+                theme="light"
+              />
+            </Sider>
+          </div>
         </div>
 
-        <Layout class="p-4 flex flex-col" style={{ height: '90vh' }}>
+        <Layout class="p-4 flex flex-col" style={{ height: '80vh' }}>
           <Content class="ml-3" style={{ flex: '1 1 auto', overflow: 'auto' }}>
             {conceptsLoading || allConceptsLoading ? <Spin /> : <CodeCard data={concepts ?? []} />}
           </Content>
