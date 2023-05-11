@@ -156,7 +156,7 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
         </Row>
       </Form>
 
-      <Drawer title="Overall Performance" width={400} onClose={onClose} open={open}>
+      {/* <Drawer title="Overall Performance" width={400} onClose={onClose} open={open}>
         <Card
           bordered={false}
           style={{
@@ -180,7 +180,7 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
             Number of Reviewed: {num_reviewed}
           </div>
         </Card>
-      </Drawer>
+      </Drawer> */}
 
       <Drawer title="Overall Performance" width={900} onClose={onClose} open={open}>
         <Row gutter={16}>
