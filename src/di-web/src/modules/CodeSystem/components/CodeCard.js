@@ -63,7 +63,7 @@ export default function CodeCard({ data }) {
   return (
     <div>
       <EditableProTable
-        rowKey="name"
+        rowKey="id"
         columns={columns}
         value={dataSource}
         editable={{
@@ -79,7 +79,7 @@ export default function CodeCard({ data }) {
         }}
         onChange={setDataSource}
         // maxLength={dataSource.length}
-        scroll={{ y: 200 }}
+        // scroll={{ y: 200 }}
         recordCreatorProps={{
           record: (index) => {
             return { id: index + 1 };

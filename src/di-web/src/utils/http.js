@@ -12,7 +12,7 @@ const instance = axios.create({
 instance.interceptors.response.use(
   (res) => {
     const { msg } = res.data;
-    if (res.status !== 200) {
+    if (res.status >= 300) {
       message.error(msg);
       throw msg;
     }
