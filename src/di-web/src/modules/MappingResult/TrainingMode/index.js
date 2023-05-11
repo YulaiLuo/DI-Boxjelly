@@ -5,7 +5,6 @@ import { EditableProTable } from '@ant-design/pro-components';
 import { Form, Col, Row, Button, Select, Space, Pagination, Drawer, Card } from 'antd';
 import { columns as TrainingColumns } from './columns';
 import { getMappingTaskMetaDetail, exportFile } from '../../Mapping/api';
-import { PieChart, Pie, Cell } from 'recharts';
 
 export default function TrainingMode({ data, taskId, currentPage, onPageChange }) {
   const PAGE_SIZE = 10;
@@ -46,29 +45,6 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
   const onClose = () => {
     setOpen(false);
   };
-
-  // const numberOfSuccess = useState(() => {
-  //   return dataSource.filter((item) => item.mappingStatus === 1).length;
-  // }, [dataSource]);
-
-  // const numberOfFail = useState(() => {
-  //   return dataSource.filter((item) => item.mappingStatus === 0).length;
-  // }, [dataSource]);
-
-  // const totalNumber = useState(() => {
-  //   return (
-  //     dataSource.filter((item) => item.mappingStatus === 1).length +
-  //     dataSource.filter((item) => item.mappingStatus === 0).length
-  //   );
-  // }, [dataSource]);
-
-  // const SuccessfulMappingRate = useState(() => {
-  //   const successfulMappings = dataSource.filter((item) => item.mappingStatus === 1).length;
-  //   const totalMappings =
-  //     successfulMappings + dataSource.filter((item) => item.mappingStatus === 0).length;
-  //   const rate = totalMappings > 0 ? (successfulMappings / totalMappings) * 100 : 0;
-  //   return parseFloat(rate.toFixed(2));
-  // }, [dataSource]);
 
   const GreenDot = () => {
     const dotGreen = {
@@ -153,7 +129,10 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
             width: 300,
           }}
         >
-          <h2>Total Mapping Text: {num}</h2>
+          <div>
+            <h4>Total Mapping Text: {num}</h4>
+            <h4>Successful Mapping Rate: {num > 0 ? ((num_success / num) * 100).toFixed(2) : 0} %</h4>            
+          </div>
           <div>
             <GreenDot />
             Number of Success: {num_success}
@@ -167,23 +146,6 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
             Number of Reviewed: {num_reviewed}
           </div>
         </Card>
-        <h2>Successful Mapping Rate: {num > 0 ? ((num_success / num) * 100).toFixed(2) : 0} %</h2>
-        {/* <PieChart width={800} height={400}>
-          <Pie
-            data={aaa}
-            cx={200}
-            cy={200}
-            innerRadius={60}
-            outerRadius={80}
-            fill="#8884d8"
-            paddingAngle={5}
-            dataKey="value"
-          >
-            {
-              data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-            }
-          </Pie>
-        </PieChart> */}
       </Drawer>
 
       <EditableProTable
