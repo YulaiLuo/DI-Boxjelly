@@ -5,6 +5,7 @@ import { EditableProTable } from '@ant-design/pro-components';
 import { Form, Col, Row, Button, Select, Space, Pagination, Drawer, Card } from 'antd';
 import { columns as TrainingColumns } from './columns';
 import { getMappingTaskMetaDetail, exportFile } from '../../Mapping/api';
+import { PieChart, Pie, Cell } from 'recharts';
 
 export default function TrainingMode({ data, taskId, currentPage, onPageChange }) {
   const PAGE_SIZE = 10;
@@ -12,9 +13,9 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
   const { data: meta_data } = useRequest(() => getMappingTaskMetaDetail(taskId));
 
   const num = meta_data?.data.num;
-  const num_success = meta_data?.num_success;
-  const num_failed = meta_data?.num_failed;
-  const num_reviewed = meta_data?.num_reviewed;
+  const num_success = meta_data?.data.num_success;
+  const num_failed = meta_data?.data.num_failed;
+  const num_reviewed = meta_data?.data.num_reviewed;
 
   const [dataSource, setDataSource] = useState(() =>
     data.map((v, i) => {
@@ -46,28 +47,28 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
     setOpen(false);
   };
 
-  const numberOfSuccess = useState(() => {
-    return dataSource.filter((item) => item.mappingStatus === 1).length;
-  }, [dataSource]);
+  // const numberOfSuccess = useState(() => {
+  //   return dataSource.filter((item) => item.mappingStatus === 1).length;
+  // }, [dataSource]);
 
-  const numberOfFail = useState(() => {
-    return dataSource.filter((item) => item.mappingStatus === 0).length;
-  }, [dataSource]);
+  // const numberOfFail = useState(() => {
+  //   return dataSource.filter((item) => item.mappingStatus === 0).length;
+  // }, [dataSource]);
 
-  const totalNumber = useState(() => {
-    return (
-      dataSource.filter((item) => item.mappingStatus === 1).length +
-      dataSource.filter((item) => item.mappingStatus === 0).length
-    );
-  }, [dataSource]);
+  // const totalNumber = useState(() => {
+  //   return (
+  //     dataSource.filter((item) => item.mappingStatus === 1).length +
+  //     dataSource.filter((item) => item.mappingStatus === 0).length
+  //   );
+  // }, [dataSource]);
 
-  const SuccessfulMappingRate = useState(() => {
-    const successfulMappings = dataSource.filter((item) => item.mappingStatus === 1).length;
-    const totalMappings =
-      successfulMappings + dataSource.filter((item) => item.mappingStatus === 0).length;
-    const rate = totalMappings > 0 ? (successfulMappings / totalMappings) * 100 : 0;
-    return parseFloat(rate.toFixed(2));
-  }, [dataSource]);
+  // const SuccessfulMappingRate = useState(() => {
+  //   const successfulMappings = dataSource.filter((item) => item.mappingStatus === 1).length;
+  //   const totalMappings =
+  //     successfulMappings + dataSource.filter((item) => item.mappingStatus === 0).length;
+  //   const rate = totalMappings > 0 ? (successfulMappings / totalMappings) * 100 : 0;
+  //   return parseFloat(rate.toFixed(2));
+  // }, [dataSource]);
 
   const GreenDot = () => {
     const dotGreen = {
@@ -93,6 +94,7 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
     };
 
     return <div style={dotRed}></div>;
+
   };
 
   return (
@@ -139,17 +141,33 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
             width: 300,
           }}
         >
-          <h2>Total Mapping Text: {totalNumber}</h2>
+          <h2>Total Mapping Text: {num}</h2>
           <div>
             <GreenDot />
-            Number of Success: {numberOfSuccess}
+            Number of Success: {num_success}
           </div>
           <div>
             <RedDot />
-            Number of failure: {numberOfFail}
+            Number of failure: {num_failed}
           </div>
         </Card>
-        <h2>Successful mapping rate: {SuccessfulMappingRate} %</h2>
+        <h2>Successful mapping rate: {num > 0 ? (num_success / num) * 100 : 0} %</h2>
+        {/* <PieChart width={800} height={400}>
+          <Pie
+            data={aaa}
+            cx={200}
+            cy={200}
+            innerRadius={60}
+            outerRadius={80}
+            fill="#8884d8"
+            paddingAngle={5}
+            dataKey="value"
+          >
+            {
+              data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+            }
+          </Pie>
+        </PieChart> */}
       </Drawer>
 
       <EditableProTable
