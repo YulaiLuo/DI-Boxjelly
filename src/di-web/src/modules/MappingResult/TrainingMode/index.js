@@ -94,7 +94,19 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
     };
 
     return <div style={dotRed}></div>;
+  };
 
+  const OrangeDot = () => {
+    const dotOrange = {
+      display: 'inline-block',
+      width: '10px',
+      height: '10px',
+      borderRadius: '50%',
+      backgroundColor: 'orange',
+      marginRight: '10px',
+    };
+
+    return <div style={dotOrange}></div>;
   };
 
   return (
@@ -148,10 +160,14 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
           </div>
           <div>
             <RedDot />
-            Number of failure: {num_failed}
+            Number of Failure: {num_failed}
+          </div>
+          <div>
+            <OrangeDot />
+            Number of Reviewed: {num_reviewed}
           </div>
         </Card>
-        <h2>Successful mapping rate: {num > 0 ? (num_success / num) * 100 : 0} %</h2>
+        <h2>Successful Mapping Rate: {num > 0 ? ((num_success / num) * 100).toFixed(2) : 0} %</h2>
         {/* <PieChart width={800} height={400}>
           <Pie
             data={aaa}
