@@ -19,3 +19,4 @@ export const MAP_TASK_URL = '/uil/task';
 export const MAP_URL = '/map/translate';
 
 export const UIL_URL = '/uil';
+export const UIL_BY_GROUP = '/uil/groups';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { List, Avatar, Layout, Menu } from 'antd';
 
-const { Sider, Header, Content } = Layout;
+const { Sider, Content } = Layout;
 
 export default function Profile() {
   const data = [
