@@ -14,7 +14,7 @@ class Config:
     # Allowed file extensions for uploading the map task
     MAP_TASK_ALLOWED_EXTENSIONS = {'csv', 'xlsx', 'xls', 'txt'}
 
-    # Allowed file extensions for 
+    # Allowed file extensions for
     NEW_UIL_ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
 
     # Map Service URL
