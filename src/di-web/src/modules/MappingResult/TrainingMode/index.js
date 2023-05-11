@@ -173,12 +173,14 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
       />
       {data.length !== 0 && (
         <Pagination
+          showQuickJumper
           style={{ display: 'flex', justifyContent: 'flex-end' }}
           current={currentPage}
           // onChange={(page) => setCurrentPage(page)}
           onChange={(page) => onPageChange(page)}
           pageSize={PAGE_SIZE}
           total={num}
+          showSizeChanger={false}
         />
       )}
     </>

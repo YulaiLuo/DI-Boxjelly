@@ -76,7 +76,7 @@ export default function Mapping() {
               onClick={onCreateTaskClick}
               loading={createTaskLoading}
             >
-              Create a Task
+              Create Task
             </Button>
           </div>
           <FileUploader files={files} onFileUpdate={onFileUpdate} />

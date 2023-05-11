@@ -19,18 +19,18 @@ export default function CodeCard({ data }) {
 
   const columns = [
     {
-      title: 'Concept',
+      title: 'Indication',
       key: 'name',
       dataIndex: 'name',
       valueType: 'text',
       formItemProps: () => {
         return {
-          rules: [{ required: true, message: '此项为必填项' }],
+          rules: [{ required: true, message: 'must be filled' }],
         };
       },
     },
     {
-      title: 'Description',
+      title: 'Tags',
       key: 'description',
       dataIndex: 'description',
       valueType: 'text',
