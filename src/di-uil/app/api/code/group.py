@@ -24,6 +24,8 @@ class UpdateConceptGroupInputSchema(Schema):
 class ConceptGroupResource(Resource):      
 
    def get(self):
+      """Get group info and its concept in the group
+      """
       try:
          # load the data
          in_schema = GetConceptGroupInputSchema()

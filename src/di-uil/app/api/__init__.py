@@ -23,6 +23,7 @@ def init_api(app):
     api.add_resource(CodeSystemResource, '/uil')
     api.add_resource(ConceptGroupResource, '/uil/groups')
     api.add_resource(ConceptResource, '/uil/concepts')
+    api.add_resource(AllConceptResource, '/uil/concepts/all')
 
     api.add_resource(MapTaskBoardResource, '/uil/board')
     api.add_resource(MapTaskResource, '/uil/task')
