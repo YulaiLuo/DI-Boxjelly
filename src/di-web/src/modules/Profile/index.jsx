@@ -64,7 +64,8 @@ export default function Profile() {
               dataSource={data}
               renderItem={(item, index) => (
                 <List.Item actions={[<a key="remove">remove</a>, <a key="leave">leave</a>]}>
-                  <List.Item.Meta style={{ display: 'flex', alignItems: 'center' }}
+                  <List.Item.Meta
+                    style={{ display: 'flex', alignItems: 'center' }}
                     avatar={
                       <Avatar
                         // class="mt-4"

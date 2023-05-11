@@ -10,6 +10,7 @@ import {
   Main,
   MappingResult,
   Dashboard,
+  CodeSystem,
 } from './modules';
 import { checkAuthentication } from './utils/auth';
 
@@ -62,6 +63,10 @@ function App() {
             <Route
               path="/profile"
               element={loggedIn ? <Profile /> : <Navigate to="/login" replace />}
+            />
+            <Route
+              path="/code-system"
+              element={loggedIn ? <CodeSystem /> : <Navigate to="/login" replace />}
             />
           </Route>
         </Routes>

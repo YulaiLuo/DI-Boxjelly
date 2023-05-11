@@ -84,11 +84,11 @@ export default function MappingResult() {
 
   return (
     <div class="px-8 py-4">
-      <Tabs
-        defaultActiveKey={defaultActiveKey}
-        items={items}
-        onChange={() => {}}
-        tabBarGutter={30}
+      <TrainingMode
+        data={transformedItems}
+        taskId={taskId}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
       />
     </div>
   );

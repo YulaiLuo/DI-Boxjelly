@@ -16,4 +16,6 @@ export const MAP_BOARD_URL = '/uil/board';
 export const MAP_TASK_URL = '/uil/task';
 
 // MedCAT mapping
-export const MAP_URL = '/map/translate'
+export const MAP_URL = '/map/translate';
+
+export const UIL_URL = '/uil';

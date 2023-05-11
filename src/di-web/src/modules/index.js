@@ -6,3 +6,4 @@ export { default as MappingResult } from './MappingResult';
 export { default as RetrainHistory } from './RetrainHistory';
 export { default as Profile } from './Profile';
 export { default as Dashboard } from './Dashboard';
+export { default as CodeSystem } from './CodeSystem';

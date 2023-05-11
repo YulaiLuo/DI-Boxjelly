@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useRequest } from 'ahooks';
 import { BarChartOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';
 import { Form, Col, Row, Button, Select, Space, Pagination, Drawer, Card } from 'antd';
 import { columns as TrainingColumns } from './columns';
-import { getMappingTaskMetaDetail } from '../../Mapping/api';
-import { useRequest } from 'ahooks';
+import { getMappingTaskMetaDetail, exportFile } from '../../Mapping/api';
 
 export default function TrainingMode({ data, taskId, currentPage, onPageChange }) {
   const PAGE_SIZE = 10;
@@ -99,7 +99,7 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
     <>
       <Form layout="vertical">
         <Row>
-          <Col span={18}>
+          <Col span={16}>
             <Form.Item label="Mapping Status" name="mappingStatus">
               <Select
                 style={{ width: 160 }}
@@ -111,13 +111,18 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
               />
             </Form.Item>
           </Col>
-          <Col span={6}>
+          <Col span={8}>
             <div class="pt-3">
               <Space>
                 <Button type="primary" size="large">
                   Filter
                 </Button>
                 <Button size="large">Reset</Button>
+                <span class="ml-4">
+                  <Button type="primary" size="large" onClick={() => exportFile(taskId)}>
+                    Export
+                  </Button>
+                </span>
                 <span class="ml-7 cursor-pointer" onClick={showDrawer}>
                   <BarChartOutlined style={{ fontSize: '23px' }} />
                 </span>

@@ -2,7 +2,7 @@
  * Task mock APIs
  */
 import { rest } from 'msw';
-import { BASE_URL, MAP_TASK_URL } from '../../utils/constant/url';
+import { BASE_URL, MAP_TASK_URL, UIL_URL, MAP_BOARD_URL } from '../../utils/constant/url';
 import { mapTaskDetail, allMappingTasks } from '../data/taskData';
 
 /**
@@ -29,17 +29,18 @@ export const createTaskMockService = rest.post(
  * Get task detail
  */
 export const getTaskDetailMockService = rest.get(
-  `${BASE_URL}${MAP_TASK_URL}/52`,
+  `${BASE_URL}${MAP_TASK_URL}`,
   async (req, res, ctx) => {
     console.log(req);
     const page = req.url.searchParams.get('page');
     const size = req.url.searchParams.get('size');
+    const taskId = req.url.searchParams.get('task_id');
     // const id = req.url.searchParams.get('taskId');
 
     return res(
       ctx.json({
         data: {
-          id: '52',
+          id: taskId,
           items: mapTaskDetail,
           page,
           size,
@@ -56,7 +57,7 @@ export const getTaskDetailMockService = rest.get(
 /**
  * Get all mapping tasks info with pagination
  */
-export const getAllMappingTasks = rest.get(`${BASE_URL}${MAP_TASK_URL}`, async (req, res, ctx) => {
+export const getAllMappingTasks = rest.get(`${BASE_URL}${MAP_BOARD_URL}`, async (req, res, ctx) => {
   const page = req.url.searchParams.get('page');
   const size = req.url.searchParams.get('size');
 
@@ -74,6 +75,78 @@ export const getAllMappingTasks = rest.get(`${BASE_URL}${MAP_TASK_URL}`, async (
   );
 });
 
-const uilMockService = [createTaskMockService, getTaskDetailMockService, getAllMappingTasks];
+export const getCodeSystemList = rest.get(`${BASE_URL}${UIL_URL}`, async (req, res, ctx) => {
+  const team_id = req.url.searchParams.get('team_id');
+  const code_system_id = req.url.searchParams.get('code_system_id');
+
+  return res(
+    ctx.json({
+      data: {
+        code_system_id: '3423423423423423',
+        create_at: 'Tue, 09 May 2023 13:49:29 GMT',
+        description: 'some des',
+        groups: [
+          {
+            concepts: [
+              {
+                description: 'd1',
+                name: 'name1',
+              },
+              {
+                description: 'd2',
+                name: 'name2',
+              },
+              {
+                description: 'd2',
+                name: 'name3',
+              },
+              {
+                description: 'd2',
+                name: 'name4',
+              },
+              {
+                description: 'd2',
+                name: 'name5',
+              },
+              {
+                description: 'd2',
+                name: 'name6',
+              },
+              {
+                description: 'd2',
+                name: 'name7',
+              },
+            ],
+            group: 'Bone',
+            group_id: '34343',
+          },
+          {
+            concepts: [
+              {
+                description: 'd1',
+                name: 'name1',
+              },
+              {
+                description: 'd2',
+                name: 'name2',
+              },
+            ],
+            group: 'Heart',
+            group_id: '34343',
+          },
+        ],
+      },
+      msg: 'success',
+      code: 200,
+    })
+  );
+});
+
+const uilMockService = [
+  createTaskMockService,
+  getTaskDetailMockService,
+  getAllMappingTasks,
+  getCodeSystemList,
+];
 
 export default uilMockService;

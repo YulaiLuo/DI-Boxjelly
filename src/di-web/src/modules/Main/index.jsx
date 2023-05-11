@@ -47,6 +47,7 @@ export default function Main() {
   const sidebarItems = [
     getSidebarItem('Dashboard', 'dashboard', <HomeOutlined />),
     getSidebarItem(getMemberItem(), 'profile', <UserOutlined />),
+    getSidebarItem('Code System', 'code-system', <HomeOutlined />),
     getSidebarItem('Mapping', 'mapping', <HomeOutlined />),
     getSidebarItem('Mapping History', 'mapping-history', <PieChartOutlined />),
     // getSidebarItem('History Status', 'history', <PieChartOutlined />, [
