@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { useRequest } from 'ahooks';
 import { BarChartOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';
 import { Form, Col, Row, Button, Select, Space, Pagination, Drawer, Card } from 'antd';
 import { columns as TrainingColumns } from './columns';
+import { getMappingTaskMetaDetail, exportFile } from '../../Mapping/api';
 
-export default function TrainingMode({ data, taskId, page_num, currentPage, onPageChange }) {
+export default function TrainingMode({ data, taskId, currentPage, onPageChange }) {
   const PAGE_SIZE = 10;
   const [editableKeys, setEditableRowKeys] = useState([]);
-  
+  const { data: meta_data } = useRequest(() => getMappingTaskMetaDetail(taskId));
+
+  const num = meta_data?.data.num;
+  const num_success = meta_data?.num_success;
+  const num_failed = meta_data?.num_failed;
+  const num_reviewed = meta_data?.num_reviewed;
+
   const [dataSource, setDataSource] = useState(() =>
     data.map((v, i) => {
       return {
@@ -16,14 +24,14 @@ export default function TrainingMode({ data, taskId, page_num, currentPage, onPa
       };
     })
   );
-  
+
   useEffect(() => {
     setDataSource(
       data.map((v, i) => {
         return {
           ...v,
           id: i,
-        }
+        };
       })
     );
     setEditableRowKeys([]);
@@ -47,12 +55,16 @@ export default function TrainingMode({ data, taskId, page_num, currentPage, onPa
   }, [dataSource]);
 
   const totalNumber = useState(() => {
-    return dataSource.filter((item) => item.mappingStatus === 1).length + dataSource.filter((item) => item.mappingStatus === 0).length;
+    return (
+      dataSource.filter((item) => item.mappingStatus === 1).length +
+      dataSource.filter((item) => item.mappingStatus === 0).length
+    );
   }, [dataSource]);
 
   const SuccessfulMappingRate = useState(() => {
     const successfulMappings = dataSource.filter((item) => item.mappingStatus === 1).length;
-    const totalMappings = successfulMappings + dataSource.filter((item) => item.mappingStatus === 0).length;
+    const totalMappings =
+      successfulMappings + dataSource.filter((item) => item.mappingStatus === 0).length;
     const rate = totalMappings > 0 ? (successfulMappings / totalMappings) * 100 : 0;
     return parseFloat(rate.toFixed(2));
   }, [dataSource]);
@@ -66,7 +78,7 @@ export default function TrainingMode({ data, taskId, page_num, currentPage, onPa
       backgroundColor: 'green',
       marginRight: '10px',
     };
-  
+
     return <div style={dotGreen}></div>;
   };
 
@@ -79,48 +91,48 @@ export default function TrainingMode({ data, taskId, page_num, currentPage, onPa
       backgroundColor: 'red',
       marginRight: '10px',
     };
-  
+
     return <div style={dotRed}></div>;
   };
-  
+
   return (
     <>
       <Form layout="vertical">
         <Row>
-          <Col span={18}>
+          <Col span={16}>
             <Form.Item label="Mapping Status" name="mappingStatus">
               <Select
                 style={{ width: 160 }}
                 allowClear
                 options={[
-                  { value: 'success', label: 'success' },
-                  { value: 'fail', label: 'fail' },
+                  { value: 'success', label: 'Success' },
+                  { value: 'fail', label: 'Fail' },
                 ]}
               />
             </Form.Item>
           </Col>
-          <Col span={6}>
+          <Col span={8}>
             <div class="pt-3">
               <Space>
                 <Button type="primary" size="large">
                   Filter
                 </Button>
                 <Button size="large">Reset</Button>
+                <span class="ml-4">
+                  <Button type="primary" size="large" onClick={() => exportFile(taskId)}>
+                    Export
+                  </Button>
+                </span>
                 <span class="ml-7 cursor-pointer" onClick={showDrawer}>
                   <BarChartOutlined style={{ fontSize: '23px' }} />
                 </span>
-              </Space>              
+              </Space>
             </div>
           </Col>
         </Row>
       </Form>
-      
-      <Drawer
-        title="Overall Performance"
-        width={400}
-        onClose={onClose}
-        open={open}
-      >
+
+      <Drawer title="Overall Performance" width={400} onClose={onClose} open={open}>
         <Card
           bordered={false}
           style={{
@@ -139,7 +151,7 @@ export default function TrainingMode({ data, taskId, page_num, currentPage, onPa
         </Card>
         <h2>Successful mapping rate: {SuccessfulMappingRate} %</h2>
       </Drawer>
-      
+
       <EditableProTable
         rowKey="id"
         columns={TrainingColumns}
@@ -161,11 +173,12 @@ export default function TrainingMode({ data, taskId, page_num, currentPage, onPa
       />
       {data.length !== 0 && (
         <Pagination
+          style={{ display: 'flex', justifyContent: 'flex-end' }}
           current={currentPage}
           // onChange={(page) => setCurrentPage(page)}
           onChange={(page) => onPageChange(page)}
           pageSize={PAGE_SIZE}
-          total={PAGE_SIZE * page_num}
+          total={num}
         />
       )}
     </>

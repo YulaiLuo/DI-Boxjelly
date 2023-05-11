@@ -10,7 +10,7 @@ export default function MappingResult() {
   const PAGE_SIZE = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const handlePageChange = (page) => {
-    console.log(page)
+    console.log(page);
     setCurrentPage(page);
   };
   const navigate = useNavigate();
@@ -18,11 +18,18 @@ export default function MappingResult() {
   const defaultActiveKey = state.mappingMode === 1 ? 'training' : 'inference';
   // TODO: should get mappingRes from backend
   const taskId = state.id;
-  const { data, run, loading } = useRequest(() => getMappingTaskDetail(taskId, currentPage, PAGE_SIZE), {
-    refreshDeps: [currentPage],
-  });
+  const teamId = state.team_id;
+  const boardId = state.board_id;
+  console.log(state);
+
+  const { data, loading } = useRequest(
+    () => getMappingTaskDetail(taskId, teamId, boardId, currentPage, PAGE_SIZE),
+    {
+      refreshDeps: [currentPage],
+    }
+  );
+
   const mappedItems = data?.data.items ?? [];
-  const page_num = data?.data.page_num;
 
   // TODO: wait for backend response update
   const transformedItems = mappedItems.map((item) => {
@@ -45,12 +52,26 @@ export default function MappingResult() {
     {
       key: 'inference',
       label: `Inference`,
-      children: <InferenceMode data={transformedItems} taskId={taskId} page_num={page_num} currentPage={currentPage} onPageChange={handlePageChange}/>,
+      children: (
+        <InferenceMode
+          data={transformedItems}
+          taskId={taskId}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      ),
     },
     {
       key: 'training',
       label: `Training`,
-      children: <TrainingMode data={transformedItems} taskId={taskId} page_num={page_num} currentPage={currentPage} onPageChange={handlePageChange}/>,
+      children: (
+        <TrainingMode
+          data={transformedItems}
+          taskId={taskId}
+          currentPage={currentPage}
+          onPageChange={handlePageChange}
+        />
+      ),
     },
   ];
 
@@ -63,11 +84,11 @@ export default function MappingResult() {
 
   return (
     <div class="px-8 py-4">
-      <Tabs
-        defaultActiveKey={defaultActiveKey}
-        items={items}
-        onChange={() => {}}
-        tabBarGutter={30}
+      <TrainingMode
+        data={transformedItems}
+        taskId={taskId}
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
       />
     </div>
   );

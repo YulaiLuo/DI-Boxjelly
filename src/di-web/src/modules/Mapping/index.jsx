@@ -40,8 +40,9 @@ export default function Mapping() {
   const onCreateTaskClick = async () => {
     const uploadedFile = files[0]?.file;
     // TODO: currently cannot access the real teamId
-    const teamId = '1234';
-    handleCreateMappingTask(uploadedFile, teamId);
+    const teamId = '60c879e72cb0e6f96d6b0f65';
+    const boardId = '60c879e72cb0e6f96d6b0f65';
+    handleCreateMappingTask(uploadedFile, teamId, boardId);
   };
 
   const onSingleTextSearch = (value) => {
