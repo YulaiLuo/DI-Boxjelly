@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { EditableProTable } from '@ant-design/pro-components';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 export default function CodeCard({ data }) {
   const [editableKeys, setEditableRowKeys] = useState([]);
@@ -19,18 +20,18 @@ export default function CodeCard({ data }) {
 
   const columns = [
     {
-      title: 'Concept',
+      title: 'Indication',
       key: 'name',
       dataIndex: 'name',
       valueType: 'text',
       formItemProps: () => {
         return {
-          rules: [{ required: true, message: '此项为必填项' }],
+          rules: [{ required: true, message: 'must be filled' }],
         };
       },
     },
     {
-      title: 'Description',
+      title: 'Tags',
       key: 'description',
       dataIndex: 'description',
       valueType: 'text',
@@ -38,7 +39,7 @@ export default function CodeCard({ data }) {
     {
       title: 'Actions',
       valueType: 'option',
-      // width: 200,
+      width: 200,
       render: (text, record, _, action) => [
         <a
           key="editable"
@@ -46,7 +47,7 @@ export default function CodeCard({ data }) {
             action?.startEditable?.(record.id);
           }}
         >
-          Edit
+          <EditOutlined />
         </a>,
         <a
           key="delete"
@@ -54,7 +55,7 @@ export default function CodeCard({ data }) {
             setDataSource(dataSource.filter((item) => item.id !== record.id));
           }}
         >
-          Delete
+          <DeleteOutlined />
         </a>,
       ],
     },

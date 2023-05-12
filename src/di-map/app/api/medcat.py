@@ -74,9 +74,10 @@ class MedCatTranslate(Resource):
             elif "substance" in entity["types"]:
                 sorted_entities["substance"].append(entity)
             else:
-                if "other" not in sorted_entities:
-                    sorted_entities["other"] = []
-                sorted_entities["other"].append(entity)
+                pass
+                # if "other" not in sorted_entities:
+                #     sorted_entities["other"] = []
+                # sorted_entities["other"].append(entity)
         
         # Sort entities within each type by confidence
         for key in sorted_entities:

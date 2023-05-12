@@ -5,7 +5,7 @@ import {
   DownOutlined,
   HomeOutlined,
   PieChartOutlined,
-  PlusOutlined,
+  InsertRowAboveOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, Avatar, Space, Dropdown } from 'antd';
 import { useUserStore } from '../../store';
@@ -37,9 +37,6 @@ export default function Main() {
     return (
       <div class="flex justify-between">
         <span>Members</span>
-        <span>
-          <PlusOutlined />
-        </span>
       </div>
     );
   };
@@ -47,7 +44,7 @@ export default function Main() {
   const sidebarItems = [
     getSidebarItem('Dashboard', 'dashboard', <HomeOutlined />),
     getSidebarItem(getMemberItem(), 'profile', <UserOutlined />),
-    getSidebarItem('Code System', 'code-system', <HomeOutlined />),
+    getSidebarItem('Code System', 'code-system', <InsertRowAboveOutlined />),
     // getSidebarItem('Mapping', 'mapping', <HomeOutlined />),
     getSidebarItem('Task Board', 'mapping-history', <PieChartOutlined />),
     // getSidebarItem('History Status', 'history', <PieChartOutlined />, [
@@ -115,7 +112,7 @@ export default function Main() {
 
               <Dropdown menu={{ items: ProfileDropdownItems, onClick: onDropdownItemClick }}>
                 <div>
-                  <span class="text-lg cursor-pointer mr-2">Daniel</span>
+                  <span class="text-lg cursor-pointer mr-2">User</span>
                   <DownOutlined />
                 </div>
               </Dropdown>

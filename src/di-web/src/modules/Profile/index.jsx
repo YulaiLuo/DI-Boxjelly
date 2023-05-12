@@ -32,16 +32,14 @@ export default function Profile() {
 
   const sidebarItems = [
     getSidebarItem('All members', 'all'),
-    getSidebarItem('Research Group', 'research'),
-    getSidebarItem('Curate Group', 'curate'),
-    getSidebarItem('Normal User', 'normal'),
+    getSidebarItem('Pending', 'pending')
   ];
 
   return (
     <div class="mx-4 py-3">
       <div class="flex items-center">
         <h2 class="mr-5">You are currently in the XXXX team </h2>
-        <a>switch team</a>
+        <a>Switch team</a>
       </div>
 
       <Layout>
@@ -63,7 +61,7 @@ export default function Profile() {
               itemLayout="horizontal"
               dataSource={data}
               renderItem={(item, index) => (
-                <List.Item actions={[<a key="remove">remove</a>, <a key="leave">leave</a>]}>
+                <List.Item actions={[<a key="remove">Remove</a>, <a key="leave">Leave</a>]}>
                   <List.Item.Meta
                     style={{ display: 'flex', alignItems: 'center' }}
                     avatar={
