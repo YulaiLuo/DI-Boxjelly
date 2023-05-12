@@ -1,3 +1,4 @@
+from .user import UserCreate
 from flask_restful import Api
 from .register import EmailRegister
 from .login import EmailLogin
@@ -39,6 +40,7 @@ def init_api(app):
     # api.add_resource(Invite, '/auth/invite',resource_class_args=(mongo, mail))
     api.add_resource(EmailLogin, '/auth/login/email',resource_class_args=(mongo, bcrypt,))
     api.add_resource(Logout, '/auth/logout', resource_class_args=(mongo, jwt,))
+    api.add_resource(UserCreate,'/auth/user',resource_class_args=(mongo, bcrypt,))
 
     # Initialize the API
     api.init_app(app)
