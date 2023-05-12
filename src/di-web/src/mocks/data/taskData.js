@@ -238,3 +238,68 @@ export const allMappingTasks = [
     update_at: '1995-01-16 13:10:39',
   },
 ];
+
+export const codeSystemGroups = [
+  {
+    concepts: [
+      {
+        description: 'd1',
+        name: 'name1',
+      },
+      {
+        description: 'd2',
+        name: 'name2',
+      },
+      {
+        description: 'd2',
+        name: 'name3',
+      },
+      {
+        description: 'd2',
+        name: 'name4',
+      },
+      {
+        description: 'd2',
+        name: 'name5',
+      },
+      {
+        description: 'd2',
+        name: 'name6',
+      },
+      {
+        description: 'd2',
+        name: 'name7',
+      },
+    ],
+    group: 'Bone',
+    group_id: '1',
+  },
+  {
+    concepts: [
+      {
+        description: 'd1',
+        name: 'name1',
+      },
+      {
+        description: 'd2',
+        name: 'name2',
+      },
+    ],
+    group: 'Heart',
+    group_id: '2',
+  },
+  {
+    concepts: [
+      {
+        description: 'd1',
+        name: 'name4',
+      },
+      {
+        description: 'd2',
+        name: 'name5',
+      },
+    ],
+    group: 'Lung',
+    group_id: '3',
+  },
+];

@@ -4,6 +4,8 @@ from .register import EmailRegister
 from .login import EmailLogin
 from .logout import Logout
 from ..utils import get_mongo, get_bcrypt, get_jwt
+from .team import TeamResource
+from .user import UserResource
 
 def init_api(app):
     """
@@ -20,6 +22,9 @@ def init_api(app):
     mongo = get_mongo()
     bcrypt = get_bcrypt()
     jwt = get_jwt()
+
+    # Team resource
+    api.add_resource(TeamResource, '/auth/team')
 
     # Add route
     api.add_resource(EmailRegister, '/auth/register/email',resource_class_args=(mongo, bcrypt,))
