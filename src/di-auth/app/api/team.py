@@ -5,7 +5,11 @@ from bson import ObjectId
 from flask import request, make_response, jsonify
 
 class PostTeamInputSchema(Schema):
-    name = fields.String(required=True)                  # team id
+    name = fields.String(required=True)                         # team name
+    emails = fields.List(fields.Email(), required=False)        # emails of the team members
+    # uli_file = fields.File(required=True)                     # uli file of the team members
+    first_board_name = fields.String(required=False)            # board name
+    first_board_description = fields.String(required=False)     # board description
 
 class GetTeamInputSchema(Schema):
     team_id = fields.String(required=True)
@@ -14,6 +18,12 @@ class PutTeamInputSchema(Schema):
     team_id = fields.String(required=True)
     new_name = fields.String(required=True)
 
+def convert_objectid_to_str(data):
+    for key, value in data.items():
+        if isinstance(value, ObjectId):
+            data[key] = str(value)
+    return data
+
 class TeamResource(Resource):
 
     def post(self):
@@ -21,7 +31,7 @@ class TeamResource(Resource):
         """
         try:
             in_schema = PostTeamInputSchema()
-            in_schema = in_schema.load(request.get_json())
+            in_schema = in_schema.load(request.form)
         except ValidationError as err:
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
         
@@ -48,7 +58,6 @@ class TeamResource(Resource):
             print(err)
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
         
-
     def get(self):
         """Get team members and informations
         """
@@ -64,7 +73,7 @@ class TeamResource(Resource):
                 return make_response(jsonify(code=404, err="TEAM_NOT_FOUND"), 404)
             
             pipeline = [
-                {"$match": {"team_id": ObjectId(in_schema['team_id']), "status": "valid"}},
+                {"$match": {"team_id": ObjectId(in_schema['team_id']), "status": "active"}},
                 {"$lookup": {
                     "from": "user",
                     "localField": "user_id",
@@ -84,18 +93,18 @@ class TeamResource(Resource):
                     "status": "$status"
                 }}
             ]
-            users = list(UserTeam.objects.aggregate(*pipeline))
+            members = list(UserTeam.objects.aggregate(*pipeline))
+            members = [convert_objectid_to_str(member) for member in members]
             data = {
                 "team_id": str(team.id),
                 "team_name": team.name,
-                "users": users
+                "members": members
             }
 
             return make_response(jsonify(code=200, msg="ok", data=data), 200)
         except Exception as err:
             print(err)
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
-
 
     def put(self):
         """Update the team name
