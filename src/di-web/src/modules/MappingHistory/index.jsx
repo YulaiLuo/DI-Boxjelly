@@ -4,23 +4,27 @@ import { List, Pagination, Button, Modal } from 'antd';
 import { useRequest } from 'ahooks';
 import { getAllMappingTasks, getMappingTaskDetail } from './api';
 import TaskCard from './components/TaskCard';
-import { Spin } from '../../components';
+import { Spin, VisualizationDrawer } from '../../components';
 import { convertKeysToCamelCase } from '../../utils/underlineToCamel';
 import { exportFile } from '../Mapping/api';
 import { FileUploader } from '../../components';
 import { useMessageStore } from '../../store';
-import { createMappingTask } from '../Mapping/api';
+import { createMappingTask, getMappingTaskMetaDetail } from '../Mapping/api';
 
 export default function MappingHistory() {
   const team_id = '60c879e72cb0e6f96d6b0f65';
   const board_id = '60c879e72cb0e6f96d6b0f65';
   const PAGE_SIZE = 10;
   const [currentPage, setCurrentPage] = useState(1);
+  const [metaData, setMetaData] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [files, setFiles] = useState([]);
+  const [open, setOpen] = useState(false);
+
   const navigate = useNavigate();
   const msgApi = useMessageStore((state) => state.msgApi);
 
   const onGetTaskDetailSuccess = (data) => {
-    console.log('data', data);
     const id = data.data?.id;
     navigate('/mapping-result', { state: { id, team_id, board_id } });
   };
@@ -37,13 +41,18 @@ export default function MappingHistory() {
     onSuccess: onGetTaskDetailSuccess,
   });
 
+  const { run: onVisualizationClick } = useRequest(getMappingTaskMetaDetail, {
+    manual: true,
+    onSuccess: (data) => {
+      setMetaData(data);
+    },
+  });
+
   const tasks = data?.data?.tasks ?? [];
   const mappedTasks = tasks.map((task) => {
     return convertKeysToCamelCase(task);
   });
-  const [files, setFiles] = useState([]);
 
-  const [open, setOpen] = useState(false);
   const showModal = () => {
     setOpen(true);
   };
@@ -83,6 +92,11 @@ export default function MappingHistory() {
         <Spin />
       ) : (
         <div>
+          <VisualizationDrawer
+            onClose={() => setDrawerOpen(false)}
+            open={drawerOpen}
+            metaData={metaData}
+          />
           <div class="flex flex-row-reverse mb-4 mt-2">
             <Button type="primary" onClick={showModal}>
               Create Task
@@ -114,6 +128,10 @@ export default function MappingHistory() {
                   item={item}
                   onEditClick={() => onTaskEditClick(item.id, team_id, board_id)}
                   onDownloadClick={() => exportFile(item.id)}
+                  onVisualizeClick={() => {
+                    setDrawerOpen(true);
+                    onVisualizationClick(item.id);
+                  }}
                 />
               </List.Item>
             )}

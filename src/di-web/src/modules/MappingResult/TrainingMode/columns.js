@@ -1,4 +1,4 @@
-import { Space, Badge, Tooltip } from 'antd';
+import { Space } from 'antd';
 import { EyeOutlined, ToolOutlined } from '@ant-design/icons';
 import { UNIVERSAL_INDICATION_LIST } from '../../../utils/constant/indicationList';
 

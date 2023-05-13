@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Collapse, Button, Layout, Menu, Modal, Input, Dropdown, Space, Tooltip } from 'antd';
+import { Button, Layout, Menu, Modal, Input, Dropdown, Space, Tooltip } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import CodeCard from './components/CodeCard';
 import { getAllConcepts, getCodeSystemList, getCodeSystemListByGroup } from './api';
 import { Spin } from '../../components';
 
-const { Panel } = Collapse;
 const { Sider, Content } = Layout;
 
 export default function CodeSystem() {
@@ -50,10 +49,6 @@ export default function CodeSystem() {
 
   // const data = codeSystemList?.data?.groups[0].concepts;
   // const group = codeSystemList?.data?.groups[0].group;
-
-  const getIcon = (group) => {
-    return;
-  };
 
   const onEditGroupClick = () => {};
 

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Tabs } from 'antd';
 import { useRequest } from 'ahooks';
-import InferenceMode from './InferenceMode';
 import TrainingMode from './TrainingMode';
 import { getMappingTaskDetail } from '../Mapping/api';
 
@@ -15,7 +13,6 @@ export default function MappingResult() {
   };
   const navigate = useNavigate();
   const { state } = useLocation();
-  const defaultActiveKey = state.mappingMode === 1 ? 'training' : 'inference';
   // TODO: should get mappingRes from backend
   const taskId = state.id;
   const teamId = state.team_id;
@@ -47,33 +44,6 @@ export default function MappingResult() {
       mappingStatus,
     };
   });
-
-  const items = [
-    {
-      key: 'inference',
-      label: `Inference`,
-      children: (
-        <InferenceMode
-          data={transformedItems}
-          taskId={taskId}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-        />
-      ),
-    },
-    {
-      key: 'training',
-      label: `Training`,
-      children: (
-        <TrainingMode
-          data={transformedItems}
-          taskId={taskId}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-        />
-      ),
-    },
-  ];
 
   useEffect(() => {
     if (state === null) {
