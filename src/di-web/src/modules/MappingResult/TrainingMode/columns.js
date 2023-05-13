@@ -1,5 +1,4 @@
-import { Space } from 'antd';
-import { EyeOutlined, ToolOutlined } from '@ant-design/icons';
+import { ToolOutlined } from '@ant-design/icons';
 import { UNIVERSAL_INDICATION_LIST } from '../../../utils/constant/indicationList';
 
 const options = UNIVERSAL_INDICATION_LIST.map((item) => {
@@ -89,20 +88,15 @@ export const columns = [
     fixed: 'right',
     valueType: 'option',
     render: (text, record, _, action) => (
-      <Space size="middle">
-        <span
-          class="cursor-pointer"
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record.id);
-          }}
-        >
-          <ToolOutlined />
-        </span>
-        <span class="cursor-pointer">
-          <EyeOutlined />
-        </span>
-      </Space>
+      <span
+        class="cursor-pointer pl-3"
+        key="editable"
+        onClick={() => {
+          action?.startEditable?.(record.id);
+        }}
+      >
+        <ToolOutlined />
+      </span>
     ),
   },
 ];
