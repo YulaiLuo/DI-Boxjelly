@@ -10,25 +10,37 @@ class MedCatTranslate(Resource):
     def __init__(self, cat):
         self.cat = cat
 
-    def get(self):
+    def post(self):
         try:
             data = TranslateSchema().load(request.get_json())
             texts = data['texts']
-
-            # Create a generator to yield each text and its index
-            def data_iterator(texts):
+            total_chars = sum(len(text) for text in texts)
+        
+            # Define a threshold for using multiprocessing
+            threshold = 1000
+            
+            if total_chars < threshold:
+                res = {}
                 for i, text in enumerate(texts):
-                    yield (i, str(text))
+                    result = self.cat.get_entities(text)
+                    # Extract the entities from the results and do further processing                
+                    processed_entities = self.process_entities({'entities': result['entities']})
+                    res[i] = processed_entities
+            else:
+                # Create a generator to yield each text and its index
+                def data_iterator(texts):
+                    for i, text in enumerate(texts):
+                        yield (i, str(text))
 
-            # Process the texts in parallel using MedCAT's multiprocessing function
-            batch_size_chars = 500 # Set the batch size in characters
-            results = self.cat.multiprocessing(data_iterator(texts), batch_size_chars=batch_size_chars, nproc=2)
+                # Process the texts in parallel using MedCAT's multiprocessing function
+                batch_size_chars = 500 # Set the batch size in characters
+                results = self.cat.multiprocessing(data_iterator(texts), batch_size_chars=batch_size_chars, nproc=2)
 
-            # Extract the entities from the results and do further processing
-            res = {}
-            for i, result in results.items():
-                processed_entities = self.process_entities({'entities': result['entities']})
-                res[i] = processed_entities
+                # Extract the entities from the results and do further processing
+                res = {}
+                for i, result in results.items():
+                    processed_entities = self.process_entities({'entities': result['entities']})
+                    res[i] = processed_entities
 
             # Do further processing to UIL and return the results
             
@@ -47,18 +59,25 @@ class MedCatTranslate(Resource):
     def process_entities(self, entities):
         entities_dict = entities['entities']
         # Create a dictionary to hold the sorted entities
-        sorted_entities = {}
-        
+        sorted_entities = {"disorder": [], "organism": [], "finding": [], "procedure": [], "substance": []}
+                
         # Sort entities by type and confidence
         for entity in entities_dict.values():
             if "disorder" in entity["types"]:
-                if "disorder" not in sorted_entities:
-                    sorted_entities["disorder"] = []
                 sorted_entities["disorder"].append(entity)
+            elif "organism" in entity["types"]:
+                sorted_entities["organism"].append(entity)
+            elif "finding" in entity["types"]:
+                sorted_entities["finding"].append(entity)
+            elif "procedure" in entity["types"]:
+                sorted_entities["procedure"].append(entity)
+            elif "substance" in entity["types"]:
+                sorted_entities["substance"].append(entity)
             else:
-                if "other" not in sorted_entities:
-                    sorted_entities["other"] = []
-                sorted_entities["other"].append(entity)
+                pass
+                # if "other" not in sorted_entities:
+                #     sorted_entities["other"] = []
+                # sorted_entities["other"].append(entity)
         
         # Sort entities within each type by confidence
         for key in sorted_entities:
@@ -72,7 +91,6 @@ class MedCatTranslate(Resource):
                     "sct_term": entity["pretty_name"],
                     "sct_code": entity["cui"], # SNOMED CT ID
                     "type": entity["types"], # semantic tag
-                    # 'text': entity['source_value'],
                     "start_index": entity["start"],
                     "end_index": entity["end"],
                     "similarity": entity["context_similarity"],

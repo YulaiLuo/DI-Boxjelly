@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { UserOutlined, DownOutlined, HomeOutlined, PieChartOutlined } from '@ant-design/icons';
+import {
+  UserOutlined,
+  DownOutlined,
+  HomeOutlined,
+  PieChartOutlined,
+  InsertRowAboveOutlined,
+} from '@ant-design/icons';
 import { Layout, Menu, Avatar, Space, Dropdown } from 'antd';
 import { useUserStore } from '../../store';
 
 const { Sider, Header, Content } = Layout;
+const { PUBLIC_URL } = process.env;
 
-export default function Dashboard() {
+export default function Main() {
   const [collapsed, setCollapsed] = useState(false);
-  const setLoggedIn = useUserStore((state) => state.setLoggedIn)
+  const setLoggedIn = useUserStore((state) => state.setLoggedIn);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,13 +33,24 @@ export default function Dashboard() {
     icon,
   });
 
+  const getMemberItem = () => {
+    return (
+      <div class="flex justify-between">
+        <span>Members</span>
+      </div>
+    );
+  };
+
   const sidebarItems = [
-    getSidebarItem('Main', 'mapping', <HomeOutlined />),
-    getSidebarItem('History Status', 'history', <PieChartOutlined />, [
-      getSidebarItem('Retrain History', 'retrain-history'),
-      getSidebarItem('Mapping History', 'mapping-history'),
-    ]),
-    getSidebarItem('Account', 'profile', <UserOutlined />),
+    getSidebarItem('Dashboard', 'dashboard', <HomeOutlined />),
+    getSidebarItem(getMemberItem(), 'team-profile', <UserOutlined />),
+    getSidebarItem('Code System', 'code-system', <InsertRowAboveOutlined />),
+    // getSidebarItem('Mapping', 'mapping', <HomeOutlined />),
+    getSidebarItem('Task Board', 'mapping-history', <PieChartOutlined />),
+    // getSidebarItem('History Status', 'history', <PieChartOutlined />, [
+    //   getSidebarItem('Retrain History', 'retrain-history'),
+    //   getSidebarItem('Mapping History', 'mapping-history'),
+    // ]),
   ];
 
   const ProfileDropdownItems = [
@@ -53,6 +71,7 @@ export default function Dashboard() {
 
   const onProfileClick = () => {
     console.log('go to profile page');
+    navigate('/profile');
   };
 
   const onDropdownItemClick = (e) => {
@@ -62,26 +81,30 @@ export default function Dashboard() {
 
   return (
     <>
-      <Layout style={{ height: '100vh' }}>
+      <Layout hasSider>
         <Sider
           collapsible
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
+          breakpoint="md"
+          style={{ position: 'fixed' }}
           theme="light"
         >
-          <div class="m-4 text-center text-2xl font-bold text-primary">
-            {collapsed ? 'M' : 'Mapping'}
+          <div class="m-4 flex items-center justify-center">
+            <img src={`${PUBLIC_URL}/logo512.png`} alt="" width={30} />
+            {!collapsed && <span class="font-bold text-primary ml-2 text-xl">Mapping</span>}
           </div>
           <Menu
             style={{ height: '100vh' }}
             onClick={onMenuItemClick}
             defaultSelectedKeys={[selectedPath]}
+            selectedKeys={[selectedPath]}
             mode="inline"
             items={sidebarItems}
             theme="light"
           />
         </Sider>
-        <Layout>
+        <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
           <Header class="bg-white px-8 py-3 flex sticky top-0 z-10 w-full">
             {/* <span class="self-center">Header</span> */}
 
@@ -90,7 +113,7 @@ export default function Dashboard() {
 
               <Dropdown menu={{ items: ProfileDropdownItems, onClick: onDropdownItemClick }}>
                 <div>
-                  <span class="text-lg cursor-pointer mr-2">Daniel</span>
+                  <span class="text-lg cursor-pointer mr-2">User</span>
                   <DownOutlined />
                 </div>
               </Dropdown>

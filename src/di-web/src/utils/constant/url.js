@@ -8,3 +8,16 @@ export const EMAIL_LOGIN_URL = '/auth/login/email';
 // Mapping module
 export const SINGLE_TEXT_MAPPING_URL = '/map/ontoserver/translate';
 export const ONTOSERVER_TRANSLATE = '/ConceptMap/$translate';
+
+// UIL board
+export const MAP_BOARD_URL = '/uil/board';
+
+// UIL task
+export const MAP_TASK_URL = '/uil/task';
+
+// MedCAT mapping
+export const MAP_URL = '/map/translate';
+
+export const UIL_URL = '/uil';
+export const UIL_BY_GROUP = '/uil/groups';
+export const UIL_ALL = '/uil/concepts/all';

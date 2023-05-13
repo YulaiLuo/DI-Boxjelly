@@ -3,7 +3,8 @@ import { message } from 'antd';
 import { BASE_URL } from './constant/url';
 
 const instance = axios.create({
-  baseURL: BASE_URL,
+  baseURL: "http://localhost:8000",
+  // baseURL: BASE_URL,
   timeout: 8000,
   withCredentials: true,
 });
@@ -11,14 +12,14 @@ const instance = axios.create({
 instance.interceptors.response.use(
   (res) => {
     const { msg } = res.data;
-    if (res.status !== 200) {
+    if (res.status >= 300) {
       message.error(msg);
       throw msg;
     }
     return res.data;
   },
   (error) => {
-    const msg = error.response.data?.msg ?? 'something wrong with the network request';
+    const msg = error.response.data?.msg ?? 'Something wrong with the network request';
     message.error(msg);
     throw error;
   }

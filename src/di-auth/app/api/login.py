@@ -90,7 +90,7 @@ class EmailLogin(Resource):
 
         # Find the user in the database
         print(email)
-        user = self.mongo.db.users.find_one({'email': email})
+        user = self.mongo.db.user.find_one({'email': email})
         if not user:
             response = jsonify(code=404,err="USER_NOT_FOUND")
             response.status_code = 404
@@ -108,7 +108,7 @@ class EmailLogin(Resource):
                 with session.start_transaction():
                     
                     # Update the last login time
-                    self.mongo.db.users.update_one({'email': email}, {'$set': {'last_login_time':datetime.utcnow()}})
+                    self.mongo.db.user.update_one({'email': email}, {'$set': {'last_login_time':datetime.utcnow()}})
 
                     # Generate the token here
                     access_token = create_access_token(identity=str(user['_id']))

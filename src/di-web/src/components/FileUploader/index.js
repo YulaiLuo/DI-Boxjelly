@@ -16,6 +16,7 @@ export default function FileUploader({ files, onFileUpdate }) {
         acceptedFileTypes={[
           // can only upload .csv file
           'text/csv',
+          'text/plain'
           // 'application/vnd.ms-excel',
           // 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         ]}

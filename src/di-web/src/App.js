@@ -4,11 +4,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import {
   Login,
   Mapping,
-  Profile,
+  TeamProfile,
   MappingHistory,
   RetrainHistory,
-  Dashboard,
+  Main,
   MappingResult,
+  Dashboard,
+  CodeSystem,
+  Profile
 } from './modules';
 import { checkAuthentication } from './utils/auth';
 
@@ -30,18 +33,21 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           {/* <Route path="/" element={<Navigate to="dashboard/mapping"/>} /> */}
-          <Route element={loggedIn ? <Dashboard /> : <Navigate to="/login" replace />}>
+          <Route element={loggedIn ? <Main /> : <Navigate to="/login" replace />}>
             <Route
               path="/"
               element={
-                loggedIn ? <Navigate to="/mapping" replace /> : <Navigate to="/login" replace />
+                loggedIn ? <Navigate to="/dashboard" replace /> : <Navigate to="/login" replace />
               }
+            />
+            <Route
+              path="/dashboard"
+              element={loggedIn ? <Dashboard /> : <Navigate to="/login" replace />}
             />
             <Route
               path="/mapping"
               element={loggedIn ? <Mapping /> : <Navigate to="/login" replace />}
             />
-
             <Route
               path="/mapping-result"
               element={loggedIn ? <MappingResult /> : <Navigate to="/login" replace />}
@@ -53,6 +59,14 @@ function App() {
             <Route
               path="/retrain-history"
               element={loggedIn ? <RetrainHistory /> : <Navigate to="/login" replace />}
+            />
+            <Route
+              path="/team-profile"
+              element={loggedIn ? <TeamProfile /> : <Navigate to="/login" replace />}
+            />
+            <Route
+              path="/code-system"
+              element={loggedIn ? <CodeSystem /> : <Navigate to="/login" replace />}
             />
             <Route
               path="/profile"
