@@ -71,6 +71,7 @@ export default function Main() {
 
   const onProfileClick = () => {
     console.log('go to profile page');
+    navigate('/profile');
   };
 
   const onDropdownItemClick = (e) => {

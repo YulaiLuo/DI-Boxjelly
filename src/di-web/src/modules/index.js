@@ -1,5 +1,6 @@
 export { default as Main } from './Main';
 export { default as Login } from './Login';
+export { default as Profile } from './Profile';
 export { default as Mapping } from './Mapping';
 export { default as MappingHistory } from './MappingHistory';
 export { default as MappingResult } from './MappingResult';
