@@ -3,7 +3,7 @@ import { List, Avatar, Layout, Menu } from 'antd';
 
 const { Sider, Content } = Layout;
 
-export default function Profile() {
+export default function TeamProfile() {
   const data = [
     {
       title: 'Vlada',

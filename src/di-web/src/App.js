@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import {
   Login,
   Mapping,
-  Profile,
+  TeamProfile,
   MappingHistory,
   RetrainHistory,
   Main,
@@ -61,8 +61,8 @@ function App() {
               element={loggedIn ? <RetrainHistory /> : <Navigate to="/login" replace />}
             />
             <Route
-              path="/profile"
-              element={loggedIn ? <Profile /> : <Navigate to="/login" replace />}
+              path="/team-profile"
+              element={loggedIn ? <TeamProfile /> : <Navigate to="/login" replace />}
             />
             <Route
               path="/code-system"
