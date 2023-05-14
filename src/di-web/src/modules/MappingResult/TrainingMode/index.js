@@ -60,7 +60,6 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
               />
             </Form.Item>
           </Col>
-
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Form.Item label="Source" name="source">
               <Select
