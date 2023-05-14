@@ -21,11 +21,11 @@ class GatewayResource(Resource):
     def __init__(self):
         self.service_map = app.config['SERVICE_MAP']
 
-    # @jwt_required()
+    @jwt_required()
     def _gateway(self, path):
 
         # Get user id from token
-        # user_id = get_jwt_identity()  
+        user_id = get_jwt_identity()
 
         # Get service name from path
         service = path.split("/")[0]
@@ -40,8 +40,8 @@ class GatewayResource(Resource):
 
         # Create headers with user id from token
         headers = {
-            "Content-Type": request.content_type
-            # "DI-User-Id": str(user_id),
+            "Content-Type": request.content_type,
+            "UserID": str(user_id)
         }
 
         # Forward request to target service
@@ -52,7 +52,8 @@ class GatewayResource(Resource):
             data=request.get_data(),
             params=request.args,
             allow_redirects=False,
-            timeout=20)
+            timeout=20
+        )
         
         return Response(response=response.content,
                 status=response.status_code,

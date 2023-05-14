@@ -1,5 +1,4 @@
 from flask_restful import Api
-from .register import EmailRegister
 from .login import EmailLogin
 from .logout import Logout
 from ..utils import get_mongo, get_bcrypt, get_jwt
@@ -32,9 +31,6 @@ def init_api(app):
     # Invite resource
     api.add_resource(InviteResource, '/auth/team/invite')
     api.add_resource(AcceptInviteResource, '/auth/team/accept',resource_class_args=(bcrypt,))
-
-    # Add route
-    api.add_resource(EmailRegister, '/auth/register/email',resource_class_args=(mongo, bcrypt,))
     
     # api.add_resource(Invite, '/auth/invite',resource_class_args=(mongo, mail))
     api.add_resource(EmailLogin, '/auth/login/email',resource_class_args=(mongo, bcrypt,))
