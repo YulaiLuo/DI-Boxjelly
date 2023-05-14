@@ -5,6 +5,11 @@ from flask import jsonify, make_response, Response
 from app.models import MapItem, MapTask
 import csv, io
 from bson import ObjectId
+from marshmallow import Schema, fields, ValidationError, validates
+
+class GetDownloadMapTaskInputSchema(Schema):
+      team_id = fields.String(required=True)
+      task_id = fields.String(required=True)
 
 class DownloadMapTaskResource(Resource):
 
@@ -51,8 +56,17 @@ class DownloadMapTaskResource(Resource):
 
       return csv_data.getvalue().encode('utf-8')
 
-   def get(self, task_id):
+   def get(self):
+      """Download the map task result
+      """
       try:
+         in_schema = GetDownloadMapTaskInputSchema()
+         in_schema = in_schema.load(request.args)
+      except:
+         return make_response(jsonify(code=400, err="INVALID_INPUT"),400)
+
+      try:
+         task_id = in_schema['task_id']
          map_task = MapTask.objects(id=ObjectId(task_id), deleted=False).first()
          if not map_task:
             return make_response(jsonify(code=404, err="MAP_TASK_NOT_FOUND"),404)
@@ -60,7 +74,6 @@ class DownloadMapTaskResource(Resource):
          map_items = MapItem.objects(task_id=ObjectId(task_id)).all()
          if not map_items:
             return make_response(jsonify(code=404, err="MAP_ITEM_NOT_FOUND"),404)
-
 
          csv_data = self.export_map_task_to_csv(map_task, map_items)
 

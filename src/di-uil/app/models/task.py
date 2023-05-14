@@ -34,4 +34,7 @@ class MapItem(DIDocument):
     mapped_info = ListField(EmbeddedDocumentField(MappedInfo))   # mapped information
     status = StringField()                  # success, fail, review
 
-
+class TaskBoard(DIDocument):
+    team_id =  ObjectIdField(required=True)                       # id of the team
+    name = StringField(required=True)                               # name of the version
+    description = StringField(required=False)                       # description of the version
