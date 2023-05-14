@@ -48,7 +48,7 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
     <>
       <Form layout="vertical">
         <Row>
-          <Col span={16}>
+          <Col xs={24} sm={24} md={12} lg={12} xl={4}>
             <Form.Item label="Mapping Status" name="mappingStatus">
               <Select
                 style={{ width: 160 }}
@@ -60,8 +60,21 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
               />
             </Form.Item>
           </Col>
-          <Col span={8}>
-            <div class="pt-3 flex justify-end">
+
+          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            <Form.Item label="Source" name="source">
+              <Select
+                style={{ width: 160 }}
+                allowClear
+                options={[
+                  { value: 'SNOMED_CT', label: 'SNOMED_CT' },
+                  { value: 'UIL', label: 'UIL' },
+                ]}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={24} xl={8}>
+            <div class="pt-3 flex flex-row-reverse">
               <Space>
                 <Button type="primary" size="large">
                   Filter

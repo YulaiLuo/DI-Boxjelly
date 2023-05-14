@@ -3,7 +3,7 @@ import { message } from 'antd';
 import { BASE_URL } from './constant/url';
 
 const instance = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: 'http://localhost:8000',
   // baseURL: BASE_URL,
   timeout: 8000,
   withCredentials: true,
@@ -60,5 +60,19 @@ const postFormData = (api, data, headers = {}) => {
   headers['Content-Type'] = 'multipart/form-data';
   return _post(api, data, headers);
 };
+
+const deleteData = (api, params = {}, headers = {}) => {
+  return new Promise((resolve, reject) => {
+    instance
+      .delete(api, { params, headers })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
 // eslint-disable-next-line
-export default { get, post, postFormData };
+export default { get, post, postFormData, deleteData };
