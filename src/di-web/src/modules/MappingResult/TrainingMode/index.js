@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { useRequest } from 'ahooks';
 import { BarChartOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';
@@ -9,6 +10,8 @@ import { VisualizationDrawer } from '../../../components';
 
 export default function TrainingMode({ data, taskId, currentPage, onPageChange }) {
   const PAGE_SIZE = 10;
+  const team_id = localStorage.getItem('team');
+  const { id: board_id } = useParams();
   const [editableKeys, setEditableRowKeys] = useState([]);
   const { data: meta_data } = useRequest(() => getMappingTaskMetaDetail(taskId));
 
@@ -80,7 +83,7 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
                 </Button>
                 <Button size="large">Reset</Button>
                 <span class="ml-4">
-                  <Button type="primary" size="large" onClick={() => exportFile(taskId)}>
+                  <Button type="primary" size="large" onClick={() => exportFile(team_id, taskId)}>
                     Export
                   </Button>
                 </span>

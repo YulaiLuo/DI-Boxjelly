@@ -7,7 +7,7 @@ export default function InferenceMode({ data, taskId }) {
   return (
     <>
       <div class="flex flex-row-reverse">
-        <Button type="primary" size="large" onClick={() => exportFile(taskId)}>
+        <Button type="primary" size="large" onClick={() => exportFile(teamId, taskId)}>
           Export
         </Button>
       </div>

@@ -79,13 +79,11 @@ export default function CodeSystem() {
   };
 
   const handleModalOk = () => {
-    console.log(newGroupInputRef.current?.input.value, newGroupName);
     setIsModalOpen(false);
   };
 
   const handleModalCancel = () => {
     setIsModalOpen(false);
-    setNewGroupName('');
   };
 
   return (
@@ -124,17 +122,8 @@ export default function CodeSystem() {
         </Layout>
       </Layout>
 
-      <Modal
-        title="Add a new group"
-        open={isModalOpen}
-        onOk={handleModalOk}
-        onCancel={handleModalCancel}
-      >
-        <Input
-          placeholder="please input the group name"
-          onChange={(e) => setNewGroupName(e.target.value)}
-          value={newGroupName}
-        />
+      <Modal open={isModalOpen} onOk={handleModalOk} onCancel={handleModalCancel}>
+        <Input placeholder="UIL" />
       </Modal>
     </div>
   );

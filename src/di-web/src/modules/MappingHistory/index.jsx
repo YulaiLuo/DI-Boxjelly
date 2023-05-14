@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { List, Pagination, Button, Modal } from 'antd';
 import { useRequest } from 'ahooks';
-import { getAllMappingTasks, getMappingTaskDetail, deleteMappingTask } from './api';
+import { getAllMappingTasks, deleteMappingTask } from './api';
 import TaskCard from './components/TaskCard';
 import { Spin, VisualizationDrawer } from '../../components';
 import { convertKeysToCamelCase } from '../../utils/underlineToCamel';
-import { exportFile } from '../Mapping/api';
 import { FileUploader } from '../../components';
 import { useMessageStore } from '../../store';
-import { createMappingTask, getMappingTaskMetaDetail } from '../Mapping/api';
+import { createMappingTask, getMappingTaskMetaDetail, exportFile } from '../Mapping/api';
 
 export default function MappingHistory() {
   const team_id = localStorage.getItem('team');
@@ -24,8 +23,7 @@ export default function MappingHistory() {
   const navigate = useNavigate();
   const msgApi = useMessageStore((state) => state.msgApi);
 
-  const onGetTaskDetailSuccess = (data) => {
-    const id = data.data?.id;
+  const onGetTaskDetailSuccess = (id, team_id, board_id) => {
     navigate('/mapping-result', { state: { id, team_id, board_id } });
   };
 
@@ -35,11 +33,6 @@ export default function MappingHistory() {
     refresh: refreshAllMappingTasks,
   } = useRequest(() => getAllMappingTasks(team_id, board_id, currentPage, PAGE_SIZE), {
     refreshDeps: [currentPage, board_id, team_id],
-  });
-
-  const { run: onTaskEditClick } = useRequest(getMappingTaskDetail, {
-    manual: true,
-    onSuccess: onGetTaskDetailSuccess,
   });
 
   const { run: onVisualizationClick } = useRequest(getMappingTaskMetaDetail, {
@@ -52,8 +45,10 @@ export default function MappingHistory() {
   const { run: onTaskDeleteClick } = useRequest(deleteMappingTask, {
     manual: true,
     onSuccess: (data) => {
-      console.log('delete success', data);
-      // refreshAllMappingTasks
+      msgApi.success('Mapping task deleted successfully');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     },
   });
 
@@ -83,12 +78,9 @@ export default function MappingHistory() {
     }
   );
 
-  const onCreateTaskClick = async () => {
+  const onCreateTaskClick = async (team_id, board_id) => {
     const uploadedFile = files[0]?.file;
-    // TODO: currently cannot access the real teamId
-    const teamId = '60c879e72cb0e6f96d6b0f65';
-    const boardId = '60c879e72cb0e6f96d6b0f65';
-    handleCreateMappingTask(uploadedFile, teamId, boardId);
+    handleCreateMappingTask(team_id, board_id, uploadedFile);
   };
 
   const onFileUpdate = (files) => {
@@ -113,7 +105,7 @@ export default function MappingHistory() {
             <Modal
               title="Create Mapping Task"
               open={open}
-              onOk={onCreateTaskClick}
+              onOk={() => onCreateTaskClick(team_id, board_id)}
               confirmLoading={createTaskLoading}
               onCancel={handleCancel}
             >
@@ -135,8 +127,8 @@ export default function MappingHistory() {
               <List.Item>
                 <TaskCard
                   item={item}
-                  onEditClick={() => onTaskEditClick(item.id, team_id, board_id)}
-                  onDownloadClick={() => exportFile(item.id)}
+                  onEditClick={() => onGetTaskDetailSuccess(item.id, team_id, board_id)}
+                  onDownloadClick={() => exportFile(team_id, item.id)}
                   onVisualizeClick={() => {
                     setDrawerOpen(true);
                     onVisualizationClick(item.id);
