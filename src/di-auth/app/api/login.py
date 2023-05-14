@@ -1,9 +1,10 @@
 from datetime import datetime
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies
-from flask import request, jsonify
+from flask import request, jsonify, make_response
 from marshmallow import Schema, fields, ValidationError, validate
-from pymongo.errors import OperationFailure
+from app.models import User
+from mongoengine.errors import DoesNotExist, MultipleObjectsReturned
 
 class EmailLoginSchema(Schema):
     """
@@ -48,82 +49,48 @@ class EmailLogin(Resource):
         Raises:
             ValidationError: If the input data is invalid
             OperationFailure: If the database operation failed
-
-        Example:
-            >>> url = <login_url>
-            >>> payload = {'email': 'example@email.com', 'password': 'mypassword'}
-            >>> headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-            >>> requests.post(url, data=payload, headers=headers)
-            {'code': 200, 'msg': 'success'} with status code 200, and set the access token and refresh token in the cookies
-
-            >>> url = <login_url>
-            >>> payload = {'email': 'example', 'password': 'mypassword'}
-            >>> headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-            >>> requests.post(url, data=payload, headers=headers)
-            {'code': 400, 'msg': 'INVALID_EMAIL_PASSWORD'} with status code 400
-
-            >>> url = <login_url>
-            >>> payload = {'email': 'correct@email.com', 'password': 'incorrect_password'}
-            >>> headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-            >>> requests.post(url, data=payload, headers=headers)
-            {'code': 401, 'msg': 'INCORRECT_PASSWORD'} with status code 401
-
-            >>> url = <login_url>
-            >>> payload = {'email': 'user_not_exist@email.com', 'password': 'correct_password'}
-            >>> headers = {'Content-Type': 'application/x-www-form-urlencoded'}
-            >>> requests.post(url, data=payload, headers=headers)
-            {'code': 404, 'msg': 'USER_NOT_FOUND'} with status code 404
         """
-        
         # Validate the input data
         try:
-            data = request.form
-            login_data = EmailLoginSchema().load(data)
+            in_schema = EmailLoginSchema()
+            in_schema = in_schema.load(request.form)
         except ValidationError:
             response = jsonify(code=400,err="INVALID_EMAIL_PASSWORD")
-            response.status_code = 400
-            return response
-
-        # Get the email and password from the request
-        email = login_data['email']
-        password = login_data['password']
+            return make_response(response,400)
 
         # Find the user in the database
-        print(email)
-        user = self.mongo.db.user.find_one({'email': email})
-        if not user:
-            response = jsonify(code=404,err="USER_NOT_FOUND")
-            response.status_code = 404
-            return response
-
-        # Check the password
-        if not self.bcrypt.check_password_hash(user['password'], password):
-            response = jsonify(code=401,err="INCORRECT_PASSWORD")
-            response.status_code = 401
-            return response
-
-        # If the user is found and the password is correct, we start the transaction to update the last login time
         try:
-            with self.mongo.cx.start_session() as session:
-                with session.start_transaction():
-                    
-                    # Update the last login time
-                    self.mongo.db.user.update_one({'email': email}, {'$set': {'last_login_time':datetime.utcnow()}})
+            user = User.objects(email=in_schema['email']).get()
+        except DoesNotExist:
+            response = jsonify(code=404,err="USER_NOT_FOUND")
+            return make_response(response,404)
+        except MultipleObjectsReturned:
+            response = jsonify(code=500,err="MULTIPLE_USERS_FOUND")
+            return make_response(response,500)
+            
+        # Check the password
+        if not self.bcrypt.check_password_hash(user.password, in_schema['password']):
+            response = jsonify(code=401,err="INCORRECT_PASSWORD")
+            return make_response(response,401)
 
-                    # Generate the token here
-                    access_token = create_access_token(identity=str(user['_id']))
-                    refresh_token = create_refresh_token(identity=str(user['_id']))
+        # If the user is found and the password is correct, then update the last login time
+        user.last_login_time = datetime.utcnow
+        user.save()
 
-                    # If user exist, password is correct and update success, return 200 status code 
-                    response = jsonify(code=200,msg='ok')
+        # Generate and set the tokens
+        access_token = create_access_token(identity=str(user.id))
+        refresh_token = create_refresh_token(identity=str(user.id))
 
-                    # Set the JWT cookies in the response
-                    set_access_cookies(response, access_token)
-                    set_refresh_cookies(response, refresh_token)
+        data = {
+            "user_id":str(user.id),
+            "username": user.username,
+            "first_nae": user.first_name,
+            "last_name": user.last_name,
+            "nickname": user.nickname,
+            "email": user.email,
+        }
+        response = jsonify(code=200,msg='ok',data=data)
+        set_access_cookies(response, access_token)
+        set_refresh_cookies(response, refresh_token)
 
-                    response.status_code = 200
-                    return response
-        except OperationFailure:
-            response = jsonify(code=400,err="TRANSACTION_FAILED")
-            response.status_code = 400
-            return response
+        return make_response(response,200)

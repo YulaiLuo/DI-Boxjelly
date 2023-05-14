@@ -4,6 +4,7 @@ from app.models import Team, UserTeam, User
 from bson import ObjectId
 from flask import request, make_response, jsonify
 from mongoengine.errors import DoesNotExist
+from app.models import User
 
 class GetUserInputSchema(Schema):
     user_id = fields.String(required=True)
