@@ -31,7 +31,8 @@ class MapTaskBoardsResource(Resource):
                 team_id=ObjectId(in_schema['team_id']),
                 name=in_schema['name'],
                 description=in_schema.get('description','')
-            ).save()
+            )
+            board.save()
             data = {
                 "id": str(board.id),
                 "name": board.name,
@@ -40,7 +41,8 @@ class MapTaskBoardsResource(Resource):
                 "update_at": board.update_at
             }
             return make_response(jsonify(code=200, msg="ok", data=data), 200)
-        except:
+        except Exception as err:
+            print(err)
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
 
     def get(self):
