@@ -32,10 +32,10 @@ class PostMapTaskInputSchema(Schema):
 
 
 class GetMapTaskInputSchema(Schema):
-    team_id = fields.String(required=True)
-    board_id = fields.String(required=True)
-    page = fields.Integer(required=False,default=1, min_value=1)
-    size = fields.Integer(required=False,default=20, min_value=10)
+   team_id = fields.String(required=True)
+   board_id = fields.String(required=True)
+   page = fields.Integer(required=False,default=1, min_value=1)
+   size = fields.Integer(required=False,default=20, min_value=10)
 
 class MapTaskResource(Resource):
    """
