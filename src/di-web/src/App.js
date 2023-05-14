@@ -4,13 +4,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import {
   Login,
   Mapping,
-  Profile,
+  TeamProfile,
   MappingHistory,
   RetrainHistory,
   Main,
   MappingResult,
   Dashboard,
   CodeSystem,
+  Profile
 } from './modules';
 import { checkAuthentication } from './utils/auth';
 
@@ -47,7 +48,6 @@ function App() {
               path="/mapping"
               element={loggedIn ? <Mapping /> : <Navigate to="/login" replace />}
             />
-
             <Route
               path="/mapping-result"
               element={loggedIn ? <MappingResult /> : <Navigate to="/login" replace />}
@@ -61,12 +61,16 @@ function App() {
               element={loggedIn ? <RetrainHistory /> : <Navigate to="/login" replace />}
             />
             <Route
-              path="/profile"
-              element={loggedIn ? <Profile /> : <Navigate to="/login" replace />}
+              path="/team-profile"
+              element={loggedIn ? <TeamProfile /> : <Navigate to="/login" replace />}
             />
             <Route
               path="/code-system"
               element={loggedIn ? <CodeSystem /> : <Navigate to="/login" replace />}
+            />
+            <Route
+              path="/profile"
+              element={loggedIn ? <Profile /> : <Navigate to="/login" replace />}
             />
           </Route>
         </Routes>

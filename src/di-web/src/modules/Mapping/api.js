@@ -1,33 +1,32 @@
 import {
-  ONTOSERVER_BASE_URL,
+  // ONTOSERVER_BASE_URL,
   MAP_URL,
   MAP_TASK_URL,
-  MAP_BOARD_URL,
+  // MAP_BOARD_URL,
 } from '../../utils/constant/url';
-import axios from 'axios';
 import http from '../../utils/http';
 
-const instance = axios.create({
-  baseURL: ONTOSERVER_BASE_URL,
-});
+// const instance = axios.create({
+//   baseURL: ONTOSERVER_BASE_URL,
+// });
 
-const _mapParametersToRes = (parameters) => {
-  const matches = parameters.filter((value) => value.name === 'match');
-  const concepts = matches.map((match) => match.part?.filter((value) => value.name === 'concept'));
-  if (!concepts.length) return Promise.reject('fail to match');
-  const valueCodings = concepts.map((concept) => concept[0]?.valueCoding);
-  const disorders = valueCodings.filter(
-    (valueCoding) => valueCoding.extension[0]?.valueString === 'disorder'
-  );
-  if (!disorders.length) return Promise.reject('fail to match');
-  const mappedRes = disorders.map((disorder) => ({
-    code: disorder.code,
-    display: disorder.display.split(' (')[0],
-    mappingSuccess: true,
-  }));
-  // TODO: currently we haven't found a way to select the most appropriate result among multiple possible mappings
-  return Promise.resolve(mappedRes[0]);
-};
+// const _mapParametersToRes = (parameters) => {
+//   const matches = parameters.filter((value) => value.name === 'match');
+//   const concepts = matches.map((match) => match.part?.filter((value) => value.name === 'concept'));
+//   if (!concepts.length) return Promise.reject('fail to match');
+//   const valueCodings = concepts.map((concept) => concept[0]?.valueCoding);
+//   const disorders = valueCodings.filter(
+//     (valueCoding) => valueCoding.extension[0]?.valueString === 'disorder'
+//   );
+//   if (!disorders.length) return Promise.reject('fail to match');
+//   const mappedRes = disorders.map((disorder) => ({
+//     code: disorder.code,
+//     display: disorder.display.split(' (')[0],
+//     mappingSuccess: true,
+//   }));
+//   // TODO: currently we haven't found a way to select the most appropriate result among multiple possible mappings
+//   return Promise.resolve(mappedRes[0]);
+// };
 
 // export const mapSingleText = (code) => http.get(SINGLE_TEXT_MAPPING_URL, { code });
 export const mapSingleText = (text) => {

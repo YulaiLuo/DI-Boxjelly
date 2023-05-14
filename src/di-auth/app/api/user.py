@@ -1,36 +1,28 @@
 from flask_restful import Resource
-from marshmallow import Schema, fields, ValidationError, validates_schema
+from marshmallow import Schema, fields, ValidationError, validates_schema, validate
 from app.models import Team, UserTeam, User
 from bson import ObjectId
 from flask import request, make_response, jsonify
+from mongoengine.errors import DoesNotExist
+from app.models import User
 
 class GetUserInputSchema(Schema):
     user_id = fields.String(required=True)
 
 class PutUserInputSchema(Schema):
-    # avatar = StringField(required=True)                               # group name
-    user_ud = fields.String(required=True)                              # group name
-    first_name = fields.String(required=False)                          # group name
-    last_name = fields.String(required=False)                           # group name
-    nickname = fields.String(required=False)                            # group name
-    gender = fields.String(required=False)                              # group name
+    # avatar = StringField(required=True)
+    first_name = fields.String(required=False,min_len=1)
+    last_name = fields.String(required=False,min_len=1)
+    nickname = fields.String(required=False,min_len=1)
+    gender = fields.String(required=False,validate=validate.OneOf(['male','female','other']))                              # group name
     @validates_schema
     def validate_not_empty(self, data, **kwargs):
         if not data:
             raise ValidationError("EMPTY_REQUEST")
             
-class PostUserTeamTeamInputSchema(Schema):
-    team_id = fields.String(required=True)
-    email = fields.Email(required=True)
-
 class UserResource(Resource):
-    
-    def post():
-        """Update the user profile
-        """
-        pass
 
-    def put():
+    def put(self):
         """Update the user profile
         """
         try:
@@ -39,7 +31,26 @@ class UserResource(Resource):
         except ValidationError as err:
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
 
-    def get():
+        # TODO: Get user id from token
+        user_id = "645da08427eb73c12b252cef"
+
+        try:
+            # Update the user's profile
+            User.objects(id=user_id).update_one(**in_schema)           
+            updated_user = User.objects(id=user_id).first()
+        except Exception as err:
+            print(err)
+            return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
+        data = {
+            'user_id':str(updated_user.id),
+            'name': f'{updated_user.first_name} {updated_user.last_name}',
+            'nickname': updated_user.nickname,
+            'email':updated_user.email,
+            'gender':updated_user.gender
+        }
+        return make_response(jsonify(code=200, msg="ok", data=data), 200)
+
+    def get(self):
         """Get user profile
         """
         try:
@@ -49,11 +60,11 @@ class UserResource(Resource):
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
         
         try:
-            # TODO: Get user id from header token
-            user_id = '645a59c3052f3ebedab52d78'
-            # TODO: Check if the user is in the team
+            # TODO: Get user id from header token 
+            # to check if the requester is in the team
+            user_id = '645da08427eb73c12b252cef'
 
-            user = User.objects(id=ObjectId(in_schema['user_id'])).first()
+            user = User.objects(id=in_schema['user_id']).first()
             if not user:
                 return make_response(jsonify(code=404, err="USER_NOT_FOUND"), 404)
             data = {
@@ -67,29 +78,5 @@ class UserResource(Resource):
         except Exception as err:
             print(err)
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
-
-# class UserTeamResource(Resource):
-
-#     def post():
-#         """Invite a member into the team
-#         """
-
-#         try:
-#             in_schema = PostUserTeamTeamInputSchema()
-#             in_schema = in_schema.load(request.get_json())
-#         except ValidationError as err:
-#             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
-        
-#         try:
-#             # TODO: Get user id from header token
-#             user_id = "645a59c3052f3ebedab52d78"
-
-#             new_user_team = UserTeam(user_id=ObjectId(user_id),
-#                                     team_id=in_schema['email'],
-#                                     status='pending')
-
-
-
-
 
         

@@ -1,85 +1,102 @@
-import React from 'react';
-import { List, Avatar, Layout, Menu } from 'antd';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-const { Sider, Content } = Layout;
-
-export default function Profile() {
-  const data = [
-    {
-      title: 'Vlada',
-      description: 'vlada@unimelb.edu.au',
-    },
-    {
-      title: 'Daniel',
-      description: 'daniel@unimelb.edu.au',
-    },
-    {
-      title: 'Mike',
-      description: 'Mike@unimelb.edu.au',
-    },
-    {
-      title: 'Mike',
-      description: 'Mike@unimelb.edu.au',
-    },
-  ];
-
-  const getSidebarItem = (label, key, icon, children) => ({
-    label,
-    key,
-    children,
-    icon,
+const UserProfile = () => {
+  const [userData, setUserData] = useState({
+    email: "",
+    name: "",
+    nickname: "",
+    gender: ""
   });
+  const [editMode, setEditMode] = useState(false);
 
-  const sidebarItems = [
-    getSidebarItem('All members', 'all'),
-    getSidebarItem('Pending', 'pending')
-  ];
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/auth/user?user_id=645deb4a2a296fec6af44411`);
+
+      if (response.data.code === 200) {
+        setUserData({
+          email: response.data.data.email,
+          name: response.data.data.name,
+          nickname: response.data.data.nickname,
+          gender: response.data.data.gender || "Not specified"
+        });
+      } else {
+        console.log(response.data.msg);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSaveChanges = async () => {
+    const [first_name, last_name] = userData.name.split(' ');
+
+    try {
+      const response = await axios.put(`http://localhost:8000/auth/user?user_id=645deb4a2a296fec6af44411`, {
+        first_name,
+        last_name,
+        nickname: userData.nickname,
+        gender: userData.gender,
+      });
+
+      if (response.data.code === 200) {
+        setEditMode(false);
+        fetchData();
+      } else {
+        console.log(response.data.msg);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-    <div class="mx-4 py-3">
-      <div class="flex items-center">
-        <h2 class="mr-5">You are currently in the XXXX team </h2>
-        <a>Switch team</a>
-      </div>
-
-      <Layout>
-        <Sider breakpoint="md" theme="light" style={{ background: '#fafafa' }}>
-          <Menu
-            style={{ background: '#fafafa' }}
-            // onClick={onMenuItemClick}
-            defaultSelectedKeys={['all']}
-            // selectedKeys={[selectedPath]}
-            mode="inline"
-            items={sidebarItems}
-            theme="light"
+    <div>
+      <h1>User Profile</h1>
+      {editMode ? (
+        <div>
+          <label>Name:</label>
+          <input
+            value={userData.name}
+            onChange={(e) => setUserData({ ...userData, name: e.target.value })}
           />
-        </Sider>
-
-        <Layout>
-          <Content class="ml-3">
-            <List
-              itemLayout="horizontal"
-              dataSource={data}
-              renderItem={(item, index) => (
-                <List.Item actions={[<a key="remove">Remove</a>, <a key="leave">Leave</a>]}>
-                  <List.Item.Meta
-                    style={{ display: 'flex', alignItems: 'center' }}
-                    avatar={
-                      <Avatar
-                        // class="mt-4"
-                        src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`}
-                      />
-                      // <Avatar class="mt-4" src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`} />
-                    }
-                    title={item.title}
-                    description={item.description}
-                  />
-                </List.Item>
-              )}
-            />
-          </Content>
-        </Layout>
-      </Layout>
+          <label>Nickname:</label>
+          <input
+            value={userData.nickname}
+            onChange={(e) =>
+              setUserData({ ...userData, nickname: e.target.value })
+            }
+          />
+          <label>Email:</label>
+          <input
+            value={userData.email}
+            onChange={(e) => setUserData({ ...userData, email: e.target.value })}
+          />
+          <label>Gender:</label>
+          <input
+            value={userData.gender}
+            onChange={(e) =>
+              setUserData({ ...userData, gender: e.target.value })
+            }
+          />
+          <button onClick={handleSaveChanges}>Save Changes</button>
+        </div>
+      ) : (
+        <div>
+          <p>Name: {userData.name}</p>
+          <p>Nickname: {userData.nickname}</p>
+          <p>Email: {userData.email}</p>
+          <p>Gender: {userData.gender}</p>
+          <button onClick={() => setEditMode(true)}>Edit Profile</button>
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default UserProfile;

@@ -1,10 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Col, Row, Button, Input, Spin } from 'antd';
+import { Col, Row, Input, Spin } from 'antd';
 import { useRequest } from 'ahooks';
-import { FileUploader } from '../../components';
 import { mapSingleText } from '../Mapping/api';
-import { useMessageStore } from '../../store';
 
 const { Search } = Input;
 

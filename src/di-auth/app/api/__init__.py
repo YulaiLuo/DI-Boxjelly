@@ -5,6 +5,7 @@ from .logout import Logout
 from ..utils import get_mongo, get_bcrypt, get_jwt
 from .team import TeamResource
 from .user import UserResource
+from .invite import InviteResource, AcceptInviteResource
 
 def init_api(app):
     """
@@ -24,6 +25,13 @@ def init_api(app):
 
     # Team resource
     api.add_resource(TeamResource, '/auth/team')
+
+    # User resource
+    api.add_resource(UserResource, '/auth/user')
+
+    # Invite resource
+    api.add_resource(InviteResource, '/auth/team/invite')
+    api.add_resource(AcceptInviteResource, '/auth/team/accept',resource_class_args=(bcrypt,))
 
     # Add route
     api.add_resource(EmailRegister, '/auth/register/email',resource_class_args=(mongo, bcrypt,))

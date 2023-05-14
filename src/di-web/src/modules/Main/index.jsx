@@ -43,7 +43,7 @@ export default function Main() {
 
   const sidebarItems = [
     getSidebarItem('Dashboard', 'dashboard', <HomeOutlined />),
-    getSidebarItem(getMemberItem(), 'profile', <UserOutlined />),
+    getSidebarItem(getMemberItem(), 'team-profile', <UserOutlined />),
     getSidebarItem('Code System', 'code-system', <InsertRowAboveOutlined />),
     // getSidebarItem('Mapping', 'mapping', <HomeOutlined />),
     getSidebarItem('Task Board', 'mapping-history', <PieChartOutlined />),
@@ -71,6 +71,7 @@ export default function Main() {
 
   const onProfileClick = () => {
     console.log('go to profile page');
+    navigate('/profile');
   };
 
   const onDropdownItemClick = (e) => {
