@@ -13,6 +13,9 @@ export default function Login() {
   const { loading, run } = useRequest(login, {
     manual: true,
     onSuccess: (res) => {
+      console.log('login', res);
+      localStorage.setItem('user', res.data?.user?.id);
+      localStorage.setItem('team', res.data?.team?.id);
       setLoggedIn(true);
       msgApi.success('Login Successfully');
       localStorage.setItem('loggedIn', 'true');

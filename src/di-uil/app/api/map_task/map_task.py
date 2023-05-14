@@ -4,7 +4,11 @@ from app.models import MapTask, MapItem
 from bson import ObjectId
 from marshmallow import Schema, fields, ValidationError, validates
 from flask import current_app as app
-import math, threading, requests, codecs, csv
+import math
+import threading
+import requests
+import codecs
+import csv
 from io import StringIO
 
 

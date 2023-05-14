@@ -36,29 +36,6 @@ export default function CodeCard({ data }) {
       dataIndex: 'description',
       valueType: 'text',
     },
-    {
-      title: 'Actions',
-      valueType: 'option',
-      width: 200,
-      render: (text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record.id);
-          }}
-        >
-          <EditOutlined />
-        </a>,
-        <a
-          key="delete"
-          onClick={() => {
-            setDataSource(dataSource.filter((item) => item.id !== record.id));
-          }}
-        >
-          <DeleteOutlined />
-        </a>,
-      ],
-    },
   ];
 
   return (

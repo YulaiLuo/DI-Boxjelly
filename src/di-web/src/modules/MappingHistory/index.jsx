@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { List, Pagination, Button, Modal } from 'antd';
 import { useRequest } from 'ahooks';
-import { getAllMappingTasks, getMappingTaskDetail } from './api';
+import { getAllMappingTasks, getMappingTaskDetail, deleteMappingTask } from './api';
 import TaskCard from './components/TaskCard';
 import { Spin, VisualizationDrawer } from '../../components';
 import { convertKeysToCamelCase } from '../../utils/underlineToCamel';
@@ -12,7 +12,7 @@ import { useMessageStore } from '../../store';
 import { createMappingTask, getMappingTaskMetaDetail } from '../Mapping/api';
 
 export default function MappingHistory() {
-  const team_id = '60c879e72cb0e6f96d6b0f65';
+  const team_id = localStorage.getItem('team');
   const board_id = '60c879e72cb0e6f96d6b0f65';
   const PAGE_SIZE = 10;
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,12 +29,13 @@ export default function MappingHistory() {
     navigate('/mapping-result', { state: { id, team_id, board_id } });
   };
 
-  const { data, loading } = useRequest(
-    () => getAllMappingTasks(team_id, board_id, currentPage, PAGE_SIZE),
-    {
-      refreshDeps: [currentPage],
-    }
-  );
+  const {
+    data,
+    loading,
+    refresh: refreshAllMappingTasks,
+  } = useRequest(() => getAllMappingTasks(team_id, board_id, currentPage, PAGE_SIZE), {
+    refreshDeps: [currentPage],
+  });
 
   const { run: onTaskEditClick } = useRequest(getMappingTaskDetail, {
     manual: true,
@@ -45,6 +46,14 @@ export default function MappingHistory() {
     manual: true,
     onSuccess: (data) => {
       setMetaData(data);
+    },
+  });
+
+  const { run: onTaskDeleteClick } = useRequest(deleteMappingTask, {
+    manual: true,
+    onSuccess: (data) => {
+      console.log('delete success', data);
+      // refreshAllMappingTasks
     },
   });
 
@@ -132,6 +141,7 @@ export default function MappingHistory() {
                     setDrawerOpen(true);
                     onVisualizationClick(item.id);
                   }}
+                  onDeleteClick={() => onTaskDeleteClick(item.id, team_id, board_id)}
                 />
               </List.Item>
             )}

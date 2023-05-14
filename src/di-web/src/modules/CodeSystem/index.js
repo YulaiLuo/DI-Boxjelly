@@ -50,16 +50,6 @@ export default function CodeSystem() {
   // const data = codeSystemList?.data?.groups[0].concepts;
   // const group = codeSystemList?.data?.groups[0].group;
 
-  const onEditGroupClick = () => {};
-
-  const onDeleteGroupClick = () => {};
-
-  const onDropdownItemClick = (e) => {
-    console.log(e);
-    if (e.key === 'edit') onEditGroupClick();
-    else if (e.key === 'delete') onDeleteGroupClick();
-  };
-
   const sidebarItems = [
     {
       label: 'All',
@@ -72,19 +62,6 @@ export default function CodeSystem() {
             <Tooltip title={group.group}>
               <span className="overflow-hidden overflow-ellipsis">{group.group}</span>
             </Tooltip>
-
-            <Dropdown
-              menu={{
-                items: [
-                  { key: 'edit', label: 'edit' },
-                  { key: 'delete', label: 'delete' },
-                ],
-                onClick: onDropdownItemClick,
-              }}
-              // open={true}
-            >
-              <MoreOutlined>dfd</MoreOutlined>
-            </Dropdown>
           </div>
         ),
         key: group.group_id,
@@ -126,20 +103,12 @@ export default function CodeSystem() {
       </div>
       <Layout class="p-4">
         <div class="flex flex-col items-stretch" style={{ height: '80vh' }}>
-          <Button
-            type="primary"
-            style={{ marginBottom: '6px' }}
-            onClick={() => setIsModalOpen(true)}
-          >
-            Add a new group
-          </Button>
           <div class="flex flex-col items-stretch overflow-scroll" style={{ flex: '0 auto' }}>
-            <Sider breakpoint="md" theme="light" style={{ background: '#fafafa' }}>
+            <Sider width={250} breakpoint="sm" theme="light" style={{ background: '#fafafa' }}>
               <Menu
                 style={{ background: '#fafafa' }}
                 onClick={onMenuItemClick}
                 defaultSelectedKeys={['all']}
-                // selectedKeys={[selectedPath]}
                 mode="inline"
                 items={sidebarItems}
                 theme="light"
