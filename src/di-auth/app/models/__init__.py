@@ -23,7 +23,7 @@ class User(DIDocument):
     last_name = StringField(required=True)                               # group name
     nickname = StringField(required=False)                               # group name
     gender = StringField(required=False,choices=('male','female','other'))                               # gender
-    
+
 class Team(DIDocument):
     name = StringField(required=True)                               # group name
     create_by = ReferenceField(User,required=True)                       # creator id
@@ -37,4 +37,4 @@ class UserTeam(DIDocument):
    
     status = StringField(default='pending',choices=('active','absent','pending'))
     join_time = DateTimeField(required=False)    # join time
-
+    last_login_time = DateTimeField(default=datetime.utcnow)    # last login time

@@ -3,7 +3,7 @@ from flask_restful import Resource
 from flask_jwt_extended import create_access_token, create_refresh_token, set_access_cookies, set_refresh_cookies
 from flask import request, jsonify, make_response
 from marshmallow import Schema, fields, ValidationError, validate
-from app.models import User
+from app.models import User, UserTeam, Team
 from mongoengine.errors import DoesNotExist, MultipleObjectsReturned
 
 class EmailLoginSchema(Schema):
@@ -73,22 +73,45 @@ class EmailLogin(Resource):
             response = jsonify(code=401,err="INCORRECT_PASSWORD")
             return make_response(response,401)
 
-        # If the user is found and the password is correct, then update the last login time
-        user.last_login_time = datetime.utcnow
-        user.save()
+        # TODO: There will only be one team, to support multiple team, change the following lines
+        try:
+            user_team = UserTeam.objects(user_id=user.id, status='active').first()
+            if user_team.status == 'absent':
+                response = jsonify(code=401,err="USER_NOT_IN_TEAM")
+                return make_response(response,401)
+            elif user_team.status == 'pending':
+                response = jsonify(code=401,err="ACTIVATE_ACCOUNT_FIRST")
+                return make_response(response,401)
+        except DoesNotExist:
+            response = jsonify(code=404,err="USER_TEAM_NOT_FOUND")
+            return make_response(response,404)
+        
+        # TODO: The system only need to support one team
+        team = user_team.team_id
 
         # Generate and set the tokens
         access_token = create_access_token(identity=str(user.id))
         refresh_token = create_refresh_token(identity=str(user.id))
 
         data = {
-            "user_id":str(user.id),
-            "username": user.username,
-            "first_nae": user.first_name,
-            "last_name": user.last_name,
-            "nickname": user.nickname,
-            "email": user.email,
+            "user":{
+                "id":str(user.id),
+                "username": user.username,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "nickname": user.nickname,
+                "email": user.email
+            },
+            "team":{
+                "id": str(team.id),
+                "name": team.name,
+                "role": user_team.role,
+                "status": user_team.status,
+                "join_time": user_team.join_time,
+                "last_login_time": user_team.last_login_time
+            }
         }
+        user_team.last_login_time = datetime.utcnow
         response = jsonify(code=200,msg='ok',data=data)
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
