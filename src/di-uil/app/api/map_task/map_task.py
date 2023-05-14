@@ -22,11 +22,7 @@ class MapTaskResource(Resource):
    """
    Resource for the map task list
    """
-   def post(self):
-      """Create a new task board
-      """
-      pass
-   
+
    def delete(self):
       """delete a task board
       """
