@@ -8,7 +8,6 @@ import math, threading, requests, codecs, csv
 from io import StringIO
 from bson import ObjectId
 
-
 class DeleteMapTaskInputSchema(Schema):
    task_id = fields.String(required=True)
    team_id = fields.String(required=True)
@@ -34,8 +33,6 @@ class PostMapTaskInputSchema(Schema):
    def validate_file(self, file):
       if not self._allowed_file(file.filename, app.config['MAP_TASK_ALLOWED_EXTENSIONS']):
          raise ValidationError("FILE_NOT_ALLOWED")
-
-
 
 class MapTaskDetailResource(Resource):
    """

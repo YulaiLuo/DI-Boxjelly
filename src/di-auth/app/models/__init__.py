@@ -15,7 +15,7 @@ class DIDocument(Document):
         super(DIDocument, self).save(*args, **kwargs)
 
 class User(DIDocument):
-    # avatar = StringField(required=True)                               # group name
+    avatar = StringField(required=True)                               # group name
     username = StringField(unique=True,required=True)                               # group name
     email = StringField(unique=True,required=True)                               # group name
     password = StringField(required=True)                               # group name
@@ -23,7 +23,7 @@ class User(DIDocument):
     last_name = StringField(required=True)                               # group name
     nickname = StringField(required=False)                               # group name
     gender = StringField(required=False,choices=('male','female','other'))                               # gender
-    
+
 class Team(DIDocument):
     name = StringField(required=True)                               # group name
     create_by = ReferenceField(User,required=True)                       # creator id

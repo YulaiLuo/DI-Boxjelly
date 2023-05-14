@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { List, Pagination, Button, Modal } from 'antd';
 import { useRequest } from 'ahooks';
 import { getAllMappingTasks, getMappingTaskDetail, deleteMappingTask } from './api';
@@ -13,7 +13,7 @@ import { createMappingTask, getMappingTaskMetaDetail } from '../Mapping/api';
 
 export default function MappingHistory() {
   const team_id = localStorage.getItem('team');
-  const board_id = '60c879e72cb0e6f96d6b0f65';
+  const { id: board_id } = useParams();
   const PAGE_SIZE = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [metaData, setMetaData] = useState(null);
@@ -34,7 +34,7 @@ export default function MappingHistory() {
     loading,
     refresh: refreshAllMappingTasks,
   } = useRequest(() => getAllMappingTasks(team_id, board_id, currentPage, PAGE_SIZE), {
-    refreshDeps: [currentPage],
+    refreshDeps: [currentPage, board_id, team_id],
   });
 
   const { run: onTaskEditClick } = useRequest(getMappingTaskDetail, {
