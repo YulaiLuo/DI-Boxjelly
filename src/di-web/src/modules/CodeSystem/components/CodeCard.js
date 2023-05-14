@@ -44,6 +44,7 @@ export default function CodeCard({ data }) {
         rowKey="id"
         columns={columns}
         value={dataSource}
+        maxLength={dataSource.length}
         editable={{
           type: 'multiple',
           editableKeys,
