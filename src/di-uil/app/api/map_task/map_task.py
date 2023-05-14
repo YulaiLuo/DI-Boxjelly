@@ -38,15 +38,10 @@ class GetMapTaskInputSchema(Schema):
    size = fields.Integer(required=False,default=20, min_value=10)
 
 class MapTaskResource(Resource):
+   
    """
    Resource for the map task list
    """
-
-   def delete(self):
-      """delete a task 
-      """
-      pass
-
    def get(self):
       """
       Check the permission and get the map task list of a board
