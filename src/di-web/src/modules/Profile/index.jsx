@@ -1,89 +1,102 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 
-const ProfilePage = () => {
-  const [profile, setProfile] = useState({
-    username: '',
-    email: '',
-    password: '',
-    firstName: '',
-    lastName: '',
-    nickname: '',
-    gender: ''
+const UserProfile = () => {
+  const [userData, setUserData] = useState({
+    email: "",
+    name: "",
+    nickname: "",
+    gender: ""
   });
-
   const [editMode, setEditMode] = useState(false);
 
-  const handleInputChange = (event) => {
-    setProfile({
-      ...profile,
-      [event.target.name]: event.target.value
-    });
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8000/auth/user?user_id=645deb4a2a296fec6af44411`);
+
+      if (response.data.code === 200) {
+        setUserData({
+          email: response.data.data.email,
+          name: response.data.data.name,
+          nickname: response.data.data.nickname,
+          gender: response.data.data.gender || "Not specified"
+        });
+      } else {
+        console.log(response.data.msg);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleEdit = () => {
-    setEditMode(true);
-  };
+  const handleSaveChanges = async () => {
+    const [first_name, last_name] = userData.name.split(' ');
 
-  const handleSave = () => {
-    // Here you would typically send the updated profile to your server
-    console.log(profile);
-    setEditMode(false);
+    try {
+      const response = await axios.put(`http://localhost:8000/auth/user?user_id=645deb4a2a296fec6af44411`, {
+        first_name,
+        last_name,
+        nickname: userData.nickname,
+        gender: userData.gender,
+      });
+
+      if (response.data.code === 200) {
+        setEditMode(false);
+        fetchData();
+      } else {
+        console.log(response.data.msg);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <div>
-      <h1>Profile Page</h1>
+      <h1>User Profile</h1>
       {editMode ? (
-        <form>
-          <label>
-            Username:
-            <input type="text" name="username" value={profile.username} onChange={handleInputChange} />
-          </label>
-          <label>
-            Email:
-            <input type="email" name="email" value={profile.email} onChange={handleInputChange} />
-          </label>
-          <label>
-            Password:
-            <input type="password" name="password" value={profile.password} onChange={handleInputChange} />
-          </label>
-          <label>
-            First Name:
-            <input type="text" name="firstName" value={profile.firstName} onChange={handleInputChange} />
-          </label>
-          <label>
-            Last Name:
-            <input type="text" name="lastName" value={profile.lastName} onChange={handleInputChange} />
-          </label>
-          <label>
-            Nickname:
-            <input type="text" name="nickname" value={profile.nickname} onChange={handleInputChange} />
-          </label>
-          <label>
-            Gender:
-            <select name="gender" value={profile.gender} onChange={handleInputChange}>
-              <option value="">Select...</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
-          </label>
-          <button type="button" onClick={handleSave}>Save Changes</button>
-        </form>
+        <div>
+          <label>Name:</label>
+          <input
+            value={userData.name}
+            onChange={(e) => setUserData({ ...userData, name: e.target.value })}
+          />
+          <label>Nickname:</label>
+          <input
+            value={userData.nickname}
+            onChange={(e) =>
+              setUserData({ ...userData, nickname: e.target.value })
+            }
+          />
+          <label>Email:</label>
+          <input
+            value={userData.email}
+            onChange={(e) => setUserData({ ...userData, email: e.target.value })}
+          />
+          <label>Gender:</label>
+          <input
+            value={userData.gender}
+            onChange={(e) =>
+              setUserData({ ...userData, gender: e.target.value })
+            }
+          />
+          <button onClick={handleSaveChanges}>Save Changes</button>
+        </div>
       ) : (
         <div>
-          <p>Username: {profile.username}</p>
-          <p>Email: {profile.email}</p>
-          <p>Password: {profile.password}</p>
-          <p>First Name: {profile.firstName}</p>
-          <p>Last Name: {profile.lastName}</p>
-          <p>Nickname: {profile.nickname}</p>
-          <p>Gender: {profile.gender}</p>
-          <button onClick={handleEdit}>Edit Profile</button>
+          <p>Name: {userData.name}</p>
+          <p>Nickname: {userData.nickname}</p>
+          <p>Email: {userData.email}</p>
+          <p>Gender: {userData.gender}</p>
+          <button onClick={() => setEditMode(true)}>Edit Profile</button>
         </div>
       )}
     </div>
   );
 };
 
-export default ProfilePage;
+export default UserProfile;
