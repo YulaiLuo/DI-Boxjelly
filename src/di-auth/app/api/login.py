@@ -112,6 +112,7 @@ class EmailLogin(Resource):
             }
         }
         user_team.last_login_time = datetime.utcnow
+        user_team.save()
         response = jsonify(code=200,msg='ok',data=data)
         set_access_cookies(response, access_token)
         set_refresh_cookies(response, refresh_token)
