@@ -29,7 +29,10 @@ class Config:
     MONGO_URI = os.environ.get('MONGO_URI') or 'mongodb://boxjelly:di_boxjelly90082@101.43.110.249:27017/di?authSource=admin'
 
     # JWT Setting
-    JWT_TOKEN_LOCATION = os.environ.get('JWT_TOKEN_LOCATION') or ['cookies']
+    JWT_TOKEN_LOCATION = ['cookies']
+    JWT_ACCESS_COOKIE_NAME = 'access_token_cookie'
+    JWT_COOKIE_SECURE = False
+
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'di'
     JWT_ALGORITHM = os.environ.get('JWT_ALGORITHM') or 'HS256'
     JWT_ACCESS_TOKEN_EXPIRES = os.environ.get('JWT_ACCESS_TOKEN_EXPIRES') or 3600
