@@ -51,8 +51,6 @@ class MapTaskBoardsResource(Resource):
         except Exception as err:
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
 
-
-
     def post(self):
         """Create a new task board
         """
