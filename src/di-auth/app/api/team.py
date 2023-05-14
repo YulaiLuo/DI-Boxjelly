@@ -145,67 +145,27 @@ class PendingTeamResource(Resource):
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
         
         try:
-            team = Team.objects(id=ObjectId(in_schema['team_id'])).first()
+            team = Team.objects(id=in_schema['team_id']).first()
             if not team:
                 return make_response(jsonify(code=404, err="TEAM_NOT_FOUND"), 404)
             
-            pipeline = [
-                {"$match": {"team_id": ObjectId(in_schema['team_id']), "status": "pending"}},
-                {"$lookup": {
-                    "from": "user",
-                    "localField": "user_id",
-                    "foreignField": "_id",
-                    "as": "user_info"
-                }},
-                {"$unwind": "$user_info"},
-                {"$project": {
-                    "_id": 0,  # exclude _id field
-                    "user_id": "$user_info._id",
-                    "username": "$user_info.username",
-                    "first_name": "$user_info.first_name",
-                    "last_name": "$user_info.last_name",
-                    "nickname": "$user_info.nickname",
-                    "email": "$user_info.email",
-                    "gender": "$user_info.gender",
-                    "role": "$role",
-                    "status": "$status"
-                }}
-            ]
-            members = list(UserTeam.objects.aggregate(*pipeline))
-            members = [convert_objectid_to_str(member) for member in members]
+            user_teams = UserTeam.objects(team_id=in_schema['team_id']).get()
+
+            pending_members = [{
+                "role": user_team.role,
+                "invite_by": user_team.invite_by.nickname,
+                "status": user_team.status,
+                "created_at": user_team.created_at,
+                "invite_email": user_team.invite_email
+            } for user_team in user_teams]
+            
             data = {
                 "team_id": str(team.id),
                 "team_name": team.name,
-                "members": members
+                "members": pending_members
             }
 
             return make_response(jsonify(code=200, msg="ok", data=data), 200)
         except Exception as err:
-            print(err)
+            print(err.with_traceback())
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
-
-    def put(self):
-        """Update the team name
-        """
-        try:
-            in_schema = PutTeamInputSchema()
-            in_schema = in_schema.load(request.get_json())
-        except ValidationError as err:
-            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
-        
-        try:
-
-            team = Team.objects(id=ObjectId(in_schema['team_id'])).first()
-            if not team:
-                return make_response(jsonify(code=404, err="TEAM_NOT_FOUND"), 404)
-            
-            team.name = in_schema['new_name']
-            team.save()
-            data = {
-                "id": str(team.id),
-                "name": team.name,
-            }
-            return make_response(jsonify(code=200, msg="ok", data=data), 200)
-        except ValidationError as err:
-            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
-        

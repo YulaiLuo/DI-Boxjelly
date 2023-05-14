@@ -2,8 +2,9 @@ from flask_restful import Api
 from .login import EmailLogin
 from .logout import Logout
 from ..utils import get_mongo, get_bcrypt, get_jwt
-from .team import TeamResource
+from .team import TeamResource, PendingTeamResource
 from .user import UserResource
+from .avatar import AvatarResource
 from .invite import InviteResource, AcceptInviteResource
 
 def init_api(app):
@@ -24,9 +25,11 @@ def init_api(app):
 
     # Team resource
     api.add_resource(TeamResource, '/auth/team')
+    api.add_resource(PendingTeamResource, '/auth/team/pending')
 
     # User resource
     api.add_resource(UserResource, '/auth/user')
+    api.add_resource(AvatarResource, '/auth/user/avatar')
 
     # Invite resource
     api.add_resource(InviteResource, '/auth/team/invite')

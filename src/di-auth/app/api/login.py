@@ -96,6 +96,7 @@ class EmailLogin(Resource):
         data = {
             "user":{
                 "id":str(user.id),
+                "avatar": user.avatar,
                 "username": user.username,
                 "first_name": user.first_name,
                 "last_name": user.last_name,
