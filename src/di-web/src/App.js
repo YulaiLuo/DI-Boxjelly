@@ -11,7 +11,7 @@ import {
   MappingResult,
   Dashboard,
   CodeSystem,
-  Profile
+  Profile,
 } from './modules';
 import { checkAuthentication } from './utils/auth';
 
@@ -53,7 +53,7 @@ function App() {
               element={loggedIn ? <MappingResult /> : <Navigate to="/login" replace />}
             />
             <Route
-              path="/mapping-history"
+              path="/mapping-history/:id"
               element={loggedIn ? <MappingHistory /> : <Navigate to="/login" replace />}
             />
             <Route

@@ -8,7 +8,9 @@ import {
   InsertRowAboveOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, Avatar, Space, Dropdown } from 'antd';
+import { useRequest } from 'ahooks';
 import { useUserStore } from '../../store';
+import { getBoardList } from './api';
 
 const { Sider, Header, Content } = Layout;
 const { PUBLIC_URL } = process.env;
@@ -19,18 +21,24 @@ export default function Main() {
 
   const navigate = useNavigate();
   const location = useLocation();
-  let selectedPath = location.pathname.split('/').pop();
-  if (selectedPath === '') selectedPath = 'mapping';
+  const teamId = localStorage.getItem('team');
+  console.log('path', location.pathname);
+  let selectedPath = location.pathname;
+  if (selectedPath === '') selectedPath = 'dashboard';
+
+  const { data } = useRequest(() => getBoardList(teamId));
+  const taskBoards = data?.data?.boards ?? [];
 
   const onMenuItemClick = (item) => {
-    navigate(`/${item.key}`, { replace: true });
+    navigate(`${item.key}`, { replace: true });
   };
 
-  const getSidebarItem = (label, key, icon, children) => ({
+  const getSidebarItem = (label, key, icon, type, children) => ({
     label,
     key,
     children,
     icon,
+    type,
   });
 
   const getMemberItem = () => {
@@ -41,16 +49,21 @@ export default function Main() {
     );
   };
 
+  const taskBoardItems = taskBoards.map((board) => {
+    return getSidebarItem(board.name, `/mapping-history/${board.id}`);
+  });
+
   const sidebarItems = [
-    getSidebarItem('Dashboard', 'dashboard', <HomeOutlined />),
-    getSidebarItem(getMemberItem(), 'team-profile', <UserOutlined />),
-    getSidebarItem('Code System', 'code-system', <InsertRowAboveOutlined />),
+    getSidebarItem('Dashboard', '/dashboard', <HomeOutlined />),
+    getSidebarItem(getMemberItem(), '/team-profile', <UserOutlined />),
+    getSidebarItem('Code System', '/code-system', <InsertRowAboveOutlined />),
     // getSidebarItem('Mapping', 'mapping', <HomeOutlined />),
-    getSidebarItem('Task Board', 'mapping-history', <PieChartOutlined />),
+    // getSidebarItem('Task Board', 'mapping-history', <PieChartOutlined />),
     // getSidebarItem('History Status', 'history', <PieChartOutlined />, [
     //   getSidebarItem('Retrain History', 'retrain-history'),
     //   getSidebarItem('Mapping History', 'mapping-history'),
     // ]),
+    getSidebarItem('Boards', '/mapping-history', null, 'group', taskBoardItems),
   ];
 
   const ProfileDropdownItems = [
