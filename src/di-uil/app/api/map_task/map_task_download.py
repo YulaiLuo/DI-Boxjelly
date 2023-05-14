@@ -1,7 +1,7 @@
 from datetime import datetime
 from collections import Counter
 from flask_restful import Resource
-from flask import jsonify, make_response, Response
+from flask import jsonify, make_response, Response, request
 from app.models import MapItem, MapTask
 import csv, io
 from bson import ObjectId
