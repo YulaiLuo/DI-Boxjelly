@@ -16,7 +16,7 @@ export default function Login() {
       setLoggedIn(true);
       msgApi.success('Login Successfully');
       localStorage.setItem('loggedIn', 'true');
-      navigate('/mapping', { replace: true });
+      navigate('/dashboard', { replace: true });
     },
   });
 
