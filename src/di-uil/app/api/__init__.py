@@ -4,6 +4,7 @@ from .map_task.map_task_download import *
 from .map_task.map_task_item import *
 from .map_task.map_task_board import *
 from .map_task.map_task_meta import *
+from .map_task.map_task_detail import *
 
 from .code.system import *
 from .code.concept import *
@@ -25,12 +26,13 @@ def init_api(app):
     api.add_resource(ConceptResource, '/uil/concepts')
     api.add_resource(AllConceptResource, '/uil/concepts/all')
 
-    api.add_resource(MapTaskBoardResource, '/uil/board')
-    api.add_resource(MapTaskResource, '/uil/task')
-    api.add_resource(MapTaskMetaResource, '/uil/task/meta')
+    api.add_resource(MapTaskBoardsResource, '/uil/boards')
+    api.add_resource(MapTaskResource, '/uil/boards/tasks')
+    api.add_resource(MapTaskDetailResource, '/uil/boards/task/detail')
+    api.add_resource(MapTaskMetaResource, '/uil/boards/task/meta')
 
     api.add_resource(MapTaskItemResource, '/uil/task/<task_id>/<index>')
-    api.add_resource(DownloadMapTaskResource, '/uil/task/<task_id>/download')
+    api.add_resource(DownloadMapTaskResource, '/uil/boards/task/download')
     
     # Initialize the API
     api.init_app(app)

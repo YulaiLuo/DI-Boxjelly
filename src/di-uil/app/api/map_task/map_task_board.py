@@ -1,80 +1,72 @@
 from flask_restful import Resource
 from flask import jsonify, request, make_response
-from app.models import MapTask, MapItem
+from app.models import MapTask, MapItem, TaskBoard
 from bson import ObjectId
 from marshmallow import Schema, fields, ValidationError, validates
 from flask import current_app as app
 import math, threading, requests, codecs, csv
 from io import StringIO
 
-class GetMapTaskBoardInputSchema(Schema):
+class GetTaskBoardsInputSchema(Schema):
     team_id = fields.String(required=True)
-    board_id = fields.String(required=True)
-    page = fields.Integer(required=False,default=1, min_value=1)
-    size = fields.Integer(required=False,default=20, min_value=10)
 
+class PostMapTaskInputSchema(Schema):
+    team_id = fields.String(required=True)
+    name = fields.String(required=True)
+    description = fields.String(required=False)
 
-class MapTaskBoardResource(Resource):
-    """
-    Resource for the map task list
-    """
+class MapTaskBoardsResource(Resource):
 
-    def get(self):
+    def post(self):
+        """Create a new task board
         """
-        Check the permission and get the map task list of a workspace
-
-        Returns:
-            Response: tasks list
-        """
-        in_schema = GetMapTaskBoardInputSchema()
+        try:
+            in_schema = PostMapTaskInputSchema()
+            in_schema = in_schema.load(request.json)
+        except:
+            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
         
         try:
-            # TODO: check the permission
-            # user_id = request.headers.get('user_id')
-            # team_id = team_id
-
-            in_schema = in_schema.load(request.args)
-
-            page = in_schema['page']
-            size = in_schema['size']
-            board_id = in_schema['board_id']
-            all_map_tasks = MapTask.objects(board_id=ObjectId(board_id),deleted=False).order_by('-id').all()
-            if not all_map_tasks:
-                return make_response(jsonify(code=404, err="MAP_TASKS_NOT_FOUND"),404)
-            map_tasks_page = all_map_tasks.skip((page-1)*size).limit(size)
-            
-            # Convert the tasks to a list of dictionaries
-            # TODO: search pipeline
+            board = TaskBoard(
+                team_id=ObjectId(in_schema['team_id']),
+                name=in_schema['name'],
+                description=in_schema.get('description','')
+            ).save()
             data = {
-                'page': page,
-                'size': size,
-                'page_num': math.ceil(len(all_map_tasks)/size),
-                'tasks':[{
-                    "id": str(task.id),
-                    "status": task.status,
-                    "num": task.num,
-                    "create_by": str(task.create_by),
-                    "create_at": task.create_at,
-                    "update_at": task.update_at,
-                    "file_name": str(task.file_name)
-                }
-                for task in map_tasks_page]
+                "id": str(board.id),
+                "name": board.name,
+                "description": board.description,
+                "create_at": board.create_at,
+                "update_at": board.update_at
             }
-            
-            response = jsonify(code=200, msg="ok", data=data)
-            response.status_code = 200
-            return response
+            return make_response(jsonify(code=200, msg="ok", data=data), 200)
+        except:
+            return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
+
+    def get(self):
+        """Get task board list
+        """
+        try:
+            in_schema = GetTaskBoardsInputSchema()
+            in_schema = in_schema.load(request.args)
+        except:
+            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
         
-        except ValidationError as err:
-            print(err)
-            response = jsonify(code=400, err="INVALID_INPUT")
-            response.status_code = 400
-            return response
-            
+        try:
+            boards = TaskBoard.objects(team_id=ObjectId(in_schema['team_id']),deleted=False).all()
+
+            data = {
+                "boards": [{
+                    "id": str(board.id),
+                    "name": board.name,
+                    "description": board.description,
+                    "create_at": board.create_at,
+                    "update_at": board.update_at
+                }for board in boards]
+            }
+            return make_response(jsonify(code=200, msg="ok", data=data), 200)
         except Exception as err:
             print(err)
-            response = jsonify(code=500, err="INTERNAL_SERVER_ERROR")
-            response.status_code = 500
-            return response
-    
-    
+            return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
+
+
