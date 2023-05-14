@@ -1,21 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Drawer, Col, Row, Card } from 'antd';
-import {
-  PieChart,
-  Pie,
-  BarChart,
-  Bar,
-  ScatterChart,
-  Scatter,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  Cell,
-} from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
 
-export default function VisualizationDrawer({ onClose, open, metaData, width = 900 }) {
+export default function VisualizationDrawer({ onClose, open, metaData }) {
   const num = metaData?.data.num;
   const num_success = metaData?.data.num_success;
   const num_failed = metaData?.data.num_failed;
@@ -91,87 +78,80 @@ export default function VisualizationDrawer({ onClose, open, metaData, width = 9
     return <div style={dotOrange}></div>;
   };
 
+  const StatisticsCard = ({ num, num_success, num_failed, num_reviewed }) => (
+    <Card
+      bordered={true}
+      style={{ width: '90%', margin: '0 auto', marginBottom: '5vh', left: '5%' }}
+    >
+      <div>
+        <h4>Total Mapping Text: {num}</h4>
+        <h4>Successful Mapping Rate: {num > 0 ? ((num_success / num) * 100).toFixed(2) : 0} %</h4>
+      </div>
+      <div>
+        <GreenDot />
+        Number of Success: {num_success}
+      </div>
+      <div>
+        <RedDot />
+        Number of Failure: {num_failed}
+      </div>
+      <div>
+        <OrangeDot />
+        Number of Reviewed: {num_reviewed}
+      </div>
+    </Card>
+  );
+
+  const CustomBarChart = ({ data }) => {
+    const [chartWidth, setChartWidth] = useState(
+      window.innerWidth < 768 ? window.innerWidth * 0.6 : window.innerWidth * 0.3
+    );
+
+    useEffect(() => {
+      const handleResize = () => {
+        setChartWidth(window.innerWidth < 768 ? window.innerWidth * 0.6 : window.innerWidth * 0.3);
+      };
+
+      window.addEventListener('resize', handleResize);
+
+      // Cleanup the event listener on component unmount
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return (
+      <BarChart width={chartWidth} height={300} data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="Success" fill="green" />
+        <Bar dataKey="Failed" fill="red" />
+        <Bar dataKey="Reviewed" fill="orange" />
+      </BarChart>
+    );
+  };
+
   return (
-    <Drawer title="Overall Performance" width={width} onClose={onClose} open={open}>
+    <Drawer title="Overall Performance" width={'70vw'} onClose={onClose} open={open}>
       <Row gutter={16}>
-        <Col span={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <Card
-            bordered={true}
-            style={{
-              width: 300,
-            }}
-          >
-            <div>
-              <h4>Total Mapping Text: {num}</h4>
-              <h4>
-                Successful Mapping Rate: {num > 0 ? ((num_success / num) * 100).toFixed(2) : 0} %
-              </h4>
-            </div>
-            <div>
-              <GreenDot />
-              Number of Success: {num_success}
-            </div>
-            <div>
-              <RedDot />
-              Number of Failure: {num_failed}
-            </div>
-            <div>
-              <OrangeDot />
-              Number of Reviewed: {num_reviewed}
-            </div>
-          </Card>
+        <Col xs={24} md={12} style={{ marginBottom: '30px' }}>
+          <StatisticsCard
+            num={num}
+            num_success={num_success}
+            num_failed={num_failed}
+            num_reviewed={num_reviewed}
+          />
+          <CustomBarChart data={transformedChartData} />
         </Col>
-        <Col span={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <PieChart width={400} height={400}>
-            <Pie
-              data={chartData}
-              cx={200}
-              cy={200}
-              innerRadius={60}
-              outerRadius={80}
-              fill="#8884d8"
-              paddingAngle={5}
-              dataKey="value"
-              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(2)}%`}
-              labelLine={false}
-            >
-              {chartData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={
-                    entry.name === 'Success' ? 'green' : entry.name === 'Failed' ? 'red' : 'orange'
-                  }
-                />
-              ))}
-            </Pie>
-            <Tooltip />
-          </PieChart>
-        </Col>
-        <Col span={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <BarChart width={400} height={300} data={transformedChartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="Success" fill="green" />
-            <Bar dataKey="Failed" fill="red" />
-            <Bar dataKey="Reviewed" fill="orange" />
-          </BarChart>
-        </Col>
-        <Col span={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <ScatterChart
-            width={400}
-            height={400}
-            margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" type="category" allowDuplicatedCategory={false} />
-            <YAxis dataKey="value" type="number" name="value" />
-            <Tooltip />
-            <Legend />
-            <Scatter data={chartData} shape={renderCustomizedShape} line />
-          </ScatterChart>
+        <Col xs={24} md={12} style={{ marginBottom: '30px' }}>
+          <StatisticsCard
+            num={num}
+            num_success={num_success}
+            num_failed={num_failed}
+            num_reviewed={num_reviewed}
+          />
+          <CustomBarChart data={transformedChartData} />
         </Col>
       </Row>
     </Drawer>
