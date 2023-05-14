@@ -11,11 +11,13 @@ export const SINGLE_TEXT_MAPPING_URL = '/map/ontoserver/translate';
 export const ONTOSERVER_TRANSLATE = '/ConceptMap/$translate';
 
 // UIL board
-export const MAP_BOARDS = '/uil/boards';
-export const MAP_BOARD_URL = '/uil/boards/tasks';
+export const MAP_BOARDS_URL = '/uil/boards';
 
 // UIL task
-export const MAP_TASK_URL = '/uil/task';
+export const MAP_TASK_URL = '/uil/boards/task';
+
+// UIL task item
+export const MAP_ITEM_URL = '/uil/task';
 
 // MedCAT mapping
 export const MAP_URL = '/map/translate';

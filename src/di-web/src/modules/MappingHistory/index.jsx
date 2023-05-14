@@ -24,8 +24,7 @@ export default function MappingHistory() {
   const navigate = useNavigate();
   const msgApi = useMessageStore((state) => state.msgApi);
 
-  const onGetTaskDetailSuccess = (data) => {
-    const id = data.data?.id;
+  const onGetTaskDetailSuccess = (id, team_id, board_id) => {
     navigate('/mapping-result', { state: { id, team_id, board_id } });
   };
 
@@ -35,11 +34,6 @@ export default function MappingHistory() {
     refresh: refreshAllMappingTasks,
   } = useRequest(() => getAllMappingTasks(team_id, board_id, currentPage, PAGE_SIZE), {
     refreshDeps: [currentPage, board_id, team_id],
-  });
-
-  const { run: onTaskEditClick } = useRequest(getMappingTaskDetail, {
-    manual: true,
-    onSuccess: onGetTaskDetailSuccess,
   });
 
   const { run: onVisualizationClick } = useRequest(getMappingTaskMetaDetail, {
@@ -83,12 +77,9 @@ export default function MappingHistory() {
     }
   );
 
-  const onCreateTaskClick = async () => {
+  const onCreateTaskClick = async (team_id, board_id) => {
     const uploadedFile = files[0]?.file;
-    // TODO: currently cannot access the real teamId
-    const teamId = '60c879e72cb0e6f96d6b0f65';
-    const boardId = '60c879e72cb0e6f96d6b0f65';
-    handleCreateMappingTask(uploadedFile, teamId, boardId);
+    handleCreateMappingTask(team_id, board_id, uploadedFile);
   };
 
   const onFileUpdate = (files) => {
@@ -113,7 +104,7 @@ export default function MappingHistory() {
             <Modal
               title="Create Mapping Task"
               open={open}
-              onOk={onCreateTaskClick}
+              onOk={() => onCreateTaskClick(team_id, board_id)}
               confirmLoading={createTaskLoading}
               onCancel={handleCancel}
             >
@@ -135,8 +126,8 @@ export default function MappingHistory() {
               <List.Item>
                 <TaskCard
                   item={item}
-                  onEditClick={() => onTaskEditClick(item.id, team_id, board_id)}
-                  onDownloadClick={() => exportFile(item.id)}
+                  onEditClick={() => onGetTaskDetailSuccess(item.id, team_id, board_id)}
+                  onDownloadClick={() => exportFile(team_id, item.id)}
                   onVisualizeClick={() => {
                     setDrawerOpen(true);
                     onVisualizationClick(item.id);

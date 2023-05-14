@@ -2,7 +2,7 @@ import {
   // ONTOSERVER_BASE_URL,
   MAP_URL,
   MAP_TASK_URL,
-  // MAP_BOARD_URL,
+  MAP_BOARDS_URL,
 } from '../../utils/constant/url';
 import http from '../../utils/http';
 
@@ -96,17 +96,17 @@ export const mapSingleText = (text) => {
 // };
 
 // Create a mapping task
-export const createMappingTask = (file, teamId, boardId) => {
+export const createMappingTask = (teamId, boardId, file) => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('team_id', teamId);
   formData.append('board_id', boardId);
-  return http.postFormData(`${MAP_TASK_URL}`, formData);
+  return http.postFormData(`${MAP_BOARDS_URL}/tasks`, formData);
 };
 
 // Get mapping task detail
 export const getMappingTaskDetail = (task_id, team_id, board_id, page = 1, size = 10) => {
-  return http.get(`${MAP_TASK_URL}`, { task_id, team_id, board_id, page, size });
+  return http.get(`${MAP_TASK_URL}/detail`, { task_id, team_id, board_id, page, size });
 };
 
 // Get mapping task meta detail
@@ -114,11 +114,11 @@ export const getMappingTaskMetaDetail = (task_id) => {
   return http.get(`${MAP_TASK_URL}/meta`, { task_id });
 };
 
-export const exportFile = async (task_id) => {
+export const exportFile = async (team_id, task_id) => {
   try {
     const response = await http.get(
-      `${MAP_TASK_URL}/${task_id}/download`,
-      {},
+      `${MAP_TASK_URL}/download`,
+      {team_id, task_id},
       {
         responseType: 'blob',
       }
