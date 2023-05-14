@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { List, Pagination, Button, Modal } from 'antd';
 import { useRequest } from 'ahooks';
-import { getAllMappingTasks, getMappingTaskDetail, deleteMappingTask } from './api';
+import { getAllMappingTasks, deleteMappingTask } from './api';
 import TaskCard from './components/TaskCard';
 import { Spin, VisualizationDrawer } from '../../components';
 import { convertKeysToCamelCase } from '../../utils/underlineToCamel';
-import { exportFile } from '../Mapping/api';
 import { FileUploader } from '../../components';
 import { useMessageStore } from '../../store';
-import { createMappingTask, getMappingTaskMetaDetail } from '../Mapping/api';
+import { createMappingTask, getMappingTaskMetaDetail, exportFile } from '../Mapping/api';
 
 export default function MappingHistory() {
   const team_id = localStorage.getItem('team');
@@ -46,8 +45,10 @@ export default function MappingHistory() {
   const { run: onTaskDeleteClick } = useRequest(deleteMappingTask, {
     manual: true,
     onSuccess: (data) => {
-      console.log('delete success', data);
-      // refreshAllMappingTasks
+      msgApi.success('Mapping task deleted successfully');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     },
   });
 
