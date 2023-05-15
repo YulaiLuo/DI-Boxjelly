@@ -16,3 +16,4 @@ marshmallow
 Flask-JWT-Extended
 Flask-RESTful
 gunicorn
+pillow
