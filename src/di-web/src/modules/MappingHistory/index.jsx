@@ -53,6 +53,9 @@ export default function MappingHistory() {
   });
 
   const tasks = data?.data?.tasks ?? [];
+  const boardDescription = data?.data?.board_description;
+  const boardName = data?.data?.board_name;
+
   const mappedTasks = tasks.map((task) => {
     return convertKeysToCamelCase(task);
   });
@@ -98,7 +101,11 @@ export default function MappingHistory() {
             open={drawerOpen}
             metaData={metaData}
           />
-          <div class="flex flex-row-reverse mb-4 mt-2">
+          <div class="flex justify-between items-center mb-6 mt-2">
+            <div>
+              <div class="text-xl mb-2">{boardName}</div>
+              <span class="text-gray-500">{boardDescription}</span>
+            </div>
             <Button type="primary" onClick={showModal}>
               Create Task
             </Button>
