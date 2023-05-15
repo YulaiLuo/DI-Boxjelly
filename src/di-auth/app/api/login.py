@@ -5,6 +5,7 @@ from flask import request, jsonify, make_response
 from marshmallow import Schema, fields, ValidationError, validate
 from app.models import User, UserTeam, Team
 from mongoengine.errors import DoesNotExist, MultipleObjectsReturned
+from flask import current_app as app
 
 class EmailLoginSchema(Schema):
     """
@@ -114,8 +115,11 @@ class EmailLogin(Resource):
         }
         user_team.last_login_time = datetime.utcnow
         user_team.save()
-        response = jsonify(code=200,msg='ok',data=data)
-        set_access_cookies(response, access_token)
-        set_refresh_cookies(response, refresh_token)
 
-        return make_response(response,200)
+        # Add access token and refresh token cookies in headers
+        response = jsonify(code=200,msg='ok',data=data)
+        response.headers.add(app.config["JWT_ACCESS_COOKIE_NAME"],access_token)
+        response.headers.add(app.config["JWT_REFRESH_COOKIE_NAME"],refresh_token)
+
+        res = make_response(response,200)
+        return res

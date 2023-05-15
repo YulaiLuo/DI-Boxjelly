@@ -31,10 +31,8 @@ class Config:
 
     # JWT Setting
     JWT_TOKEN_LOCATION = ['cookies']
-    JWT_ACCESS_COOKIE_NAME = 'access_token_cookie'
-    JWT_COOKIE_SECURE = False
-
+    JWT_COOKIE_SECURE = False   # Only set flask in development environment
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'di'
-    JWT_ALGORITHM = os.environ.get('JWT_ALGORITHM') or 'HS256'
-    JWT_ACCESS_TOKEN_EXPIRES = os.environ.get('JWT_ACCESS_TOKEN_EXPIRES') or timedelta(hours=24)
-
+    JWT_ACCESS_TOKEN_EXPIRES = os.environ.get('JWT_ACCESS_TOKEN_EXPIRES') or timedelta(hours=24)    
+    JWT_CSRF_CHECK_FORM = True
+    # JWT_COOKIE_SAMESITE = "Lax"
