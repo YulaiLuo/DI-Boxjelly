@@ -10,6 +10,7 @@ from .code.system import *
 from .code.concept import *
 from .code.group import *
 
+
 def init_api(app):
     """
     Initialize the API, adding all routes to the Flask app.
@@ -17,7 +18,7 @@ def init_api(app):
     Args:
         app (Flask): The Flask app
     """
-    
+
     # Create the API instance
     api = Api()
 
@@ -28,11 +29,12 @@ def init_api(app):
 
     api.add_resource(MapTaskBoardsResource, '/uil/boards')
     api.add_resource(MapTaskResource, '/uil/boards/tasks')
+
     api.add_resource(MapTaskDetailResource, '/uil/boards/task/detail')
     api.add_resource(MapTaskMetaResource, '/uil/boards/task/meta')
+    api.add_resource(DownloadMapTaskResource, '/uil/boards/task/download')
 
     api.add_resource(MapTaskCurateResource, '/uil/task/<task_id>/<index>')
-    api.add_resource(DownloadMapTaskResource, '/uil/boards/task/download')
-    
+
     # Initialize the API
     api.init_app(app)

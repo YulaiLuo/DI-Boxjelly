@@ -32,11 +32,12 @@ class GatewayResource(Resource):
 
         # Check if service is supported
         if service not in self.service_map:
-            return make_response(jsonify(code=404 ,err="SERVICE_NOT_FOUND"),404)
+            return make_response(jsonify(code=404, err="SERVICE_NOT_FOUND"), 404)
 
         # Create target url
-        target_url = self.service_map[service] + "/" + "/".join(path.split("/")[1:])
-        target_url = target_url.rstrip('/') # Remove trailing slash
+        target_url = self.service_map[service] + \
+            "/" + "/".join(path.split("/")[1:])
+        target_url = target_url.rstrip('/')  # Remove trailing slash
 
         # Create headers with user id from token
         headers = {
@@ -54,11 +55,11 @@ class GatewayResource(Resource):
             allow_redirects=False,
             timeout=20
         )
-        
+
         return Response(response=response.content,
-                status=response.status_code,
-                headers={key: value for (key, value) in response.headers.items()})
-   
+                        status=response.status_code,
+                        headers={key: value for (key, value) in response.headers.items()})
+
     def get(self, path):
         """
         Forward all the GET request to the corresponding service
@@ -71,7 +72,7 @@ class GatewayResource(Resource):
         """
         print(request.headers)
         return self._gateway(path=path)
-    
+
     def post(self, path):
         """
         Forward all the POST request to the corresponding service
@@ -84,7 +85,7 @@ class GatewayResource(Resource):
         """
         print(request.headers)
         return self._gateway(path=path)
-    
+
     def put(self, path):
         """
         Forward all the PUT request to the corresponding service
@@ -97,7 +98,7 @@ class GatewayResource(Resource):
         """
         print(request.headers)
         return self._gateway(path=path)
-    
+
     def delete(self, path):
         """
         Forward all the DELETE request to the corresponding service
