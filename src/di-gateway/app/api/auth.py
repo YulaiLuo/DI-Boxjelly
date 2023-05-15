@@ -40,7 +40,7 @@ class UserEmailLoginResource(Resource):
         
         # Create new response and set cookies
         new_response = Response(response=response.content,status=response.status_code)
-        set_access_cookies(new_response, response.headers.get(app.config["JWT_REFRESH_COOKIE_NAME"]))
+        set_access_cookies(new_response, response.headers.get(app.config["JWT_ACCESS_COOKIE_NAME"]))
         set_refresh_cookies(new_response, response.headers.get(app.config["JWT_REFRESH_COOKIE_NAME"]))
 
         return new_response
