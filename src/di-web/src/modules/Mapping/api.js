@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import {
   // ONTOSERVER_BASE_URL,
   MAP_URL,
@@ -30,7 +31,8 @@ import http from '../../utils/http';
 
 // export const mapSingleText = (code) => http.get(SINGLE_TEXT_MAPPING_URL, { code });
 export const mapSingleText = (text) => {
-  return http.post(`${MAP_URL}`, { texts: [text] }, {});
+  const csrfCookie = Cookies.get('csrf_access_token');
+  return http.post(`${MAP_URL}`, { texts: [text] }, { 'X-CSRF-TOKEN': csrfCookie });
 };
 
 // export const mapMultipleText = async (codes) => {
@@ -97,11 +99,12 @@ export const mapSingleText = (text) => {
 
 // Create a mapping task
 export const createMappingTask = (teamId, boardId, file) => {
+  const csrfCookie = Cookies.get('csrf_access_token');
   const formData = new FormData();
   formData.append('file', file);
   formData.append('team_id', teamId);
   formData.append('board_id', boardId);
-  return http.postFormData(`${MAP_BOARDS_URL}/tasks`, formData);
+  return http.postFormData(`${MAP_BOARDS_URL}/tasks`, formData, { 'X-CSRF-TOKEN': csrfCookie });
 };
 
 // Get mapping task detail
@@ -118,7 +121,7 @@ export const exportFile = async (team_id, task_id) => {
   try {
     const response = await http.get(
       `${MAP_TASK_URL}/download`,
-      {team_id, task_id},
+      { team_id, task_id },
       {
         responseType: 'blob',
       }

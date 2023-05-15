@@ -4,20 +4,25 @@ import {
   UserOutlined,
   DownOutlined,
   HomeOutlined,
-  PieChartOutlined,
+  PlusOutlined,
   InsertRowAboveOutlined,
+  MoreOutlined,
 } from '@ant-design/icons';
-import { Layout, Menu, Avatar, Space, Dropdown } from 'antd';
+import { Layout, Menu, Avatar, Space, Dropdown, Tooltip, Modal, Input, Form } from 'antd';
 import { useRequest } from 'ahooks';
 import { useUserStore } from '../../store';
-import { getBoardList } from './api';
+import { getBoardList, editBoard, createBoard, deleteBoard } from './api';
 
 const { Sider, Header, Content } = Layout;
 const { PUBLIC_URL } = process.env;
 
 export default function Main() {
   const [collapsed, setCollapsed] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newBoardName, setNewBoardName] = useState('');
   const setLoggedIn = useUserStore((state) => state.setLoggedIn);
+
+  const [createBoardForm] = Form.useForm();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -26,8 +31,17 @@ export default function Main() {
   let selectedPath = location.pathname;
   if (selectedPath === '') selectedPath = 'dashboard';
 
-  const { data } = useRequest(() => getBoardList(teamId));
+  const { data, refresh: refreshBoardList } = useRequest(() => getBoardList(teamId));
   const taskBoards = data?.data?.boards ?? [];
+
+  const { run: runCreateBoard } = useRequest(createBoard, {
+    manual: true,
+    onSuccess: () => {
+      setIsModalOpen(false);
+      setNewBoardName('');
+      refreshBoardList(teamId);
+    },
+  });
 
   const onMenuItemClick = (item) => {
     navigate(`${item.key}`, { replace: true });
@@ -49,9 +63,42 @@ export default function Main() {
     );
   };
 
+  const onBoarListDropdownItemClick = () => {
+    console.log('first');
+  };
+
   const taskBoardItems = taskBoards.map((board) => {
-    return getSidebarItem(board.name, `/mapping-history/${board.id}`);
+    return getSidebarItem(
+      <div class="flex justify-between">
+        <Tooltip title={board.name}>
+          <span className="overflow-hidden overflow-ellipsis">{board.name}</span>
+        </Tooltip>
+
+        <Dropdown
+          menu={{
+            items: [
+              { key: 'edit', label: 'edit' },
+              { key: 'delete', label: 'delete' },
+            ],
+            onClick: onBoarListDropdownItemClick,
+          }}
+          // open={true}
+        >
+          <MoreOutlined>dfd</MoreOutlined>
+        </Dropdown>
+      </div>,
+      `/mapping-history/${board.id}`
+    );
   });
+
+  const getBoardListTitle = () => {
+    return (
+      <div class="flex justify-between">
+        <span>Boards</span>
+        <PlusOutlined class="cursor-pointer" onClick={() => setIsModalOpen(true)} />
+      </div>
+    );
+  };
 
   const sidebarItems = [
     getSidebarItem('Dashboard', '/dashboard', <HomeOutlined />),
@@ -63,7 +110,7 @@ export default function Main() {
     //   getSidebarItem('Retrain History', 'retrain-history'),
     //   getSidebarItem('Mapping History', 'mapping-history'),
     // ]),
-    getSidebarItem('Boards', '/mapping-history', null, 'group', taskBoardItems),
+    getSidebarItem(getBoardListTitle(), '/mapping-history', null, 'group', taskBoardItems),
   ];
 
   const ProfileDropdownItems = [
@@ -90,6 +137,21 @@ export default function Main() {
   const onDropdownItemClick = (e) => {
     if (e.key === 'profile') onProfileClick();
     else if (e.key === 'signOut') onSignOutClick();
+  };
+
+  const handleModalOk = () => {
+    console.log(newBoardName);
+    createBoardForm.validateFields().then((data) => {
+      const boardName = data.name;
+      const description = data.description ?? '';
+
+      runCreateBoard(teamId, boardName, description);
+    });
+  };
+
+  const handleModalCancel = () => {
+    setIsModalOpen(false);
+    setNewBoardName('');
   };
 
   return (
@@ -139,6 +201,36 @@ export default function Main() {
           </Content>
         </Layout>
       </Layout>
+      <Modal
+        title="Add a new Board"
+        open={isModalOpen}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+      >
+        <Form form={createBoardForm} layout="vertical">
+          <Form.Item
+            label="Board Name"
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: 'Please input the board name!',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item label="Description" name="description">
+            <Input.TextArea />
+          </Form.Item>
+        </Form>
+        {/* <Input
+          placeholder="please input the board name"
+          onChange={(e) => setNewBoardName(e.target.value)}
+          value={newBoardName}
+        />
+        <Input.TextArea /> */}
+      </Modal>
     </>
   );
 }

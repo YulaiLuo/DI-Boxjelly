@@ -1,5 +1,6 @@
 import http from '../../utils/http';
 import { MAP_BOARDS_URL, MAP_TASK_URL } from '../../utils/constant/url';
+import { getCSRFTokenHeader } from '../../utils/auth';
 
 // Get all map tasks with pagination
 export const getAllMappingTasks = (team_id, board_id, page, size) => {
@@ -12,5 +13,6 @@ export const getMappingTaskDetail = (task_id, team_id, board_id, page = 1, size 
 };
 
 export const deleteMappingTask = (task_id, team_id, board_id) => {
-  return http.deleteData(`${MAP_TASK_URL}`, { task_id, team_id, board_id });
+  const headers = getCSRFTokenHeader();
+  return http.deleteData(`${MAP_BOARDS_URL}/tasks`, { task_id, team_id, board_id }, headers);
 };

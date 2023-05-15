@@ -4,6 +4,7 @@ import { useRequest } from 'ahooks';
 import { Form, Input, Button } from 'antd';
 import { login } from './api';
 import { useMessageStore, useUserStore } from '../../store';
+import Cookies from 'js-cookie';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -17,6 +18,10 @@ export default function Login() {
       localStorage.setItem('user', res.data?.user?.id);
       localStorage.setItem('team', res.data?.team?.id);
       setLoggedIn(true);
+      // const cookies = document.cookie.split(';');
+      // console.log('cookies', cookies);
+      const csrfCookie = Cookies.get('csrf_access_token');
+      console.log('csrf', csrfCookie);
       msgApi.success('Login Successfully');
       localStorage.setItem('loggedIn', 'true');
       navigate('/dashboard', { replace: true });

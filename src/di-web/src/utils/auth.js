@@ -23,3 +23,8 @@ export const checkAuthentication = () => {
   // return hasAccessToken || hasRefreshToken;
   return localStorage.getItem('loggedIn') === 'true';
 };
+
+export const getCSRFTokenHeader = () => {
+  const csrfCookie = Cookies.get('csrf_access_token');
+  return { 'X-CSRF-TOKEN': csrfCookie };
+};

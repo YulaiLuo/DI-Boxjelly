@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { message } from 'antd';
 import { BASE_URL } from './constant/url';
+import { getCSRFTokenHeader } from './auth';
 
 const instance = axios.create({
   baseURL: 'http://localhost:8000',
@@ -8,6 +9,8 @@ const instance = axios.create({
   timeout: 8000,
   withCredentials: true,
 });
+
+const csrfTokenHeader = getCSRFTokenHeader();
 
 instance.interceptors.response.use(
   (res) => {
@@ -51,7 +54,7 @@ const _post = (api, data, headers = {}) => {
   });
 };
 
-const post = (api, data, headers = {}) => {
+const post = (api, data, headers = csrfTokenHeader) => {
   headers['Content-Type'] = 'application/json;charset=utf-8';
   return _post(api, JSON.stringify(data), headers);
 };
@@ -61,7 +64,7 @@ const postFormData = (api, data, headers = {}) => {
   return _post(api, data, headers);
 };
 
-const deleteData = (api, params = {}, headers = {}) => {
+const deleteData = (api, params = {}, headers = csrfTokenHeader) => {
   return new Promise((resolve, reject) => {
     instance
       .delete(api, { params, headers })
@@ -74,5 +77,18 @@ const deleteData = (api, params = {}, headers = {}) => {
   });
 };
 
+const put = (api, data, headers = csrfTokenHeader) => {
+  return new Promise((resolve, reject) => {
+    instance
+      .put(api, data, { headers })
+      .then((res) => {
+        resolve(res);
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
 // eslint-disable-next-line
-export default { get, post, postFormData, deleteData };
+export default { get, post, postFormData, deleteData, put };
