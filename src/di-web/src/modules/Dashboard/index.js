@@ -125,7 +125,7 @@ export default function Dashboard() {
             </div>
           </Col>
 
-          <Col xs={24} sm={24} md={12} lg={6} xl={6}>
+          <Col xs={24} sm={24} md={12} lg={{ span: 6, offset: 6 }} xl={{ span: 6, offset: 6 }}>
             <div class="h-full flex items-center">
               <Search
                 placeholder="Input a single text"
