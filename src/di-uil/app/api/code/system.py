@@ -56,13 +56,15 @@ class CodeSystemResource(Resource):
                         {"$expr": {"$eq": ["$group_id", "$$group_id"]}},
                         {"$or": [{"child_concept_id": None}, {"child_concept_id": {"$exists": False}}]}
                      ]
-                  }}
+                  }},
+                  {"$addFields": {"id": "$_id"}},  
                ],
                "as": "concepts"}},
             {"$project": {
                   "_id": 0,
                   "group": "$name",
                   "group_id": "$_id",
+                  "concepts.id": 1,
                   "concepts.name": 1,
                   "concepts.description": 1,
                   # "concepts.create_at":1   # has error
