@@ -1,4 +1,5 @@
-export const BASE_URL = 'http://101.43.110.249:8000';
+export const BASE_URL =
+  process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'http://101.43.110.249:8000';
 export const ONTOSERVER_BASE_URL = 'https://r4.ontoserver.csiro.au/fhir';
 // export const BASE_URL = 'http://di-gateway:8000';
 

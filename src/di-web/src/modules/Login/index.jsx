@@ -17,6 +17,7 @@ export default function Login() {
       console.log('login', res);
       localStorage.setItem('user', res.data?.user?.id);
       localStorage.setItem('team', res.data?.team?.id);
+      localStorage.setItem('userDetail', JSON.stringify(res.data?.user));
       setLoggedIn(true);
       // const cookies = document.cookie.split(';');
       // console.log('cookies', cookies);

@@ -1,8 +1,8 @@
 import React from 'react';
-import { List, Avatar, Layout, Menu } from 'antd';
+import { List, Avatar, Layout, Menu, Button } from 'antd';
 import { useRequest } from 'ahooks';
-import { useUserStore } from '../../store';
 import { getTeamInfo } from './api';
+import { BASE_URL } from '../../utils/constant/url';
 
 const { Sider, Content } = Layout;
 
@@ -25,8 +25,9 @@ export default function TeamProfile() {
 
   return (
     <div class="mx-4 py-3">
-      <div class="flex items-center">
+      <div class="flex items-center justify-between">
         <h2 class="mr-5">You are currently in the {data?.team_name} team </h2>
+        <Button type="primary">Invite Member</Button>
       </div>
 
       <Layout>
@@ -54,7 +55,7 @@ export default function TeamProfile() {
                     avatar={
                       <Avatar
                         // class="mt-4"
-                        src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`}
+                        src={`${BASE_URL}/auth/user/avatar?avatar=${item.avatar}`}
                       />
                       // <Avatar class="mt-4" src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`} />
                     }
