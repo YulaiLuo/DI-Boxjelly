@@ -36,3 +36,6 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = os.environ.get('JWT_ACCESS_TOKEN_EXPIRES') or timedelta(hours=24)    
     JWT_CSRF_CHECK_FORM = True
     # JWT_COOKIE_SAMESITE = "Lax"
+
+    # Avatar settings
+    AVATAR_FOLDER = os.path.join(os.getcwd(),'data','avatars')
