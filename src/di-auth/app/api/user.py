@@ -32,7 +32,7 @@ class UserResource(Resource):
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
 
         # TODO: Get user id from token
-        user_id = "645da08427eb73c12b252cef"
+        user_id = "645deb4a2a296fec6af44411"
 
         try:
             # Update the user's profile
