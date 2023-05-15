@@ -12,6 +12,7 @@ import { Layout, Menu, Avatar, Space, Dropdown, Tooltip, Modal, Input, Form } fr
 import { useRequest } from 'ahooks';
 import { useUserStore, useMessageStore } from '../../store';
 import { getBoardList, editBoard, createBoard, deleteBoard } from './api';
+import { BASE_URL } from '../../utils/constant/url';
 
 const { Sider, Header, Content } = Layout;
 const { PUBLIC_URL } = process.env;
@@ -30,6 +31,7 @@ export default function Main() {
   const navigate = useNavigate();
   const location = useLocation();
   const teamId = localStorage.getItem('team');
+  const user = JSON.parse(localStorage.getItem('userDetail'));
   let selectedPath = location.pathname;
   if (selectedPath === '') selectedPath = 'dashboard';
 
@@ -207,11 +209,15 @@ export default function Main() {
             {/* <span class="self-center">Header</span> */}
 
             <Space class="flex-1 flex justify-end items-center" size={12}>
-              <Avatar icon={<UserOutlined />} size="large" />
+              <Avatar
+                icon={<UserOutlined />}
+                size="large"
+                src={`${BASE_URL}/auth/user/avatar?avatar=${user?.avatar}`}
+              />
 
               <Dropdown menu={{ items: ProfileDropdownItems, onClick: onDropdownItemClick }}>
                 <div>
-                  <span class="text-lg cursor-pointer mr-2">User</span>
+                  <span class="text-lg cursor-pointer mr-2">{user?.nickname}</span>
                   <DownOutlined />
                 </div>
               </Dropdown>

@@ -4,8 +4,8 @@ import { BASE_URL } from './constant/url';
 import { getCSRFTokenHeader } from './auth';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:8000',
-  // baseURL: BASE_URL,
+  // baseURL: 'http://localhost:8000',
+  baseURL: BASE_URL,
   timeout: 8000,
   withCredentials: true,
 });
