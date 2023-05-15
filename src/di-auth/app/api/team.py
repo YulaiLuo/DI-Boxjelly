@@ -90,6 +90,7 @@ class TeamResource(Resource):
                     "nickname": "$user_info.nickname",
                     "email": "$user_info.email",
                     "gender": "$user_info.gender",
+                    "avatar": "$user_info.avatar",
                     "role": "$role",
                     "status": "$status"
                 }}
