@@ -31,7 +31,7 @@ def init_api(app):
     api.add_resource(MapTaskDetailResource, '/uil/boards/task/detail')
     api.add_resource(MapTaskMetaResource, '/uil/boards/task/meta')
 
-    api.add_resource(MapTaskItemResource, '/uil/task/<task_id>/<index>')
+    api.add_resource(MapTaskCurateResource, '/uil/task/<task_id>/<index>')
     api.add_resource(DownloadMapTaskResource, '/uil/boards/task/download')
     
     # Initialize the API
