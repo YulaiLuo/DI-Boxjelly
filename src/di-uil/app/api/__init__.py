@@ -1,10 +1,10 @@
 from flask_restful import Api
-from .map_task.map_task import *
-from .map_task.map_task_download import *
-from .map_task.map_task_item import *
-from .map_task.map_task_board import *
-from .map_task.map_task_meta import *
-from .map_task.map_task_detail import *
+from .task.task import *
+from .task.task_download import *
+from .task.task_curate import *
+from .task.task_board import *
+from .task.task_meta import *
+from .task.task_detail import *
 
 from .code.system import *
 from .code.concept import *
