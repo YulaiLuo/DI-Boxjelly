@@ -3,8 +3,6 @@ from flask import jsonify, request, make_response
 from app.models import MapTask, MapItem, TaskBoard
 from bson import ObjectId
 from marshmallow import Schema, fields, ValidationError, validates
-from flask import current_app as app
-import math, threading, requests, codecs, csv
 from io import StringIO
 
 class GetTaskBoardsInputSchema(Schema):
