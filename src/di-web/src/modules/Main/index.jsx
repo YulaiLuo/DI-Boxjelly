@@ -10,7 +10,7 @@ import {
 } from '@ant-design/icons';
 import { Layout, Menu, Avatar, Space, Dropdown, Tooltip, Modal, Input, Form } from 'antd';
 import { useRequest } from 'ahooks';
-import { useUserStore } from '../../store';
+import { useUserStore, useMessageStore } from '../../store';
 import { getBoardList, editBoard, createBoard, deleteBoard } from './api';
 
 const { Sider, Header, Content } = Layout;
@@ -19,26 +19,39 @@ const { PUBLIC_URL } = process.env;
 export default function Main() {
   const [collapsed, setCollapsed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newBoardName, setNewBoardName] = useState('');
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [boardId, setBoardId] = useState(null);
   const setLoggedIn = useUserStore((state) => state.setLoggedIn);
+  const msgApi = useMessageStore((state) => state.msgApi);
 
   const [createBoardForm] = Form.useForm();
+  const [editBoardForm] = Form.useForm();
 
   const navigate = useNavigate();
   const location = useLocation();
   const teamId = localStorage.getItem('team');
-  console.log('path', location.pathname);
   let selectedPath = location.pathname;
   if (selectedPath === '') selectedPath = 'dashboard';
 
   const { data, refresh: refreshBoardList } = useRequest(() => getBoardList(teamId));
   const taskBoards = data?.data?.boards ?? [];
 
-  const { run: runCreateBoard } = useRequest(createBoard, {
+  const { run: runCreateBoard, loading: createBoardLoading } = useRequest(createBoard, {
     manual: true,
     onSuccess: () => {
+      msgApi.success('A new board created successfully');
       setIsModalOpen(false);
-      setNewBoardName('');
+      createBoardForm.resetFields();
+      refreshBoardList(teamId);
+    },
+  });
+
+  const { run: runEditBoard, loading: editBoardLoading } = useRequest(editBoard, {
+    manual: true,
+    onSuccess: () => {
+      msgApi.success('A new board created successfully');
+      setIsEditModalOpen(false);
+      editBoardForm.resetFields();
       refreshBoardList(teamId);
     },
   });
@@ -63,8 +76,17 @@ export default function Main() {
     );
   };
 
-  const onBoarListDropdownItemClick = () => {
-    console.log('first');
+  const onBoardEditClick = (board) => {
+    console.log('edit', board);
+    editBoardForm.setFieldsValue({
+      name: board.name,
+      description: board.description,
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const onBoardDeleteClick = (board) => {
+    console.log('delete', board);
   };
 
   const taskBoardItems = taskBoards.map((board) => {
@@ -80,9 +102,15 @@ export default function Main() {
               { key: 'edit', label: 'edit' },
               { key: 'delete', label: 'delete' },
             ],
-            onClick: onBoarListDropdownItemClick,
+            onClick: (e) => {
+              if (e.key === 'edit') {
+                setBoardId(board.id);
+                onBoardEditClick(board);
+              } else {
+                onBoardDeleteClick(board);
+              }
+            },
           }}
-          // open={true}
         >
           <MoreOutlined>dfd</MoreOutlined>
         </Dropdown>
@@ -104,12 +132,6 @@ export default function Main() {
     getSidebarItem('Dashboard', '/dashboard', <HomeOutlined />),
     getSidebarItem(getMemberItem(), '/team-profile', <UserOutlined />),
     getSidebarItem('Code System', '/code-system', <InsertRowAboveOutlined />),
-    // getSidebarItem('Mapping', 'mapping', <HomeOutlined />),
-    // getSidebarItem('Task Board', 'mapping-history', <PieChartOutlined />),
-    // getSidebarItem('History Status', 'history', <PieChartOutlined />, [
-    //   getSidebarItem('Retrain History', 'retrain-history'),
-    //   getSidebarItem('Mapping History', 'mapping-history'),
-    // ]),
     getSidebarItem(getBoardListTitle(), '/mapping-history', null, 'group', taskBoardItems),
   ];
 
@@ -139,19 +161,20 @@ export default function Main() {
     else if (e.key === 'signOut') onSignOutClick();
   };
 
-  const handleModalOk = () => {
-    console.log(newBoardName);
+  const handleCreateBoardModalOk = () => {
     createBoardForm.validateFields().then((data) => {
       const boardName = data.name;
       const description = data.description ?? '';
-
       runCreateBoard(teamId, boardName, description);
     });
   };
 
-  const handleModalCancel = () => {
-    setIsModalOpen(false);
-    setNewBoardName('');
+  const handleEditBoardModalOk = () => {
+    editBoardForm.validateFields().then((data) => {
+      const boardName = data.name;
+      const description = data.description ?? '';
+      runEditBoard(boardId, teamId, boardName, description);
+    });
   };
 
   return (
@@ -204,8 +227,9 @@ export default function Main() {
       <Modal
         title="Add a new Board"
         open={isModalOpen}
-        onOk={handleModalOk}
-        onCancel={handleModalCancel}
+        onOk={handleCreateBoardModalOk}
+        onCancel={() => setIsModalOpen(false)}
+        confirmLoading={createBoardLoading}
       >
         <Form form={createBoardForm} layout="vertical">
           <Form.Item
@@ -224,12 +248,32 @@ export default function Main() {
             <Input.TextArea />
           </Form.Item>
         </Form>
-        {/* <Input
-          placeholder="please input the board name"
-          onChange={(e) => setNewBoardName(e.target.value)}
-          value={newBoardName}
-        />
-        <Input.TextArea /> */}
+      </Modal>
+
+      <Modal
+        title="Edit the Board"
+        open={isEditModalOpen}
+        onOk={handleEditBoardModalOk}
+        onCancel={() => setIsEditModalOpen(false)}
+        confirmLoading={editBoardLoading}
+      >
+        <Form form={editBoardForm} layout="vertical">
+          <Form.Item
+            label="Board Name"
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: 'Please input the board name!',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item label="Description" name="description">
+            <Input.TextArea />
+          </Form.Item>
+        </Form>
       </Modal>
     </>
   );
