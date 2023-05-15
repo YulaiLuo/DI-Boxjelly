@@ -2,6 +2,7 @@ from flask_restful import Resource
 from flask import jsonify, request, make_response
 from app.models import MapTask, MapItem
 from bson import ObjectId
+from mongoengine.errors import DoesNotExist
 from marshmallow import Schema, fields, ValidationError, validates
 from flask import current_app as app
 import math
