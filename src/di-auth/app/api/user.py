@@ -62,7 +62,7 @@ class UserResource(Resource):
         try:
             # TODO: Get user id from header token 
             # to check if the requester is in the team
-            user_id = '645da08427eb73c12b252cef'
+            user_id = '645deb4a2a296fec6af44411'
 
             user = User.objects(id=in_schema['user_id']).first()
             if not user:
@@ -72,7 +72,8 @@ class UserResource(Resource):
                 'name': f'{user.first_name} {user.last_name}',
                 'nickname': user.nickname,
                 'email':user.email,
-                'gender':user.gender
+                'gender':user.gender,
+                'avatar': 'default' if not user.avatar else user.avatar
             }
             return make_response(jsonify(code=200, msg="ok", data=data), 200)
         except Exception as err:
