@@ -61,8 +61,13 @@ class MapTaskResource(Resource):
             page = in_schema['page']
             size = in_schema['size']
             board_id = in_schema['board_id']
-            all_map_tasks = MapTask.objects(board_id=ObjectId(board_id),deleted=False).order_by('-id').all()
-
+            try:
+               task_board = MapTask.objects(board_id=board_id,deleted=False).first()
+               all_map_tasks = MapTask.objects(board_id=board_id,deleted=False).order_by('-id').all()
+            except DoesNotExist as err:
+               return make_response(jsonify(code=400, err="NOT_EXIST"), 400)
+            
+            # Paginate the tasks
             map_tasks_page = all_map_tasks.skip((page-1)*size).limit(size)
             
             # Convert the tasks to a list of dictionaries
@@ -70,6 +75,8 @@ class MapTaskResource(Resource):
             data = {
                'page': page,
                'size': size,
+               'board_name':task_board.name,
+               'board_description':task_board.description,
                'page_num': math.ceil(len(all_map_tasks)/size),
                'tasks':[{
                   "id": str(task.id),
