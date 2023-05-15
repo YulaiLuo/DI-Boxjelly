@@ -21,7 +21,7 @@ class GatewayResource(Resource):
     def __init__(self):
         self.service_map = app.config['SERVICE_MAP']
 
-    @jwt_required()
+    @jwt_required(refresh=True)
     def _gateway(self, path):
 
         # Get user id from token
@@ -69,6 +69,7 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
+        print(request.headers)
         return self._gateway(path=path)
     
     def post(self, path):
@@ -81,6 +82,7 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
+        print(request.headers)
         return self._gateway(path=path)
     
     def put(self, path):
@@ -93,6 +95,7 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
+        print(request.headers)
         return self._gateway(path=path)
     
     def delete(self, path):
@@ -105,4 +108,5 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
+        print(request.headers)
         return self._gateway(path=path)
