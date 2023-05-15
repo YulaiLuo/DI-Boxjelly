@@ -1,5 +1,5 @@
 import React, { useState, useRef , useEffect} from 'react';
-import { Col, Row, Input, Spin,Avatar, Card } from 'antd';
+import { Col, Row, Input, Spin,Avatar, Card, Modal, Button } from 'antd';
 import { useRequest } from 'ahooks';
 import { mapSingleText } from '../Mapping/api';
 import DashboardCard from './components/DashboardCard';
@@ -34,6 +34,8 @@ export default function Dashboard() {
 
   const onSingleTextSearch = (value) => {
     if (value.trim() !== '') {
+      setIsModalOpen(true);
+      
       setShowSingleMapping(true);
       handleMapSingleText(value);
     }
@@ -85,8 +87,19 @@ export default function Dashboard() {
     },
   };
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
- 
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
 
   return (
@@ -97,7 +110,8 @@ export default function Dashboard() {
     //   <div>Current Tasks to do</div>
     //   <div>total Mapping</div>
     // </div>
-  <div style={{ display: 'flex', height: '100%' }}>
+  
+  <div style={{ display: 'flex',  height: '100%' }}>
 
     
 
@@ -120,15 +134,35 @@ export default function Dashboard() {
               placeholder="Input a single text"
               allowClear
               onSearch={onSingleTextSearch}
+              //onSearch = {showModal}
               ref={inputRef}
               onChange={onSingleTextChange}
+              
             />
           </div>
         </Col>
 
+        
+      
+
+        <Modal title="Mapping Results" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+          {showSingleMapping && (
+              <div class="mt-12 w-full flex justify-center">
+                {singleMapLoading ? (
+                  <Spin />
+                ) : (
+                  <div class="text-center">
+                    <div class="text-2xl">{singleMappingResult}</div>
+                  </div>
+                )}
+              </div>
+            )}
+        </Modal>
 
 
-        <Col xs={24} sm={24} md={12} lg={6} xl={6} class="flex items-center">
+    
+
+        {/* <Col xs={24} sm={24} md={12} lg={6} xl={6} class="flex items-center">
           {showSingleMapping && (
             <div class="mt-12 w-full flex justify-center">
               {singleMapLoading ? (
@@ -141,7 +175,7 @@ export default function Dashboard() {
               )}
             </div>
           )}
-        </Col>
+        </Col> */}
 
         
 
@@ -174,6 +208,7 @@ export default function Dashboard() {
           <Col xs={2} sm={2} md={3} lg={4} xl={5} />
         </Row> */}
       </Row>
+
       <div class="mt-5">
         <Row gutter={[24, 8]}>
           <Col xs={24} sm={24} md={12} lg={8} xl={8}>
@@ -188,15 +223,17 @@ export default function Dashboard() {
         </Row>
       </div>
 
-      <div>
+      <div class="mt-5" style={{ background: 'White'}}>
         <Column {...config} />
       </div>
 
-      </div>
+    </div>
+
 
       
-
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div style={{ background: 'White', width: 300 , textAlign: 'center' , alignItems: 'center'}}>
+        
         
         <Avatar
           // class="mt-4"
@@ -209,28 +246,28 @@ export default function Dashboard() {
         </div>
         <div style={{ marginTop: '20px' }}>
           <h3>Recent Task</h3>
-          <Card size="small" extra={null} style={{ height: 100 , width: 250 }}>
+          <Card size="small" extra={null} style={{ height: 100 , width: 250,marginLeft: 'auto', marginRight: 'auto' }}>
             <h4>Task Name</h4>
             <p>Task Info</p>
           </Card>
           
         </div>
-        <div style={{ marginTop: '20px' }}>
+        <div style={{ marginTop: '20px'}}>
           <h3>Messages </h3>
           <MessageCard />
-          <MessageCard />
+          <MessageCard  />
           
         </div>
 
 
-        
       </div>
+    </div>
 
       
       
     
       
-    </div>
+  </div>
 
 
   );
