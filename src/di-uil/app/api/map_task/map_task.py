@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import jsonify, request, make_response
-from app.models import MapTask, MapItem
+from app.models import MapTask, MapItem, TaskBoard
 from bson import ObjectId
 from mongoengine.errors import DoesNotExist
 from marshmallow import Schema, fields, ValidationError, validates
@@ -62,12 +62,13 @@ class MapTaskResource(Resource):
             page = in_schema['page']
             size = in_schema['size']
             board_id = in_schema['board_id']
-            try:
-               task_board = TaskBoard.objects(id=board_id,deleted=False).first()
-               all_map_tasks = MapTask.objects(board_id=board_id,deleted=False).order_by('-id').all()
-            except DoesNotExist as err:
-               return make_response(jsonify(code=400, err="NOT_EXIST"), 400)
             
+            task_board = TaskBoard.objects(id=board_id,deleted=False).first()
+            if not task_board:
+               return make_response(jsonify(code=404, err="BOARD_NOT_FOUND"), 404)
+            
+            all_map_tasks = MapTask.objects(board_id=board_id,deleted=False).order_by('-id').all()
+
             # Paginate the tasks
             map_tasks_page = all_map_tasks.skip((page-1)*size).limit(size)
             
