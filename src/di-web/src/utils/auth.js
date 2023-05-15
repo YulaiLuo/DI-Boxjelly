@@ -17,14 +17,14 @@ import { AUTH } from './constant/constants';
 // }
 
 export const checkAuthentication = () => {
-  // const hasAccessToken = !!Cookies.get(AUTH.ACCESS_TOKEN_COOKIE);
-  // const hasRefreshToken = !!Cookies.get(AUTH.REFRESH_TOKEN_COOKIE);
-  localStorage.setItem('access_token_cookie', Cookies.get(AUTH.ACCESS_TOKEN_COOKIE));
-  // return hasAccessToken || hasRefreshToken;
-  return localStorage.getItem('loggedIn') === 'true';
+  const hasCsrfAccessCookie = !!Cookies.get(AUTH.CSRF_ACCESS_TOKEN_COOKIE);
+  const hasCsrfRefreshCookie = !!Cookies.get(AUTH.CSRF_REFRESH_TOKEN_COOKIE);
+  localStorage.setItem('csrf_access_token', Cookies.get(AUTH.CSRF_ACCESS_TOKEN_COOKIE));
+  localStorage.setItem('csrf_refresh_token', Cookies.get(AUTH.CSRF_REFRESH_TOKEN_COOKIE));
+  return hasCsrfAccessCookie || hasCsrfRefreshCookie;
 };
 
 export const getCSRFTokenHeader = () => {
-  const csrfCookie = Cookies.get('csrf_access_token');
+  const csrfCookie = Cookies.get(AUTH.CSRF_ACCESS_TOKEN_COOKIE);
   return { 'X-CSRF-TOKEN': csrfCookie };
 };
