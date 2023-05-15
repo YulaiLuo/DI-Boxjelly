@@ -63,7 +63,7 @@ class MapTaskResource(Resource):
             size = in_schema['size']
             board_id = in_schema['board_id']
             try:
-               task_board = MapTask.objects(board_id=board_id,deleted=False).first()
+               task_board = TaskBoard.objects(id=board_id,deleted=False).first()
                all_map_tasks = MapTask.objects(board_id=board_id,deleted=False).order_by('-id').all()
             except DoesNotExist as err:
                return make_response(jsonify(code=400, err="NOT_EXIST"), 400)
