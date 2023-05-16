@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import jsonify, request, make_response
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, ValidationError, validates
 from flask import current_app as app
 
 from medcat.cat import CAT
@@ -36,8 +36,12 @@ class Translate(Resource):
 
     def post(self):
         try:
-            data = TranslateSchema().load(request.get_json())
-            texts = data['texts']
+            in_schema = PostTranslateSchema().load(request.get_json())
+        except ValidationError as err:
+            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+
+        try:
+            texts = in_schema['texts']
             total_chars = sum(len(text) for text in texts)
         
             # Threshold for using multiprocessing
@@ -68,6 +72,7 @@ class Translate(Resource):
                     res[i] = processed_entities
 
             # Do further processing to UIL and return the results
+
             
             # Return the response with the appropriate status code
             return make_response(jsonify({'code': 200, 'msg': 'ok','data': res}), 200)
