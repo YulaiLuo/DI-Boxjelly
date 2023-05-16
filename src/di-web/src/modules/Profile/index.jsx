@@ -21,13 +21,19 @@ const UserProfile = () => {
       const response = await getUserProfile(user_id);
       const [first_name, last_name] = response.data.name.split(' ');
 
-      setUserData({
+      const userDetails = {
         email: response.data.email,
         first_name,
         last_name,
         nickname: response.data.nickname,
         gender: response.data.gender || "Not specified"
-      });
+      };
+
+      setUserData(userDetails);
+
+      // store the user detail in local storage
+      localStorage.setItem('userDetail', JSON.stringify(userDetails));
+      
     } catch (error) {
       console.log(error);
     }
