@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { getUserProfile, updateUserProfile } from './api';
 
 const UserProfile = () => {
   const [userData, setUserData] = useState({
     email: "",
-    name: "",
+    first_name: "",
+    last_name: "",
     nickname: "",
     gender: ""
   });
@@ -16,39 +17,38 @@ const UserProfile = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/auth/user?user_id=645deb4a2a296fec6af44411`);
+      const user_id = '645deb4a2a296fec6af44411'; // This should come from somewhere dynamic like user context
+      const response = await getUserProfile(user_id);
+      const [first_name, last_name] = response.data.name.split(' ');
 
-      if (response.data.code === 200) {
-        setUserData({
-          email: response.data.data.email,
-          name: response.data.data.name,
-          nickname: response.data.data.nickname,
-          gender: response.data.data.gender || "Not specified"
-        });
-      } else {
-        console.log(response.data.msg);
-      }
+      setUserData({
+        email: response.data.email,
+        first_name,
+        last_name,
+        nickname: response.data.nickname,
+        gender: response.data.gender || "Not specified"
+      });
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleSaveChanges = async () => {
-    const [first_name, last_name] = userData.name.split(' ');
+    const user_id = '645deb4a2a296fec6af44411'; // This should come from somewhere dynamic like user context
 
     try {
-      const response = await axios.put(`http://localhost:8000/auth/user?user_id=645deb4a2a296fec6af44411`, {
-        first_name,
-        last_name,
+      const response = await updateUserProfile(user_id, {
+        first_name: userData.first_name,
+        last_name: userData.last_name,
         nickname: userData.nickname,
         gender: userData.gender,
       });
 
-      if (response.data.code === 200) {
+      if (response.code === 200) {
         setEditMode(false);
         fetchData();
       } else {
-        console.log(response.data.msg);
+        console.log(response.msg);
       }
     } catch (error) {
       console.log(error);
@@ -60,10 +60,15 @@ const UserProfile = () => {
       <h1>User Profile</h1>
       {editMode ? (
         <div>
-          <label>Name:</label>
+          <label>First name:</label>
           <input
-            value={userData.name}
-            onChange={(e) => setUserData({ ...userData, name: e.target.value })}
+            value={userData.first_name}
+            onChange={(e) => setUserData({ ...userData, first_name: e.target.value })}
+          />
+          <label>Last name:</label>
+          <input
+            value={userData.last_name}
+            onChange={(e) => setUserData({ ...userData, last_name: e.target.value })}
           />
           <label>Nickname:</label>
           <input
@@ -75,20 +80,26 @@ const UserProfile = () => {
           <label>Email:</label>
           <input
             value={userData.email}
-            onChange={(e) => setUserData({ ...userData, email: e.target.value })}
+            disabled
           />
           <label>Gender:</label>
-          <input
+          <select
             value={userData.gender}
             onChange={(e) =>
               setUserData({ ...userData, gender: e.target.value })
             }
-          />
+          >
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
           <button onClick={handleSaveChanges}>Save Changes</button>
         </div>
       ) : (
         <div>
-          <p>Name: {userData.name}</p>
+          <p>Name: {`${userData.first_name} ${userData.last_name}`}</p>
+          <p>First Name: {userData.first_name}</p>
+          <p>Last Name: {userData.last_name}</p>
           <p>Nickname: {userData.nickname}</p>
           <p>Email: {userData.email}</p>
           <p>Gender: {userData.gender}</p>
