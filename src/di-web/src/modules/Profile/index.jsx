@@ -88,7 +88,7 @@ const UserProfile = () => {
           <label>Email:</label>
           <input
             value={userData.email}
-            disabled
+            readOnly
           />
           <label>Gender:</label>
           <select
