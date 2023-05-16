@@ -53,6 +53,8 @@ const UserProfile = () => {
       if (response.code === 200) {
         setEditMode(false);
         fetchData();
+        //replace it with a better solution: let the dashboard detect the change and then update its details dynamically
+        window.location.reload();
       } else {
         console.log(response.msg);
       }
