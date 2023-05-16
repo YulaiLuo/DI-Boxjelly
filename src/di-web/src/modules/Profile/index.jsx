@@ -17,7 +17,7 @@ const UserProfile = () => {
 
   const fetchData = async () => {
     try {
-      const user_id = '645deb4a2a296fec6af44411'; // This should come from somewhere dynamic like user context
+      const user_id = '645deb4a2a296fec6af44411'; // replace it with current user id after backend supports it
       const response = await getUserProfile(user_id);
       const [first_name, last_name] = response.data.name.split(' ');
 
@@ -34,7 +34,7 @@ const UserProfile = () => {
   };
 
   const handleSaveChanges = async () => {
-    const user_id = '645deb4a2a296fec6af44411'; // This should come from somewhere dynamic like user context
+    const user_id = '645deb4a2a296fec6af44411'; // replace it with current user id after backend supports it
 
     try {
       const response = await updateUserProfile(user_id, {
