@@ -13,7 +13,8 @@ def create_app():
 
     # Initialize the configuration of flask app
     app = Flask(__name__)
-    
+    app.config.from_object('app_config.Config')
+
     # Initialize all the helpers to the Flask app
     with app.app_context():
         init_api(app)

@@ -1,13 +1,37 @@
 from flask_restful import Resource
-from flask import jsonify, request
-from marshmallow import Schema, fields, ValidationError, validate
+from flask import jsonify, request, make_response
+from marshmallow import Schema, fields
+from flask import current_app as app
 
-class TranslateSchema(Schema):
+from medcat.cat import CAT
+from medcat.cdb import CDB
+from medcat.config import Config
+from medcat.vocab import Vocab
+from medcat.meta_cat import MetaCAT
+from medcat.preprocessing.tokenizers import TokenizerWrapperBPE
+from tokenizers import ByteLevelBPETokenizer
+
+class PostTranslateSchema(Schema):
     texts = fields.List(fields.Str(), required=True)
 
-class MedCatTranslate(Resource):
+class Translate(Resource):
 
     def __init__(self, cat):
+            
+        unzip = './app/medcat_model/'
+        # Load the vocab model you downloaded
+        vocab = Vocab.load(unzip+'vocab.dat')
+        # Load the cdb model you downloaded
+        cdb = CDB.load(unzip+'cdb.dat')
+
+        # needed to add these two lines
+        cdb.config.linking.filters.cuis = set()
+        cdb.config.general.spacy_model = unzip+'spacy_model'
+
+        # Download the mc_status model from the models section below and unzip it
+        mc_status = MetaCAT.load(unzip+'meta_Status/')
+        cat = CAT(cdb=cdb, config=cdb.config, vocab=vocab, meta_cats=[mc_status])
+
         self.cat = cat
 
     def post(self):
@@ -16,10 +40,10 @@ class MedCatTranslate(Resource):
             texts = data['texts']
             total_chars = sum(len(text) for text in texts)
         
-            # Define a threshold for using multiprocessing
-            threshold = 1000
+            # Threshold for using multiprocessing
+            threshold = app.config['MEDCAR_PROC_THRESHOLD']
             
-            if total_chars < threshold:
+            if total_chars <= threshold:
                 res = {}
                 for i, text in enumerate(texts):
                     result = self.cat.get_entities(text)
@@ -33,8 +57,9 @@ class MedCatTranslate(Resource):
                         yield (i, str(text))
 
                 # Process the texts in parallel using MedCAT's multiprocessing function
-                batch_size_chars = 500 # Set the batch size in characters
-                results = self.cat.multiprocessing(data_iterator(texts), batch_size_chars=batch_size_chars, nproc=2)
+                nproc = app.config['MEDCAT_NPROC']
+                batch_size_chars = len(texts) // nproc
+                results = self.cat.multiprocessing(data_iterator(texts), batch_size_chars=batch_size_chars, nproc=nproc)
 
                 # Extract the entities from the results and do further processing
                 res = {}
@@ -45,15 +70,11 @@ class MedCatTranslate(Resource):
             # Do further processing to UIL and return the results
             
             # Return the response with the appropriate status code
-            response = jsonify({'code': 200, 'msg': 'ok','data': res})
-            response.status_code = 200
-
-            return response
+            return make_response(jsonify({'code': 200, 'msg': 'ok','data': res}), 200)
             
         except Exception as e:
             response = jsonify({'code': 400, 'err': 'INVALID_INPUT'})
             response.status_code = 400
-
             return response
             
     def process_entities(self, entities):
