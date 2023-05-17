@@ -18,7 +18,7 @@ class Translate(Resource):
 
     def __init__(self, cat):
             
-        unzip = './app/medcat_model/'
+        unzip = 'app/controllers/medcat_model/'
         # Load the vocab model you downloaded
         vocab = Vocab.load(unzip+'vocab.dat')
         # Load the cdb model you downloaded

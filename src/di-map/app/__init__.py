@@ -1,5 +1,6 @@
 from flask import Flask
-from .api import init_api
+from .views import init_api
+from .utils import init_utils
 
 def create_app():
     """
@@ -18,5 +19,6 @@ def create_app():
     # Initialize all the helpers to the Flask app
     with app.app_context():
         init_api(app)
+        init_utils(app)
 
     return app

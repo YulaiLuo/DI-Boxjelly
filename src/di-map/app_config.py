@@ -23,4 +23,3 @@ class Config:
     # Otherwise - use the normal get_entities function
     MEDCAR_PROC_THRESHOLD  = 1000
     MEDCAT_NPROC = 2
-    
