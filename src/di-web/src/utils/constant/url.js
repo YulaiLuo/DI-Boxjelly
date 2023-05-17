@@ -30,3 +30,6 @@ export const UIL_ALL = '/center/concepts/all';
 
 // Profile module
 export const USER_PROFILE_URL = '/auth/user';
+
+// Avatar module
+export const AVATAR_URL = '/auth/user/avatar';
