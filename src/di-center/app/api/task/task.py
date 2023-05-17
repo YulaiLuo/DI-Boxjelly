@@ -2,15 +2,10 @@ from flask_restful import Resource
 from flask import jsonify, request, make_response
 from app.models import MapTask, MapItem, TaskBoard
 from bson import ObjectId
-from mongoengine.errors import DoesNotExist
 from marshmallow import Schema, fields, ValidationError, validates
 from flask import current_app as app
-import math
-import threading
-import requests
-import codecs
-import csv
 from io import StringIO
+import math, threading, requests, codecs, csv
 
 class DeleteMapTaskInputSchema(Schema):
     task_id = fields.String(required=True)
@@ -30,7 +25,6 @@ class PostMapTaskInputSchema(Schema):
    def validate_file(self, file):
       if not self._allowed_file(file.filename, app.config['MAP_TASK_ALLOWED_EXTENSIONS']):
          raise ValidationError("FILE_NOT_ALLOWED")
-
 
 class GetMapTaskInputSchema(Schema):
    team_id = fields.String(required=True)
@@ -110,6 +104,9 @@ class MapTaskResource(Resource):
    
    # Thread function to process the mapping task
    def map_items(self, map_url ,new_map_task, texts):
+
+      # TODO: Websocket
+
       # Invoke the map api to convert the raw text to snomed ct
       res = requests.post(f'{map_url}/map/translate', json={'texts': texts}).json()
       
@@ -117,37 +114,25 @@ class MapTaskResource(Resource):
          new_map_task.status = 'fail'
          new_map_task.save()
          return 
-   
-      # TODO: add the UIL version to the map task
-      # uil_categories = UILCategory.objects.all()
-      # for i in range(len(texts)):
-      #    mapped_info = res['data'][str(i)]
-      #    for item in mapped_info:
-      #       for category in uil_categories:
-      #          if item['sct_code'] in category.snomed_ct.sct_code:
-      #             item['mapped_uil_id'] = category.id
-      #             item['source'] = 'UIL'
-      #             item['status'] = 'success'
-      #             break
             
       # Create map items
       new_map_items = [
-                           MapItem(task_id = ObjectId(new_map_task.id),
-                           text=texts[i],
-                           status='success' if len(res['data'][str(i)])>0 else 'fail',
-                           mapped_info=res['data'][str(i)]
-                           ) for i in range(len(texts))
-                     ]
+         MapItem(task_id = ObjectId(new_map_task.id),
+            text=texts[i],
+            confidence=res['data'][str(i)]['confidence'],
+            mapped_concept=res['data'][str(i)]['concept_id'],
+            status='success' if res['data'][str(i)]['concept_id'] else 'fail',
+         )for i in range(len(texts))]
+      
       # Save
       new_map_task.status = 'success'
       new_map_task.save()
       MapItem.objects.insert(new_map_items)
 
+      # TODO: Websocket
+
    
    def post(self):
-
-      # Create schema new map task API input schema
-      in_schema = PostMapTaskInputSchema()
 
       # The data can come from file, form and ...etc
       data = {}
@@ -156,30 +141,36 @@ class MapTaskResource(Resource):
 
       try: 
          # load the data
+         in_schema = PostMapTaskInputSchema()
          in_schema = in_schema.load(data)
+      except ValidationError as err:
+         print(err)
+         return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+
+      try:
          file = in_schema['file']
          file_ext = file.filename.split('.')[-1].lower()
 
          texts = []
 
          if file_ext == 'txt':
-               texts = file.readlines()
-               texts = [text.decode('utf-8').strip() for text in texts]
-               if texts and codecs.BOM_UTF8.decode('utf-8') in texts[0]:
-                  texts[0] = texts[0].replace(codecs.BOM_UTF8.decode('utf-8'), '')
+            texts = file.readlines()
+            texts = [text.decode('utf-8').strip() for text in texts]
+            if texts and codecs.BOM_UTF8.decode('utf-8') in texts[0]:
+               texts[0] = texts[0].replace(codecs.BOM_UTF8.decode('utf-8'), '')
 
          elif file_ext == 'csv':
-               file_content = file.read().decode('utf-8')
-               if codecs.BOM_UTF8.decode('utf-8') in file_content:
-                  file_content = file_content.replace(codecs.BOM_UTF8.decode('utf-8'), '')
-               text_stream = StringIO(file_content)
-               reader = csv.reader(text_stream, delimiter=',', quotechar='"')
-               # next(reader)  # Skip the header (if there is one)
-               for row in reader:
-                  # Assuming the text data is in the first column of the CSV
-                  texts.append(row[0])
+            file_content = file.read().decode('utf-8')
+            if codecs.BOM_UTF8.decode('utf-8') in file_content:
+               file_content = file_content.replace(codecs.BOM_UTF8.decode('utf-8'), '')
+            text_stream = StringIO(file_content)
+            reader = csv.reader(text_stream, delimiter=',', quotechar='"')
+            # next(reader)  # Skip the header (if there is one)
+            for row in reader:
+               # Assuming the text data is in the first column of the CSV
+               texts.append(row[0])
          else:
-               print("Invalid file format. Please upload a TXT or CSV file.")
+            return make_response(jsonify(code=400, err="INVALID_FILE_FORMAT"), 400)
 
          # TODO: Get user id from header
          # user_id = request.headers['user_id']
@@ -201,18 +192,11 @@ class MapTaskResource(Resource):
          thread = threading.Thread(target=self.map_items, args=(map_url,new_map_task, texts))
          thread.start()
 
-         response = jsonify(code=200,
-                           msg="ok",
-                           data={
-                                 'id': str(new_map_task.id),
-                                 'status': new_map_task.status
-                           })
-         response.status_code = 200
-         return response
-
-      except ValidationError as err:
-         print(err)
-         return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+         data = {
+            'id': str(new_map_task.id),
+            'status': new_map_task.status
+         }
+         return make_response(jsonify(code=200, msg="ok", data=data), 200)
 
       except Exception as err:
          print(err)

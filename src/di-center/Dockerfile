@@ -4,7 +4,7 @@
 FROM python:3.9.16-slim-bullseye
 
 # set the working directory
-WORKDIR /src/di-uil
+WORKDIR /src/di-center
 
 # duplicate the required library into the base image
 COPY requirements.txt requirements.txt
@@ -18,7 +18,7 @@ EXPOSE 8004
 CMD ["gunicorn" , "main:app", "-c", "gunicorn_config.py"]
 
 # Build image:
-# sudo docker image build -t di-uil .
+# sudo docker image build -t di-center .
 
 # Run the container:
-# sudo docker run -d --name di-uil --network di di-uil:latest
+# sudo docker run -d --name di-center --network di di-center:latest

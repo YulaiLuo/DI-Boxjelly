@@ -31,7 +31,6 @@ class Config:
     # Microservice Map
     SERVICE_MAP = {
         "auth": "http://localhost:8001/auth",
-        "common": "http://localhost:8002/common",
-        "map": "http://localhost:8003/map",
-        "uil": "http://localhost:8004/uil"
+        "center": "http://localhost:8002/center",
+        "map": "http://localhost:8003/map"
     }
