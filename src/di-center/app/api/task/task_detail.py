@@ -40,10 +40,8 @@ class MapTaskDetailResource(Resource):
             page = in_schema['page']  # min_value 1
             size = in_schema['size']  # min_value 10
             map_items = MapItem.objects(task=task_id).skip((page-1)*size).limit(size)
-            print(map_items)
-            # items = [{'text':item.text, 'accuracy':item.accuracy,'mapped_concept':item.mapped_concept, 'status':item.status, 'extra':item.extra} for item in map_items]
-            # print(items)
-            items = [{'text':item['text'], 'accuracy': item['accuracy'],'mapped_concept': item['mapped_concept'], 'status':item['status'], 'extra':item['extra']} for item in (mi.to_mongo().to_dict() for mi in map_items)]
+
+            items = [{'text':item['text'], 'accuracy': item['accuracy'],'mapped_concept': item['mapped_concept'],'ontology':item['ontology'], 'status':item['status'], 'extra':item['extra']} for item in (mi.to_mongo().to_dict() for mi in map_items)]
 
             data = {
                 'id': str(map_task.id),       # task id

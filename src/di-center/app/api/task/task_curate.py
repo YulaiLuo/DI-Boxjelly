@@ -40,7 +40,7 @@ class MapTaskCurateResource(Resource):
                 "coonfidence": 1,   # curated item has default 100% confidence
                 "source": map_item.concept.code_system.name,
                 "status": map_item.statue,
-
+                
                 "concept_id": str(map_item.concept.id),
                 "source_id": map_item.concept.code_system.id,
             }
