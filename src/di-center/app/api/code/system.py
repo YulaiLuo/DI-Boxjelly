@@ -4,7 +4,7 @@ from mongoengine.errors import DoesNotExist
 from bson import ObjectId, json_util
 from app.models import CodeSystem, ConceptGroup
 from marshmallow import Schema, fields, ValidationError
-import json
+import json, traceback
 
 class PostCodeSystemInputSchema(Schema):
    team_id = fields.String(required=True)          # team id
@@ -46,14 +46,14 @@ class CodeSystemResource(Resource):
       try:
 
          pipeline = [
-            {"$match": {"code_system_id": ObjectId(code_system.id)}},
+            {"$match": {"code_system": ObjectId(code_system.id)}},
             {"$lookup": {
                "from": "concept",
                "let": {"group_id": "$_id"},
                "pipeline": [
                   {"$match": {
                      "$and": [
-                        {"$expr": {"$eq": ["$group_id", "$$group_id"]}},
+                        {"$expr": {"$eq": ["$group", "$$group_id"]}},
                         {"$or": [{"child_concept_id": None}, {"child_concept_id": {"$exists": False}}]}
                      ]
                   }},
@@ -86,7 +86,7 @@ class CodeSystemResource(Resource):
          return make_response(response,200)
       
       except Exception as err:
-         print(err)
+         print(traceback.format_exc())
          return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
       
    def update(self):
@@ -113,8 +113,10 @@ class CodeSystemResource(Resource):
          return make_response(jsonify(code=400, err="CODE_SYSTEM_EXIST_IN_TEAM"), 400)
       
       try:
-         user_id = request.headers.get('User-ID')
-         
+         # TODO: read user id from request header
+         # user_id = request.headers.get('user_id')
+         user_id = '60c879e72cb0e6f96d6b0f65'
+
          # convert id string to object id
          in_schema['create_by'] = ObjectId(user_id)
 

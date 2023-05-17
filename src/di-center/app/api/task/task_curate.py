@@ -58,4 +58,5 @@ class MapTaskCurateResource(Resource):
             }
             return make_response(jsonify(code=200, msg="ok", data=data), 200)
         except Exception as err:
+            print(err)
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)

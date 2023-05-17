@@ -40,7 +40,7 @@ class ConceptGroupResource(Resource):
          if not group:
             return make_response(jsonify(code=404, err="GROUP_NOT_FOUND"), 404)
 
-         concepts = Concept.objects(group_id=ObjectId(in_schema['group_id']), child_concept_id=None).all()
+         concepts = Concept.objects(group=ObjectId(in_schema['group_id']), child_concept=None).all()
 
          response = jsonify(code=200, msg="ok", data={
             'group_id': in_schema['group_id'],
