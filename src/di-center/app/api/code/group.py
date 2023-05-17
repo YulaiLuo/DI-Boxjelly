@@ -75,8 +75,7 @@ class ConceptGroupResource(Resource):
       
       
       # TODO: read user id from request header
-      # user_id = request.headers.get('user_id')
-      user_id = '60c879e72cb0e6f96d6b0f65'
+      user_id = request.headers.get('User-ID')
 
       try:
          # convert id string to object id
@@ -84,7 +83,7 @@ class ConceptGroupResource(Resource):
 
          # create uil and save
          new_concept_group = ConceptGroup(name=in_schema['name'], 
-                                          code_system_id=code_system.id, 
+                                          code_system=code_system, 
                                           create_by=in_schema['create_by'])
          new_concept_group.save()
 
