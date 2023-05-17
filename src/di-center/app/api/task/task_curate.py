@@ -37,12 +37,14 @@ class MapTaskCurateResource(Resource):
             map_item.save()
 
             # Send this curate to the mapper
-            response = requests.post(app.config['MAP_SERVICE_URL'], json={
+            send_data = {
                 'text': map_item.text,
                 'curated_uil_name': map_item.curated_concept.name,
                 'curated_uil_group': map_item.curated_concept.group.name,
-            })
-            if response.msg != 'ok':
+            }
+            print(send_data)
+            response = requests.post(app.config['MAP_SERVICE_URL']+'/map/retrain', json=send_data)
+            if response.status_code != 200:
                 return make_response(jsonify(code=400, err="CURATING_FAIL"), 400)
 
             data = {
@@ -53,8 +55,8 @@ class MapTaskCurateResource(Resource):
                 "source": curated_concept.code_system.name,
                 "status": map_item.statue,
                 
-                "concept_id": str(map_item.concept.id),
-                "source_id": map_item.concept.code_system.id,
+                "concept_id": str(curated_concept.id),
+                "source_id": str(curated_concept.code_system.id)
             }
             return make_response(jsonify(code=200, msg="ok", data=data), 200)
         except Exception as err:

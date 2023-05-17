@@ -10,6 +10,7 @@ from .code.system import *
 from .code.concept import *
 from .code.group import *
 
+from .dashboard.dashboard import *
 
 def init_api(app):
     """
@@ -34,6 +35,10 @@ def init_api(app):
     api.add_resource(MapTaskMetaResource, '/center/boards/task/meta')
     api.add_resource(DownloadMapTaskResource, '/center/boards/task/download')
     api.add_resource(MapTaskCurateResource, '/center/boards/task/curate')
+
+    api.add_resource(TopLeftResource, '/center/dashboard/top-left')
+    api.add_resource(TopMiddleResource, '/center/dashboard/top-middle')
+    api.add_resource(TopRightResource, '/center/dashboard/top-right')
 
     # Initialize the API
     api.init_app(app)
