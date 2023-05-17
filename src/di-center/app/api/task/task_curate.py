@@ -5,7 +5,7 @@ from app.models import MapTask, MapItem, TaskBoard, Concept
 from bson import ObjectId
 from mongoengine.errors import DoesNotExist
 from flask import current_app as app
-import requests
+import requests, traceback
 
 class PostMapTaskCurateSchema(Schema):
     # board_id = fields.String(required=True)
@@ -32,10 +32,7 @@ class MapTaskCurateResource(Resource):
             return make_response(jsonify(code=404, err="CONCEPT_NOT_FOUND"), 404)
 
         try:
-            map_item.curated_concept = curated_concept
-            map_item.status = 'reviewed'
-            map_item.save()
-
+            
             # Send this curate to the mapper
             send_data = {
                 'text': map_item.text,
@@ -46,6 +43,10 @@ class MapTaskCurateResource(Resource):
             response = requests.post(app.config['MAP_SERVICE_URL']+'/map/retrain', json=send_data)
             if response.status_code != 200:
                 return make_response(jsonify(code=400, err="CURATING_FAIL"), 400)
+
+            map_item.curated_concept = curated_concept
+            map_item.status = 'reviewed'
+            map_item.save()
 
             data = {
                 "id": str(map_item.id),
@@ -60,4 +61,5 @@ class MapTaskCurateResource(Resource):
             return make_response(jsonify(code=200, msg="ok", data=data), 200)
         except Exception as err:
             print(err)
+            print(traceback.print_exc())
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)

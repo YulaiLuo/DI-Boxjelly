@@ -17,14 +17,14 @@ class DIDocument(Document):
 class MedcatConceptMap(DIDocument):
     
     # From Medcat
-    accuracy = FloatField(required=True)
-    sct_code = StringField(required=True, unique=True, index=True)
-    sct_term = StringField(required=True)
-    sct_pretty_name = StringField(required=True)
-    sct_status = StringField(required=True)
-    sct_status_confidence = FloatField(required=True)
-    sct_types = ListField(StringField(), required=True)
-    sct_types_ids = ListField(StringField(), required=True)
+    accuracy = FloatField()
+    sct_code = StringField(unique=True, sparse=True, index=True)
+    sct_term = StringField()
+    sct_pretty_name = StringField()
+    sct_status = StringField()
+    sct_status_confidence = FloatField()
+    sct_types = ListField(StringField())
+    sct_types_ids = ListField(StringField())
 
     status = StringField(required=True, choices=('fail','success','reviewed'))
 
@@ -37,4 +37,4 @@ class MedcatTextMap(DIDocument):
 
     # Raw clinical text
     text = StringField(required=True, index=True, unique=True)
-    map = ReferenceField(MedcatConceptMap, required=True)
+    map = ReferenceField(MedcatConceptMap, required=False)
