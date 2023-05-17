@@ -47,6 +47,7 @@ class MapTaskDetailResource(Resource):
                  'mapped_concept': item.mapped_concept,
                  'ontology':item.ontology, 
                  'status':item.status,
+                 'curate':None if not item.curated_concept else item.curated_concept.name,
                  'extra':None if not item.extra else item.extra
                  } for item in map_items ]
 

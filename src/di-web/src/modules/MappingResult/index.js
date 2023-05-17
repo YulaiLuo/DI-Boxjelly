@@ -38,7 +38,7 @@ export default function MappingResult() {
     return {
       originalText: item.text,
       mappedText: item.mapped_concept,
-      curate: null,
+      curate: item.curate,
       confidence,
       source,
       mappingStatus,

@@ -108,31 +108,31 @@ class MapTaskResource(Resource):
       # TODO: Websocket
 
       # Invoke the map api to convert the raw text to snomed ct
-      res = requests.post(f'{map_url}/map/predict', json={'texts': texts}).json()
+      res = requests.post(f'{map_url}/map/predict', json={'texts': texts})
       
-      if res['msg']!='ok':
+      if res.status_code != 200:
          new_map_task.status = 'fail'
          new_map_task.save()
          return 
       
+      res = res.json()
       mapper_name = res['data']['name']
       result = res['data']['result']
 
       new_map_items = [
          MapItem(task = new_map_task,
             text=texts[i],
-            accuracy=result[str(i)]['accuracy'],
-            mapped_concept=result[str(i)]['name'],
-            status=result[str(i)]['status'],
-            ontology=result[str(i)]['ontology'],
-            extra=result[str(i)]['extra']
+            accuracy= None if not result[str(i)] else result[str(i)]['accuracy'],
+            mapped_concept= None if not result[str(i)] else result[str(i)]['name'],
+            status= None if not result[str(i)] else result[str(i)]['status'],
+            ontology= None if not result[str(i)] else result[str(i)]['ontology'],
+            extra= None if not result[str(i)] else result[str(i)]['extra']
          )for i in range(len(texts))
       ]
 
       # Save
       new_map_task.status = 'success'
       new_map_task.save()
-      print(new_map_items)
       MapItem.objects.insert(new_map_items)
 
       # TODO: Websocket

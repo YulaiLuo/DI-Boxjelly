@@ -32,10 +32,10 @@ class MapItem(DIDocument):
 
     # From mapper
     accuracy = FloatField()                                       # confidence score of the mapping
-    mapped_concept = StringField(required=True)                   # mapped concept id
+    mapped_concept = StringField()                   # mapped concept id
     status = StringField(default='fail', choices=('success', 'fail', 'reviewed'))                                          # success, fail, reviewed
-    ontology = StringField(required=True)                         # ontology of the concept
-    extra = DictField(required=False, default={})
+    ontology = StringField()                         # ontology of the concept
+    extra = DictField(default={})
 
     # From curator
     curated_concept = ReferenceField(Concept, required=False)       # curated concept id

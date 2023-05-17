@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from app.models import MedcatConceptMap, MedcatTextMap
 from flask import current_app as app
 from mongoengine import DoesNotExist, NotUniqueError
-import threading
+from fuzzywuzzy import fuzz
+import threading, re
 
 
 class Strategy(ABC):
@@ -14,12 +15,10 @@ class Strategy(ABC):
 class PredictStrategy(Strategy):
 
     def __init__(self):
-        self.lock = threading.RLock()  # 重入锁可以在同一线程内多次获得，避免死锁
-
-
+        self.lock = threading.RLock()  
 
     def _after_predict(self, texts, medcat_predictions):
-        concept_maps = [MedcatConceptMap(**medcat_predictions[idx]) for idx, _ in medcat_predictions.items()]
+        concept_maps = [MedcatConceptMap(status='fail') if not medcat_predictions[i] else MedcatConceptMap(**medcat_predictions[i]) for i,_ in medcat_predictions.items()]
         for i in range(len(concept_maps)):
             try:
                 concept_maps[i].save()
@@ -32,35 +31,48 @@ class PredictStrategy(Strategy):
                 MedcatTextMap(text=texts[i], map=concept_maps[i]).save()
             except NotUniqueError:
                 pass
+
+    def _process_failed(self, curated_results, texts):
+        failed_indices = [i for i in range(len(curated_results)) if curated_results[i] is None]
+        failed_texts = [texts[i] for i in failed_indices]
+        
+        for i in failed_indices:
+            failed_text = texts[i]
+            matching_documents = MedcatTextMap.objects(text=re.compile(failed_text, re.IGNORECASE))
+            similarities = [fuzz.ratio(failed_text, doc.text) for doc in matching_documents]
+            if len(similarities)<=0:
+                continue
+
+            idx, max_similarity = max(enumerate(similarities), key=lambda x: x[1])
+            concept_map = matching_documents[idx].map
+            if not concept_map: continue
+            if not concept_map.sct_code and not concept_map.curated_uil_name: continue
+            
+            curated_results[i] = {
+                'text': failed_text,
+                'name':  concept_map.curated_uil_name if not concept_map.sct_code else concept_map.sct_pretty_name,
+                'ontology': 'UIL' if not concept_map.sct_code else 'SNOMED-CT',
+                'accuracy': max_similarity,
+                'status': 'success',
+                'extra': {
+                    '0':{
+                        'display_name': 'Notification',
+                        'value': 'This text is originally failed, but mapped to the most similar text in the database'
+                    }
+                }
+            }
+
+        return curated_results
         
 
-    # def _after_predict(self, texts, medcat_predictions):
-    #     print(texts,medcat_predictions)
-    #     with lock:
-    #         existing_sct_codes = MedcatConceptMap.objects().distinct('sct_code')
-    #         existing_sct_texts = MedcatTextMap.objects().distinct('text')
-                
-
-    #         concept_maps = [MedcatConceptMap(**medcat_predictions[idx])
-    #                         for idx, _ in medcat_predictions.items()
-    #                         if medcat_predictions[idx]['sct_code'] not in existing_sct_codes]
-
-    #         text_maps = [MedcatTextMap(text=texts[i], map=concept_maps[i])
-    #                     for i in range(len(texts))
-    #                     if texts[i] not in existing_sct_texts]
-    #         if len(concept_maps)>0:
-    #             MedcatConceptMap.objects.insert(concept_maps)
-
-    #         if len(text_maps)>0:
-    #             MedcatTextMap.objects.insert(text_maps)
-    #         pass
-        
     def execute(self, cat, data):
         texts = data['texts']
 
         medcat_predictions = self._medcat_predict(cat, texts)
         
-        result = self._translate_to_uil(medcat_predictions, texts)
+        curated_results = self._translate_to_uil(medcat_predictions, texts)
+
+        result = self._process_failed(curated_results, texts)
 
         # Storing the data to the database
         thread = threading.Thread(target=self._after_predict, args=(texts,medcat_predictions,))
@@ -78,17 +90,7 @@ class PredictStrategy(Strategy):
     def _extract_data(self, entities):
         # If no entities is mapped, return a default 
         if len(entities)<=0:
-            return {
-                "accuracy":0,
-                "sct_code":'',
-                "sct_term":'',
-                "sct_pretty_name": '',
-                "sct_status": '',
-                "sct_status_confidence": 0,
-                "sct_types": [],
-                "sct_types_ids": [],
-                "status": 'fail'
-            }
+            return None
 
         # If mapping success, select the most appropriate entity and extract key data
         selected_entity = self._select_entities(entities)
@@ -142,7 +144,7 @@ class PredictStrategy(Strategy):
 
     def _translate_to_uil(self,medcat_predictions, texts):
 
-        sct_codes = [prediction['sct_code'] for prediction in medcat_predictions.values()]
+        sct_codes = [prediction['sct_code'] for prediction in medcat_predictions.values() if prediction]
         pipeline = [
             {'$match':{'sct_code':{'$in':sct_codes}}},
             {'$project':{
@@ -158,26 +160,8 @@ class PredictStrategy(Strategy):
         
         result = {}
         for idx, prediction in medcat_predictions.items():
-            if prediction['status'] == 'fail':
-                result[idx] = {
-                    'text': texts[int(idx)],
-                    'name': '',
-                    'ontology': '',
-                    'accuracy': '',
-                    'status': 'fail',
-                    'extra':{
-                        '0':{
-                            'display_name':'Fail',
-                            'value': 'This text is not mapped to any SNOMED-CT, \n\
-                                  so we cannot map it into UIL concept.'
-                        },
-                        '1':{
-                            'display_name':'Suggestion',
-                            'value': 'Try to curate it! \n \
-                                  Next time I will figure it out!'
-                        }
-                    }
-                }
+            if prediction is None:
+                result[idx]=None
             else:
                 history_map = sct_dict.get(prediction['sct_code'], None)
                 uil_name = None if not history_map else history_map['curated_uil_name']
