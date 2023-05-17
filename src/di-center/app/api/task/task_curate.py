@@ -31,7 +31,10 @@ class MapTaskCurateResource(Resource):
         if not curated_concept:
             return make_response(jsonify(code=404, err="CONCEPT_NOT_FOUND"), 404)
 
-        try:
+        try:            
+            
+            map_item.curated_concept = curated_concept
+            map_item.status = 'reviewed'
             
             # Send this curate to the mapper
             send_data = {
@@ -44,8 +47,6 @@ class MapTaskCurateResource(Resource):
             if response.status_code != 200:
                 return make_response(jsonify(code=400, err="CURATING_FAIL"), 400)
 
-            map_item.curated_concept = curated_concept
-            map_item.status = 'reviewed'
             map_item.save()
 
             data = {

@@ -2,7 +2,8 @@ from abc import ABC, abstractmethod
 from app.models import MedcatConceptMap, MedcatTextMap
 from flask import current_app as app
 from mongoengine import DoesNotExist, NotUniqueError
-import threading
+from fuzzywuzzy import fuzz
+import threading, re
 
 
 class Strategy(ABC):
@@ -15,8 +16,6 @@ class PredictStrategy(Strategy):
 
     def __init__(self):
         self.lock = threading.RLock()  
-
-
 
     def _after_predict(self, texts, medcat_predictions):
         concept_maps = [MedcatConceptMap(status='fail') if not medcat_predictions[i] else MedcatConceptMap(**medcat_predictions[i]) for i,_ in medcat_predictions.items()]
@@ -32,14 +31,48 @@ class PredictStrategy(Strategy):
                 MedcatTextMap(text=texts[i], map=concept_maps[i]).save()
             except NotUniqueError:
                 pass
+
+    def _process_failed(self, curated_results, texts):
+        failed_indices = [i for i in range(len(curated_results)) if curated_results[i] is None]
+        failed_texts = [texts[i] for i in failed_indices]
         
+        for i in failed_indices:
+            failed_text = texts[i]
+            matching_documents = MedcatTextMap.objects(text=re.compile(failed_text, re.IGNORECASE))
+            similarities = [fuzz.ratio(failed_text, doc.text) for doc in matching_documents]
+            if len(similarities)<=0:
+                continue
+
+            idx, max_similarity = max(enumerate(similarities), key=lambda x: x[1])
+            concept_map = matching_documents[idx].map
+            if not concept_map: continue
+            if not concept_map.sct_code and not concept_map.curated_uil_name: continue
+            
+            curated_results[i] = {
+                'text': failed_text,
+                'name':  concept_map.curated_uil_name if not concept_map.sct_code else concept_map.sct_pretty_name,
+                'ontology': 'UIL' if not concept_map.sct_code else 'SNOMED-CT',
+                'accuracy': max_similarity,
+                'status': 'success',
+                'extra': {
+                    '0':{
+                        'display_name': 'Notification',
+                        'value': 'This text is originally failed, but mapped to the most similar text in the database'
+                    }
+                }
+            }
+
+        return curated_results
         
+
     def execute(self, cat, data):
         texts = data['texts']
 
         medcat_predictions = self._medcat_predict(cat, texts)
         
-        result = self._translate_to_uil(medcat_predictions, texts)
+        curated_results = self._translate_to_uil(medcat_predictions, texts)
+
+        result = self._process_failed(curated_results, texts)
 
         # Storing the data to the database
         thread = threading.Thread(target=self._after_predict, args=(texts,medcat_predictions,))
