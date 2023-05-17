@@ -1,11 +1,11 @@
-name: Deploy di-uil on DEV server
+name: Deploy di-center on DEV server
 
 on:
   push:
     branches:
       - develop
     paths:
-      - 'src/di-uil/**'
+      - 'src/di-center/**'
 
 jobs:
   DEV_build_and_deploy:
@@ -15,33 +15,33 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Create uil docker image
-      working-directory: src/di-uil
+    - name: Create center docker image
+      working-directory: src/di-center
       run: |
-        sudo docker image build -t di-uil . 
+        sudo docker image build -t di-center . 
     
-    - name: Save uil Docker image as a file
+    - name: Save center Docker image as a file
       run: |
-        sudo docker save di-uil -o di-uil.tar
+        sudo docker save di-center -o di-center.tar
 
-    - name: Copy uil Docker image to instance
+    - name: Copy center Docker image to instance
       uses: appleboy/scp-action@v0.1.4
       with:
         host: ${{ secrets.DEV_SERVER_IP }}
         username: ${{ secrets.DEV_SERVER_USERNAME }}
         key: ${{ secrets.DEV_SERVER_PRIVATE_KEY }}
-        source: "di-uil.tar"
+        source: "di-center.tar"
         target: "etc"
 
-    - name: Load and deploy uil image 
+    - name: Load and deploy center image 
       uses: appleboy/ssh-action@v0.1.10
       with:
         host: ${{ secrets.DEV_SERVER_IP }}
         username: ${{ secrets.DEV_SERVER_USERNAME }}
         key: ${{ secrets.DEV_SERVER_PRIVATE_KEY }}
         script: |
-          sudo docker rm -f di-uil || true
-          sudo docker image rm di-uil || true
+          sudo docker rm -f di-center || true
+          sudo docker image rm di-center || true
 
-          sudo docker load -i ./etc/di-uil.tar
-          sudo docker run --network di --name di-uil -d di-uil:latest
+          sudo docker load -i ./etc/di-center.tar
+          sudo docker run --network di --name di-center -d di-center:latest
