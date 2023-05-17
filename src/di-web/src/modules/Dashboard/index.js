@@ -216,22 +216,22 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-        <div style={{ background: 'White', width: 300, textAlign: 'center', alignItems: 'center' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', height: '100%'}}>
+        <div style={{ background: 'White', width: 300, textAlign: 'center', alignItems: 'center',position: 'absolute', right: 0, top: 0, bottom: 0}}>
           <Avatar
             // class="mt-4"
             src={`${BASE_URL}/auth/user/avatar?avatar=${user.avatar}`}
             style={{
               width: '150px',
               height: '150px',
-              marginTop: '20px',
+              marginTop: '100px',
               marginLeft: 'auto',
               marginRight: 'auto',
             }}
           />
           <div>
             <h3>{user?.nickname}</h3>
-            <p>Title</p>
+            
           </div>
           <div style={{ marginTop: '20px' }}>
             <h3>Recent Task</h3>
