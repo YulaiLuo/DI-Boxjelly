@@ -35,7 +35,7 @@ class AllConceptResource(Resource):
          print(err)
          return make_response(jsonify(code=400, err='MULTIPLE_CODE_SYSTEM_FOUND'), 400)
       try:
-         concepts = Concept.objects(code_system_id=code_system.id).all()
+         concepts = Concept.objects(code_system=code_system).all()
          data = {
             'concepts':[{
                   'id':str(concept.id),
@@ -76,7 +76,7 @@ class ConceptResource(Resource):
          user_id = '642d169c6f21e6617508fca9'
 
          # create uil and save
-         new_concept = Concept(code_system_id=code_system.id,
+         new_concept = Concept(code_system=code_system,
                            name = in_schema['name'], 
                            description = in_schema.get('description',None), 
                            group_id = in_schema.get('group_id',None), 
