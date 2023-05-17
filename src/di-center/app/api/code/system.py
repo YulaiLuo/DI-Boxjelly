@@ -113,10 +113,8 @@ class CodeSystemResource(Resource):
          return make_response(jsonify(code=400, err="CODE_SYSTEM_EXIST_IN_TEAM"), 400)
       
       try:
-         # TODO: read user id from request header
-         # user_id = request.headers.get('user_id')
-         user_id = '60c879e72cb0e6f96d6b0f65'
-
+         user_id = request.headers.get('User-ID')
+         
          # convert id string to object id
          in_schema['create_by'] = ObjectId(user_id)
 

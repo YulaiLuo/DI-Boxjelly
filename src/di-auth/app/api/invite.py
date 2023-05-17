@@ -90,9 +90,7 @@ class InviteResource(Resource):
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
         
         try:
-
-            # TODO: Get user id from header token
-            user_id = "645da08427eb73c12b252cef"
+            user_id = request.headers.get('User-ID')
 
             # Find if there are pending invitations, update the create time
             user_team = UserTeam.objects(

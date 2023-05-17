@@ -36,8 +36,7 @@ class TeamResource(Resource):
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
         
         try:
-            # TODO: Get user id from header token
-            user_id = "645a59c3052f3ebedab52d78"
+            user_id = request.headers.get('User-ID')
 
             new_team = Team(name=in_schema['name'],
                             create_by=ObjectId(user_id),

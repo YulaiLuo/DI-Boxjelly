@@ -4,14 +4,19 @@ from marshmallow import Schema, fields, ValidationError, post_load, validate, va
 from PIL import Image
 from mongoengine.errors import DoesNotExist
 from app.models import User
-import os, hashlib, time
+import os
+import hashlib
+import time
 from flask import current_app as app
+
 
 class GetAvatarInputSchema(Schema):
     avatar = fields.String(required=True)
 
+
 class PostAvatarInputSchema(Schema):
     new_avatar = fields.Field(required=True)
+
 
 class AvatarResource(Resource):
 
@@ -23,7 +28,7 @@ class AvatarResource(Resource):
             in_schema = in_schema.load(request.files)
         except ValidationError as err:
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
-        
+
         # Check if the image exits in request
         file = in_schema['new_avatar']
         if file.filename == '':
@@ -34,15 +39,15 @@ class AvatarResource(Resource):
             Image.open(file)
         except IOError as err:
             return make_response(jsonify(code=400, err="NOT_IMAGE_ERROR"), 400)
-        
+
         # Check image size is smaller than 1MB
         file.seek(0, os.SEEK_END)
         file_size = file.tell()
         if file_size > 1024*1024:
             return make_response(jsonify(code=400, err="FILE_TOO_LARGE"), 400)
-        
+
         # Find the user
-        user_id = '645deb4a2a296fec6af44411'
+        user_id = request.headers.get('User-ID')
         try:
             user = User.objects(id=user_id).first()
         except DoesNotExist as err:
@@ -55,29 +60,30 @@ class AvatarResource(Resource):
             hash_object = hashlib.sha1(file.read())
             hex_dig = hash_object.hexdigest()
             filename = f'{hex_dig[:8]}{int(time.time())}'
-            
+
             file.seek(0)
             img = Image.open(file)
             img = img.convert('RGB')
-            img.thumbnail((128,128))
+            img.thumbnail((128, 128))
             old_avatar = user.avatar
             user.avatar = filename
 
             # Save the new avatar, remove old avatar, and update user avatar field
             try:
-                os.remove(os.path.join(app.config['AVATAR_FOLDER'], f"{old_avatar}.jpg"))
+                os.remove(os.path.join(
+                    app.config['AVATAR_FOLDER'], f"{old_avatar}.jpg"))
             except FileNotFoundError as err:
                 pass
 
-            img.save(os.path.join(app.config['AVATAR_FOLDER'],f'{filename}.jpg'),'JPEG')
+            img.save(os.path.join(
+                app.config['AVATAR_FOLDER'], f'{filename}.jpg'), 'JPEG')
             user.save()
             return make_response(jsonify(code=200, msg="ok", data={'avatar': filename}), 200)
 
         except Exception as err:
             print(err)
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
-        
-        
+
     def get(self):
         """send the avatar
         """
@@ -85,10 +91,9 @@ class AvatarResource(Resource):
             in_schema = GetAvatarInputSchema().load(request.args)
         except ValidationError as err:
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
-        
+
         try:
             avatar = in_schema['avatar']
             return send_from_directory(app.config['AVATAR_FOLDER'], f'{avatar}.jpg')
         except Exception as err:
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
-        
