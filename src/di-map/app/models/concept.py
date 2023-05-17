@@ -18,7 +18,7 @@ class MedcatConceptMap(DIDocument):
     
     # From Medcat
     accuracy = FloatField(required=True)
-    sct_code = StringField(required=True, unqiue=True, indexed=True)
+    sct_code = StringField(required=True, unique=True, index=True)
     sct_term = StringField(required=True)
     sct_pretty_name = StringField(required=True)
     sct_status = StringField(required=True)
@@ -36,5 +36,5 @@ class MedcatConceptMap(DIDocument):
 class MedcatTextMap(DIDocument):
 
     # Raw clinical text
-    text = StringField(required=True, indexed=True, unqiue=True)
+    text = StringField(required=True, index=True, unique=True)
     map = ReferenceField(MedcatConceptMap, required=True)
