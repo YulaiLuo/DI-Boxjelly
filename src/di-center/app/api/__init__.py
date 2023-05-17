@@ -33,8 +33,7 @@ def init_api(app):
     api.add_resource(MapTaskDetailResource, '/center/boards/task/detail')
     api.add_resource(MapTaskMetaResource, '/center/boards/task/meta')
     api.add_resource(DownloadMapTaskResource, '/center/boards/task/download')
-
-    api.add_resource(MapTaskCurateResource, '/center/task/<task_id>/<index>')
+    api.add_resource(MapTaskCurateResource, '/center/boards/task/curate')
 
     # Initialize the API
     api.init_app(app)

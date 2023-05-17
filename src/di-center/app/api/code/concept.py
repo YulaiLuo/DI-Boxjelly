@@ -8,7 +8,7 @@ from mongoengine.errors import DoesNotExist, NotUniqueError, MultipleObjectsRetu
 class CreateConceptInputSchema(Schema):
 
    code_system_id = fields.String(required=True)                       
-   group_id = fields.String(required=False)                               # id of the group
+   group_id = fields.String(required=True)                               # id of the group
    name = fields.String(required=True)                               # latest name of the category
    description = fields.String(required=False)                               # latest user alias of the category
 
@@ -75,8 +75,8 @@ class ConceptResource(Resource):
          # create uil and save
          new_concept = Concept(code_system=code_system,
                            name = in_schema['name'], 
-                           description = in_schema.get('description',None), 
-                           group_id = in_schema.get('group_id',None), 
+                           description = in_schema['description'], 
+                           group = in_schema['group_id'], 
                            create_by=ObjectId(user_id)
          )
          new_concept.save()
