@@ -45,21 +45,28 @@ class DownloadMapTaskResource(Resource):
         csv_writer.writerow(['Text', 'Output', 'Confidence',
                             'Source', 'Curated UIL', 'Status'])
         for item in map_items:
-            map_info = item['mapped_info']
-            if map_info:
-                csv_writer.writerow([item['text'],
-                                     map_info[0]['sct_term'],
-                                     map_info[0]['confidence'],
-                                     'SNOMED_CT',
-                                     '-',
-                                     item['status']])
-            else:
-                csv_writer.writerow([item['text'],
-                                     '-',
-                                     '-',
-                                     '-',
-                                     '-',
-                                     item['status']])
+            csv_writer.writerow([item.text,
+                            '-' if not item.mapped_concept else item.mapped_concept,
+                          '-' if not item.accuracy else item.accuracy,
+                          '-' if not item.ontology else item.ontology,
+                          '-' if not item.curated_concept else item.curated_concept.name,
+                          item.status])
+            
+            # map_info = item['mapped_info']
+            # if map_info:
+            #     csv_writer.writerow([item['text'],
+            #                          item['mapped_concept'],
+            #                          item['confidence'],
+            #                          item['ontology'],
+            #                          item['curat,
+            #                          item['status']])
+            # else:
+            #     csv_writer.writerow([item['text'],
+            #                          '-',
+            #                          '-',
+            #                          '-',
+            #                          '-',
+            #                          item['status']])
 
         return csv_data.getvalue().encode('utf-8')
 
@@ -79,7 +86,7 @@ class DownloadMapTaskResource(Resource):
             if not map_task:
                 return make_response(jsonify(code=404, err="MAP_TASK_NOT_FOUND"), 404)
 
-            map_items = MapItem.objects(task_id=ObjectId(task_id)).all()
+            map_items = MapItem.objects(task=ObjectId(task_id)).all()
             if not map_items:
                 return make_response(jsonify(code=404, err="MAP_ITEM_NOT_FOUND"), 404)
 
@@ -91,4 +98,5 @@ class DownloadMapTaskResource(Resource):
             return response
 
         except Exception as err:
+            print(err)
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
