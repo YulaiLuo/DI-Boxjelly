@@ -8,8 +8,8 @@ from flask import current_app as app
 import requests
 
 class PostMapTaskCurateSchema(Schema):
-    board_id = fields.String(required=True)
-    team_id = fields.String(required=True)
+    # board_id = fields.String(required=True)
+    # team_id = fields.String(required=True)
     map_item_id = fields.String(required=True)
     concept_id = fields.String(required=True)
 

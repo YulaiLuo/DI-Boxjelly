@@ -16,7 +16,7 @@ class TopLeftResource(Resource):
 class TopMiddleResource(Resource):
 
     def get(self):
-                return make_response(jsonify(code=200, msg="ok", data={
+        return make_response(jsonify(code=200, msg="ok", data={
             "title": "This is a title",
             "total_number": "100",
             "delta": "+16% since last week",
