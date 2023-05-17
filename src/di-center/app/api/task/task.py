@@ -120,12 +120,12 @@ class MapTaskResource(Resource):
 
       new_map_items = [
          MapItem(task = new_map_task,
-            text=texts[str(i)],
+            text=texts[i],
             accuracy=result[str(i)]['accuracy'],
             mapped_concept=result[str(i)]['name'],
             status=result[str(i)]['status'],
-            extra=result[str(i)]['extra'],
-            ontology_id=result[str(i)]['ontology'],
+            ontology=result[str(i)]['ontology'],
+            extra=result[str(i)]['extra']
          )for i in range(len(texts))
       ]
 
