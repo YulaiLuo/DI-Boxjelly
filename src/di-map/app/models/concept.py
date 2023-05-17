@@ -15,7 +15,6 @@ class DIDocument(Document):
         super(DIDocument, self).save(*args, **kwargs)
 
 class MedcatConceptMap(DIDocument):
-    # text = StringField(required=True)
     
     # From Medcat
     accuracy = FloatField(required=True)

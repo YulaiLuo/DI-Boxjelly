@@ -1,5 +1,5 @@
 from datetime import datetime
-from mongoengine import EmbeddedDocument, EmbeddedDocumentField, FloatField, ReferenceField, StringField, IntField, ListField, ObjectIdField, BooleanField
+from mongoengine import EmbeddedDocument, EmbeddedDocumentField, DictField, FloatField, ReferenceField, StringField, IntField, ListField, ObjectIdField, BooleanField
 from .document import DIDocument
 from .code import CodeSystem, Concept, ConceptGroup
 
@@ -35,7 +35,7 @@ class MapItem(DIDocument):
     mapped_concept = ReferenceField(Concept, required=False)               # concept id
     status = StringField(default='fail', choices=('success', 'fail', 'reviewed'))                                          # success, fail, reviewed
     ontology = StringField(required=True)                         # ontology of the concept
-    extra = ObjectIdField(required=False)                          # extra information
+    extra = DictField(required=False, default={})
 
     # From curator
     curated_concept = ReferenceField(Concept, required=False)       # curated concept id

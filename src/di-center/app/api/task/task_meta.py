@@ -34,7 +34,7 @@ class MapTaskMetaResource(Resource):
          #    return response
          
          map_task = MapTask.objects(id=ObjectId(task_id), deleted=False).first()
-         map_items = MapItem.objects(task_id=ObjectId(task_id)).all()
+         map_items = MapItem.objects(task=ObjectId(task_id)).all()
          if not map_items:
             response = jsonify(code=404, err="MAP_ITEM_NOT_FOUND")
             response.status_code = 404

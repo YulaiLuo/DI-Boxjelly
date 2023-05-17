@@ -7,6 +7,7 @@ from flask import current_app as app
 import math, threading, requests, codecs, csv
 from io import StringIO
 from bson import ObjectId
+import traceback
 
 class GetMapTaskInputSchema(Schema):
     task_id = fields.String(required=True)
@@ -39,9 +40,10 @@ class MapTaskDetailResource(Resource):
             page = in_schema['page']  # min_value 1
             size = in_schema['size']  # min_value 10
             map_items = MapItem.objects(task=task_id).skip((page-1)*size).limit(size)
-            
-            items = [{'text':item.text, 'accuracy':item.accuracy,'mapped_concept':item.mapped_concept, 'status':item.status, 'extra':item.extra} for item in map_items]
-            # items = [{'text': map_item['text'], 'status': map_item['status'],'mapped_info': map_item['mapped_info']} for map_item in (mi.to_mongo().to_dict() for mi in map_items)]
+            print(map_items)
+            # items = [{'text':item.text, 'accuracy':item.accuracy,'mapped_concept':item.mapped_concept, 'status':item.status, 'extra':item.extra} for item in map_items]
+            # print(items)
+            items = [{'text':item['text'], 'accuracy': item['accuracy'],'mapped_concept': item['mapped_concept'], 'status':item['status'], 'extra':item['extra']} for item in (mi.to_mongo().to_dict() for mi in map_items)]
 
             data = {
                 'id': str(map_task.id),       # task id
@@ -58,7 +60,7 @@ class MapTaskDetailResource(Resource):
             return response
 
         except Exception as err:
-            print(err)
+            print(traceback.format_exc())
             response = jsonify(code=500, err="INTERNAL_SERVER_ERROR")
             response.status_code = 500
             return response

@@ -132,6 +132,7 @@ class MapTaskResource(Resource):
       # Save
       new_map_task.status = 'success'
       new_map_task.save()
+      print(new_map_items)
       MapItem.objects.insert(new_map_items)
 
       # TODO: Websocket
