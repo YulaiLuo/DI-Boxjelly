@@ -30,14 +30,14 @@ export default function MappingResult() {
 
   // TODO: wait for backend response update
   const transformedItems = mappedItems.map((item) => {
-    const mappedInfo = item.mapped_info[0];
-    const mappingStatus = mappedInfo ? 1 : 0;
-    const source = mappedInfo ? 'SNOMED_CT' : null;
-    const confidence = mappedInfo ? Number(mappedInfo.confidence * 100).toFixed(2) + '%' : null;
+    // const mappedInfo = item.mapped_info[0];
+    const mappingStatus = item.status !== 'fail' ? (item.status === 'success' ? 1 : 2) : 0;
+    const source = item.ontology;
+    const confidence = item.status !== 'fail' ? Number(item.accuracy * 100).toFixed(2) + '%' : null;
 
     return {
       originalText: item.text,
-      mappedText: mappedInfo?.sct_term,
+      mappedText: item.mapped_concept,
       curate: null,
       confidence,
       source,
