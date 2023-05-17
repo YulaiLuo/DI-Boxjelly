@@ -112,16 +112,12 @@ export default function Dashboard() {
     // </div>
 
     <div style={{ display: 'flex', height: '100%' }}>
-      <div class="mx-8 pt-4">
+      <div class="mx-8 pt-4 flex-1">
         <Row>
-          {/* <h1 className='text-2xl'>Hi! Vlada!</h1> */}
-          {/* <Row>
-
-      </Row> */}
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <div>
               <h1 class="">Dashboard</h1>
-              <div>Hello, ${user?.nickname}. Welcome!</div>
+              <div>Hello, {user?.nickname}. Welcome!</div>
             </div>
           </Col>
 
@@ -216,8 +212,26 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%'}}>
-        <div style={{ background: 'White', width: 300, textAlign: 'center', alignItems: 'center',position: 'absolute', right: 0, top: 0, bottom: 0}}>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          width: 300,
+          background: 'White',
+        }}
+      >
+        <div
+          style={{
+            // background: 'White',
+            textAlign: 'center',
+            // alignItems: 'center',
+            // position: 'absolute',
+            // right: 0,
+            // top: 0,
+            // bottom: 0,
+          }}
+        >
           <Avatar
             // class="mt-4"
             src={`${BASE_URL}/auth/user/avatar?avatar=${user.avatar}`}
@@ -231,7 +245,6 @@ export default function Dashboard() {
           />
           <div>
             <h3>{user?.nickname}</h3>
-            
           </div>
           <div style={{ marginTop: '20px' }}>
             <h3>Recent Task</h3>

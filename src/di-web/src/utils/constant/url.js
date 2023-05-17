@@ -12,20 +12,17 @@ export const SINGLE_TEXT_MAPPING_URL = '/map/ontoserver/translate';
 export const ONTOSERVER_TRANSLATE = '/ConceptMap/$translate';
 
 // UIL board
-export const MAP_BOARDS_URL = '/uil/boards';
+export const MAP_BOARDS_URL = '/center/boards';
 
 // UIL task
-export const MAP_TASK_URL = '/uil/boards/task';
-
-// UIL task item
-export const MAP_ITEM_URL = '/uil/task';
+export const MAP_TASK_URL = '/center/boards/tasks';
 
 // MedCAT mapping
 export const MAP_URL = '/map/translate';
 
-export const UIL_URL = '/uil';
-export const UIL_BY_GROUP = '/uil/groups';
-export const UIL_ALL = '/uil/concepts/all';
+export const UIL_URL = '/center';
+export const UIL_BY_GROUP = '/center/groups';
+export const UIL_ALL = '/center/concepts/all';
 
 // Profile module
 export const USER_PROFILE_URL = '/auth/user';
