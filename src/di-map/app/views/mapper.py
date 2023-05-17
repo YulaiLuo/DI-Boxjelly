@@ -37,7 +37,7 @@ class RetrainResource(Resource):
 
     def post(self):
         try:
-            in_schema = PostResetInputSchema().load(request.get_json())
+            in_schema = PostRetrainInputSchema().load(request.get_json())
         except ValidationError as err:
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
         
@@ -45,6 +45,7 @@ class RetrainResource(Resource):
             data = medcat_controller.retrain(in_schema)
             return make_response(jsonify(code=200, msg="ok", data=data), 200)
         except Exception as err:
+            print(traceback.format_exc())
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
 
 
@@ -52,7 +53,7 @@ class ResetResource(Resource):
 
     def post(self):
         try:
-            in_schema = PostRetrainInputSchema().load(request.get_json())
+            in_schema = PostResetInputSchema().load(request.get_json())
         except ValidationError as err:
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
         

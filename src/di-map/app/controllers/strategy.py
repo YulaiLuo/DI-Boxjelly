@@ -196,12 +196,12 @@ class PredictStrategy(Strategy):
 
 class RetrainStrategy(Strategy):
     def execute(self, cat, data):
-        text_map = TextMap.objects(text=data['text']).first()
+        text_map = MedcatTextMap.objects(text=data['text']).first()
         if not text_map:
             raise DoesNotExist('Input text not found')
         
-        text_map.map.curated_uil_name = data['uil_name']
-        text_map.map.curated_uil_group = data['uil_group']
+        text_map.map.curated_uil_name = data['curated_uil_name']
+        text_map.map.curated_uil_group = data['curated_uil_group']
         text_map.map.save()
 
 class ResetStrategy(Strategy):
