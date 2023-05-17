@@ -20,7 +20,7 @@ class PostResetInputSchema(Schema):
 
 class PredictResource(Resource):
 
-    def get(self):
+    def post(self):
         try:
             in_schema = GetPredictResourceInputSchema().load(request.get_json())
         except ValidationError as err:
