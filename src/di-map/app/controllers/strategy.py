@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
-from app.models import MedcatConceptMap
+from app.models import MedcatConceptMap, MedcatTextMap
 from flask import current_app as app
+from mongoengine import DoesNotExist
 import threading
+
+lock = threading.Lock()
 
 class Strategy(ABC):
 
@@ -11,9 +14,37 @@ class Strategy(ABC):
 
 class PredictStrategy(Strategy):
 
+    def _after_predict(self, texts, medcat_predictions):
+        with lock:
+            existing_sct_codes = MedcatConceptMap.objects().distinct('sct_code')
+            existing_sct_texts = MedcatTextMap.objects().distinct('text')
+
+            # Storing the data to the database
+            concept_maps = [MedcatConceptMap(**medcat_predictions[idx]) 
+                            for idx, _ in medcat_predictions.items()
+                            if medcat_predictions[idx]['sct_code'] not in existing_sct_codes]
+
+            text_maps = [MedcatTextMap(text=texts[i], map=concept_maps[i]) 
+                        for i in range(len(texts))
+                        if texts[i] not in existing_sct_texts]
+            if len(concept_maps)>0:
+                MedcatConceptMap.objects.insert(concept_maps)
+
+            if len(text_maps)>0:
+                MedcatTextMap.objects.insert(text_maps)
+            pass
+        
     def execute(self, cat, data):
-        medcat_predictions = self._medcat_predict(cat, data)
-        result = self._translate_to_uil(medcat_predictions)
+        texts = data['texts']
+
+        medcat_predictions = self._medcat_predict(cat, texts)
+        
+        result = self._translate_to_uil(medcat_predictions, texts)
+
+        # Storing the data to the database
+        thread = threading.Thread(target=self._after_predict, args=(texts,medcat_predictions,))
+        thread.start()
+
         return {
             'name':'Medcat',
             'result': result
@@ -23,11 +54,10 @@ class PredictStrategy(Strategy):
         highest_context_similarity_idx = max(entities, key=lambda x: entities[x]['context_similarity'])
         return  entities[highest_context_similarity_idx]
     
-    def _extract_data(self, text, entities):
+    def _extract_data(self, entities):
         # If no entities is mapped, return a default 
         if len(entities)<=0:
             return {
-                "text": text,
                 "accuracy":0,
                 "sct_code":'',
                 "sct_term":'',
@@ -35,14 +65,13 @@ class PredictStrategy(Strategy):
                 "sct_status": '',
                 "sct_status_confidence": 0,
                 "sct_types": [],
-                "sct_type_ids": [],
+                "sct_types_ids": [],
                 "status": 'fail'
             }
 
         # If mapping success, select the most appropriate entity and extract key data
         selected_entity = self._select_entities(entities)
         result = {
-            "text": text,
             "accuracy":selected_entity['acc'],
             "sct_code":selected_entity['cui'],
             "sct_term":selected_entity['detected_name'],
@@ -50,7 +79,7 @@ class PredictStrategy(Strategy):
             "sct_status": selected_entity['meta_anns']['Status']['value'],
             "sct_status_confidence": selected_entity['meta_anns']['Status']['confidence'],
             "sct_types": selected_entity['types'],
-            "sct_type_ids": selected_entity['type_ids'],
+            "sct_types_ids": selected_entity['type_ids'],
             "status": 'success'
         }
         return result
@@ -71,7 +100,7 @@ class PredictStrategy(Strategy):
             res = {}
             for i, text in enumerate(texts):
                 entities = cat.get_entities(text)['entities']
-                result = self._extract_data(text,entities)
+                result = self._extract_data(entities)
 
                 res[i] = result
 
@@ -85,12 +114,12 @@ class PredictStrategy(Strategy):
                                         nproc=nproc)
         res={}
         for i, pred in predictions.items():
-            result = self._extract_data(texts[int(i)],pred['entities'])
+            result = self._extract_data(pred['entities'])
             res[i] = result
         
         return res
 
-    def _translate_to_uil(self,medcat_predictions):
+    def _translate_to_uil(self,medcat_predictions, texts):
 
         sct_codes = [prediction['sct_code'] for prediction in medcat_predictions.values()]
         pipeline = [
@@ -110,7 +139,7 @@ class PredictStrategy(Strategy):
         for idx, prediction in medcat_predictions.items():
             if prediction['status'] == 'fail':
                 result[idx] = {
-                    'text': prediction['text'],
+                    'text': texts[int(idx)],
                     'name': '',
                     'ontology': '',
                     'accuracy': '',
@@ -130,9 +159,9 @@ class PredictStrategy(Strategy):
                 }
             else:
                 history_map = sct_dict.get(prediction['sct_code'], None)
-                uil_name = None if not history_map else history_map.curated_uil_name
+                uil_name = None if not history_map else history_map['curated_uil_name']
                 result[idx] = {
-                    'text': prediction['text'],
+                    'text': texts[int(idx)],
                     'name': uil_name if uil_name else prediction['sct_pretty_name'],
                     'ontology': 'UIL' if uil_name else 'SNOMED-CT',
                     'accuracy': prediction['accuracy'],
@@ -166,9 +195,16 @@ class PredictStrategy(Strategy):
 
 class RetrainStrategy(Strategy):
     def execute(self, cat, data):
-        pass
+        text_map = TextMap.objects(text=data['text']).first()
+        if not text_map:
+            raise DoesNotExist('Input text not found')
+        
+        text_map.map.curated_uil_name = data['uil_name']
+        text_map.map.curated_uil_group = data['uil_group']
+        text_map.map.save()
 
 class ResetStrategy(Strategy):
     def execute(self, cat, data):
+
         pass
 

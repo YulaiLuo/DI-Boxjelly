@@ -10,7 +10,10 @@ class GetPredictResourceInputSchema(Schema):
     texts = fields.List(fields.String(), required=True)
     
 class PostRetrainInputSchema(Schema):
-    pass
+    text = fields.String(required=True)
+
+    curated_uil_name = fields.String(required=True)
+    curated_uil_group = fields.String(required=True)
 
 class PostResetInputSchema(Schema):
     pass
@@ -24,12 +27,10 @@ class PredictResource(Resource):
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
         
         try:
-            data = medcat_controller.predict(in_schema['texts'])
+            data = medcat_controller.predict(in_schema)
             return make_response(jsonify(code=200, msg="ok", data=data), 200)
         except Exception as err:
-            print(err)
-            print(err.args)
-            print(traceback.print_exc())
+            print(traceback.format_exc())
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
 
 class RetrainResource(Resource):

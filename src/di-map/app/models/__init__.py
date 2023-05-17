@@ -1,1 +1,1 @@
-from .concept import MedcatConceptMap
+from .concept import MedcatConceptMap, MedcatTextMap

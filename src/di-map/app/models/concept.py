@@ -15,12 +15,11 @@ class DIDocument(Document):
         super(DIDocument, self).save(*args, **kwargs)
 
 class MedcatConceptMap(DIDocument):
-    # Raw clinical text
-    text = StringField(required=True)
+    # text = StringField(required=True)
     
     # From Medcat
     accuracy = FloatField(required=True)
-    sct_code = StringField(required=True, unqiue=True)
+    sct_code = StringField(required=True, unqiue=True, indexed=True)
     sct_term = StringField(required=True)
     sct_pretty_name = StringField(required=True)
     sct_status = StringField(required=True)
@@ -35,3 +34,8 @@ class MedcatConceptMap(DIDocument):
     curated_uil_name = StringField(required=False,default='')
     curated_uil_group = StringField(required=False,default='')
 
+class MedcatTextMap(DIDocument):
+
+    # Raw clinical text
+    text = StringField(required=True, indexed=True, unqiue_text=True)
+    map = ReferenceField(MedcatConceptMap, required=True)
