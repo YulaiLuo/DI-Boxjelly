@@ -36,5 +36,5 @@ class MedcatConceptMap(DIDocument):
 class MedcatTextMap(DIDocument):
 
     # Raw clinical text
-    text = StringField(required=True, indexed=True, unqiue_text=True)
+    text = StringField(required=True, indexed=True, unqiue=True)
     map = ReferenceField(MedcatConceptMap, required=True)

@@ -33,7 +33,7 @@ class MapTaskCurateResource(Resource):
 
         try:
             map_item.curated_concept = curated_concept
-            map_item.statue = 'reviewed'
+            map_item.status = 'reviewed'
             map_item.save()
 
             # Send this curate to the mapper
@@ -53,8 +53,7 @@ class MapTaskCurateResource(Resource):
                 "concept": curated_concept.name,
                 "coonfidence": 1,   # curated item has default 100% confidence
                 "source": curated_concept.code_system.name,
-                "status": map_item.statue,
-                
+                "status": map_item.status,
                 "concept_id": str(curated_concept.id),
                 "source_id": str(curated_concept.code_system.id)
             }

@@ -32,7 +32,7 @@ class MapItem(DIDocument):
 
     # From mapper
     accuracy = FloatField()                                       # confidence score of the mapping
-    mapped_concept = ReferenceField(Concept, required=False)               # concept id
+    mapped_concept = StringField(required=True)                   # mapped concept id
     status = StringField(default='fail', choices=('success', 'fail', 'reviewed'))                                          # success, fail, reviewed
     ontology = StringField(required=True)                         # ontology of the concept
     extra = DictField(required=False, default={})

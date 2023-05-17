@@ -1,10 +1,9 @@
 from abc import ABC, abstractmethod
 from app.models import MedcatConceptMap, MedcatTextMap
 from flask import current_app as app
-from mongoengine import DoesNotExist
+from mongoengine import DoesNotExist, NotUniqueError
 import threading
 
-lock = threading.Lock()
 
 class Strategy(ABC):
 
@@ -14,26 +13,47 @@ class Strategy(ABC):
 
 class PredictStrategy(Strategy):
 
+    def __init__(self):
+        self.lock = threading.RLock()  # 重入锁可以在同一线程内多次获得，避免死锁
+
+
+
     def _after_predict(self, texts, medcat_predictions):
-        print(texts,medcat_predictions)
-        with lock:
-            existing_sct_codes = MedcatConceptMap.objects().distinct('sct_code')
-            existing_sct_texts = MedcatTextMap.objects().distinct('text')
+        concept_maps = [MedcatConceptMap(**medcat_predictions[idx]) for idx, _ in medcat_predictions.items()]
+        for i in range(len(concept_maps)):
+            try:
+                concept_maps[i].save()
+            except NotUniqueError:
+                concept_maps[i] = MedcatConceptMap.objects(sct_code=concept_maps[i].sct_code).first()
+                pass
+        
+        for i in range(len(texts)):
+            try:
+                MedcatTextMap(text=texts[i], map=concept_maps[i]).save()
+            except NotUniqueError:
+                pass
+        
 
-            # Storing the data to the database
-            concept_maps = [MedcatConceptMap(**medcat_predictions[idx]) 
-                            for idx, _ in medcat_predictions.items()
-                            if medcat_predictions[idx]['sct_code'] not in existing_sct_codes]
+    # def _after_predict(self, texts, medcat_predictions):
+    #     print(texts,medcat_predictions)
+    #     with lock:
+    #         existing_sct_codes = MedcatConceptMap.objects().distinct('sct_code')
+    #         existing_sct_texts = MedcatTextMap.objects().distinct('text')
+                
 
-            text_maps = [MedcatTextMap(text=texts[i], map=concept_maps[i]) 
-                        for i in range(len(texts))
-                        if texts[i] not in existing_sct_texts]
-            if len(concept_maps)>0:
-                MedcatConceptMap.objects.insert(concept_maps)
+    #         concept_maps = [MedcatConceptMap(**medcat_predictions[idx])
+    #                         for idx, _ in medcat_predictions.items()
+    #                         if medcat_predictions[idx]['sct_code'] not in existing_sct_codes]
 
-            if len(text_maps)>0:
-                MedcatTextMap.objects.insert(text_maps)
-            pass
+    #         text_maps = [MedcatTextMap(text=texts[i], map=concept_maps[i])
+    #                     for i in range(len(texts))
+    #                     if texts[i] not in existing_sct_texts]
+    #         if len(concept_maps)>0:
+    #             MedcatConceptMap.objects.insert(concept_maps)
+
+    #         if len(text_maps)>0:
+    #             MedcatTextMap.objects.insert(text_maps)
+    #         pass
         
     def execute(self, cat, data):
         texts = data['texts']
