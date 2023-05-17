@@ -4,6 +4,9 @@ import {
   MAP_URL,
   MAP_TASK_URL,
   MAP_BOARDS_URL,
+  MAP_TASK_META_URL,
+  MAP_TASK_DETAIL_URL,
+  MAP_TASK_DOWNLOAD_URL,
 } from '../../utils/constant/url';
 import http from '../../utils/http';
 
@@ -109,18 +112,18 @@ export const createMappingTask = (teamId, boardId, file) => {
 
 // Get mapping task detail
 export const getMappingTaskDetail = (task_id, team_id, board_id, page = 1, size = 10) => {
-  return http.get(`${MAP_TASK_URL}/detail`, { task_id, team_id, board_id, page, size });
+  return http.get(`${MAP_TASK_DETAIL_URL}`, { task_id, team_id, board_id, page, size });
 };
 
 // Get mapping task meta detail
 export const getMappingTaskMetaDetail = (task_id) => {
-  return http.get(`${MAP_TASK_URL}/meta`, { task_id });
+  return http.get(`${MAP_TASK_META_URL}`, { task_id });
 };
 
 export const exportFile = async (team_id, task_id) => {
   try {
     const response = await http.get(
-      `${MAP_TASK_URL}/download`,
+      `${MAP_TASK_DOWNLOAD_URL}`,
       { team_id, task_id },
       {
         responseType: 'blob',
