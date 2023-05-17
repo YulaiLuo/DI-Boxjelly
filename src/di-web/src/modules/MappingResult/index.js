@@ -42,6 +42,7 @@ export default function MappingResult() {
       confidence,
       source,
       mappingStatus,
+      mappedItemId: item.map_item_id,
     };
   });
 

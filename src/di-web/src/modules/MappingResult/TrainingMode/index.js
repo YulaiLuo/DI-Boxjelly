@@ -4,9 +4,10 @@ import { useRequest } from 'ahooks';
 import { BarChartOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';
 import { Form, Col, Row, Button, Select, Space, Pagination } from 'antd';
-import { columns as TrainingColumns } from './columns';
-import { getMappingTaskMetaDetail, exportFile } from '../../Mapping/api';
+import { getColumns } from './columns';
+import { getMappingTaskMetaDetail, exportFile, curateMapping } from '../../Mapping/api';
 import { VisualizationDrawer } from '../../../components';
+import { getCodeSystemList } from '../../CodeSystem/api';
 
 export default function TrainingMode({ data, taskId, currentPage, onPageChange }) {
   const PAGE_SIZE = 10;
@@ -14,6 +15,32 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
   const { id: board_id } = useParams();
   const [editableKeys, setEditableRowKeys] = useState([]);
   const { data: meta_data } = useRequest(() => getMappingTaskMetaDetail(taskId));
+  const { data: codeSystemList } = useRequest(
+    () => getCodeSystemList('60c879e72cb0e6f96d6b0f65', '645a4f69203d1d8b3fbb80b4'),
+    {
+      initialData: [],
+    }
+  );
+  const { run: runCurateMapping } = useRequest(curateMapping, {
+    manual: true,
+  });
+
+  console.log('sss', codeSystemList);
+
+  const mappedCodeSystemList = codeSystemList?.data?.groups.map((item) => {
+    return {
+      // value: [item.group, item.group_id],
+      value: item.group_id,
+      label: item.group,
+      children: item.concepts.map((child) => ({
+        // value: [child.name, child.id],
+        value: child.id,
+        label: child.name,
+      })),
+    };
+  });
+
+  console.log('asfdsfasd');
 
   const num = meta_data?.data.num;
 
@@ -98,7 +125,7 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
       <VisualizationDrawer onClose={onClose} open={open} metaData={meta_data} />
       <EditableProTable
         rowKey="id"
-        columns={TrainingColumns}
+        columns={getColumns(mappedCodeSystemList)}
         value={dataSource}
         editable={{
           type: 'multiple',
@@ -107,6 +134,7 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
             // TODO
             console.log(rowKey, data, row);
             data.mappingStatus = 2;
+            runCurateMapping(data.mappedItemId, data.curate[1]);
           },
           onChange: setEditableRowKeys,
           actionRender: (row, config, dom) => [dom.save, dom.cancel],

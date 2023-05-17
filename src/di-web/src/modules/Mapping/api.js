@@ -7,6 +7,7 @@ import {
   MAP_TASK_META_URL,
   MAP_TASK_DETAIL_URL,
   MAP_TASK_DOWNLOAD_URL,
+  MAP_TASK_CURATE_URL,
 } from '../../utils/constant/url';
 import http from '../../utils/http';
 
@@ -145,4 +146,8 @@ export const exportFile = async (team_id, task_id) => {
   } catch (error) {
     console.error('Error downloading CSV:', error);
   }
+};
+
+export const curateMapping = (map_item_id, concept_id) => {
+  return http.post(MAP_TASK_CURATE_URL, { map_item_id, concept_id });
 };

@@ -19,6 +19,7 @@ export const MAP_TASK_URL = '/center/boards/tasks';
 export const MAP_TASK_META_URL = '/center/boards/task/meta';
 export const MAP_TASK_DETAIL_URL = '/center/boards/task/detail';
 export const MAP_TASK_DOWNLOAD_URL = '/center/boards/task/download';
+export const MAP_TASK_CURATE_URL = 'center/boards/task/curate';
 
 // MedCAT mapping
 export const MAP_URL = '/map/translate';
