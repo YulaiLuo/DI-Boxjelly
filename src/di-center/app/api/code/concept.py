@@ -35,7 +35,7 @@ class AllConceptResource(Resource):
          print(err)
          return make_response(jsonify(code=400, err='MULTIPLE_CODE_SYSTEM_FOUND'), 400)
       try:
-         concepts = Concept.objects(code_system=code_system).all()
+         concepts = Concept.objects(code_system=code_system.id).all()
          data = {
             'concepts':[{
                   'id':str(concept.id),

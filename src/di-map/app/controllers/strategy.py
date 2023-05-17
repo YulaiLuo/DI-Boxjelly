@@ -15,6 +15,7 @@ class Strategy(ABC):
 class PredictStrategy(Strategy):
 
     def _after_predict(self, texts, medcat_predictions):
+        print(texts,medcat_predictions)
         with lock:
             existing_sct_codes = MedcatConceptMap.objects().distinct('sct_code')
             existing_sct_texts = MedcatTextMap.objects().distinct('text')

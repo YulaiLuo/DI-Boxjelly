@@ -61,7 +61,7 @@ class MapTaskResource(Resource):
             if not task_board:
                return make_response(jsonify(code=404, err="BOARD_NOT_FOUND"), 404)
             
-            all_map_tasks = MapTask.objects(board_id=board_id,deleted=False).order_by('-id').all()
+            all_map_tasks = MapTask.objects(board=task_board,deleted=False).order_by('-id').all()
 
             # Paginate the tasks
             map_tasks_page = all_map_tasks.skip((page-1)*size).limit(size)
@@ -108,30 +108,34 @@ class MapTaskResource(Resource):
       # TODO: Websocket
 
       # Invoke the map api to convert the raw text to snomed ct
-      res = requests.post(f'{map_url}/map/translate', json={'texts': texts}).json()
+      res = requests.post(f'{map_url}/map/predict', json={'texts': texts}).json()
       
       if res['msg']!='ok':
          new_map_task.status = 'fail'
          new_map_task.save()
          return 
-            
-      # Create map items
-      new_map_items = [
-         MapItem(task_id = ObjectId(new_map_task.id),
-            text=texts[i],
-            confidence=res['data'][str(i)]['confidence'],
-            mapped_concept=res['data'][str(i)]['concept_id'],
-            status='success' if res['data'][str(i)]['concept_id'] else 'fail',
-         )for i in range(len(texts))]
       
+      mapper_name = res['data']['name']
+      result = res['data']['result']
+
+      new_map_items = [
+         MapItem(task = new_map_task,
+            text=texts[i],
+            accuracy=result[str(i)]['accuracy'],
+            mapped_concept=result[str(i)]['name'],
+            status=result[str(i)]['status'],
+            ontology=result[str(i)]['ontology'],
+            extra=result[str(i)]['extra']
+         )for i in range(len(texts))
+      ]
+
       # Save
       new_map_task.status = 'success'
       new_map_task.save()
       MapItem.objects.insert(new_map_items)
 
       # TODO: Websocket
-
-   
+ 
    def post(self):
 
       # The data can come from file, form and ...etc
@@ -176,10 +180,11 @@ class MapTaskResource(Resource):
          new_map_task = MapTask(
                num = len(texts),
                create_by = ObjectId(user_id),
-               # created_by = request.user_team_id
+               # TODO
+               mapper_name = 'MedCat',
                file_name = file.filename,
                team_id = ObjectId(in_schema['team_id']),
-               board_id = ObjectId(in_schema['board_id'])
+               board = ObjectId(in_schema['board_id'])
          )
 
          # Save map task

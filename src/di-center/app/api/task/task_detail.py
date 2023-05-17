@@ -32,16 +32,16 @@ class MapTaskDetailResource(Resource):
         
         try:
             task_id = in_schema['task_id']
-            map_task = MapTask.objects(id=ObjectId(task_id), deleted=False).first()
+            map_task = MapTask.objects(id=task_id, deleted=False).first()
             if not map_task:
                 return make_response(jsonify(code=404, err="MAP_TASK_NOT_FOUND"),404)
 
             page = in_schema['page']  # min_value 1
             size = in_schema['size']  # min_value 10
-            map_items = MapItem.objects(task_id=ObjectId(task_id)).skip((page-1)*size).limit(size)
+            map_items = MapItem.objects(task=task_id).skip((page-1)*size).limit(size)
             
-            # items = [{'text':item.text, 'status':item.status,'mapped_info':item.mapped_info} for item in map_items]
-            items = [{'text': map_item['text'], 'status': map_item['status'],'mapped_info': map_item['mapped_info']} for map_item in (mi.to_mongo().to_dict() for mi in map_items)]
+            items = [{'text':item.text, 'accuracy':item.accuracy,'mapped_concept':item.mapped_concept, 'status':item.status, 'extra':item.extra} for item in map_items]
+            # items = [{'text': map_item['text'], 'status': map_item['status'],'mapped_info': map_item['mapped_info']} for map_item in (mi.to_mongo().to_dict() for mi in map_items)]
 
             data = {
                 'id': str(map_task.id),       # task id
