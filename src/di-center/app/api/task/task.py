@@ -177,9 +177,7 @@ class MapTaskResource(Resource):
          else:
             return make_response(jsonify(code=400, err="INVALID_FILE_FORMAT"), 400)
 
-         # TODO: Get user id from header
-         # user_id = request.headers['user_id']
-         user_id = '60c879e72cb0e6f96d6b0f65'
+         user_id = request.headers.get('User-ID')
          new_map_task = MapTask(
                num = len(texts),
                create_by = ObjectId(user_id),

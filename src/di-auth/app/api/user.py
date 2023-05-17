@@ -31,8 +31,7 @@ class UserResource(Resource):
         except ValidationError as err:
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
 
-        # TODO: Get user id from token
-        user_id = "645deb4a2a296fec6af44411"
+        user_id = request.headers.get('User-ID')
 
         try:
             # Update the user's profile
@@ -60,9 +59,8 @@ class UserResource(Resource):
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
         
         try:
-            # TODO: Get user id from header token 
             # to check if the requester is in the team
-            user_id = '645deb4a2a296fec6af44411'
+            user_id = request.headers.get('User-ID')
 
             user = User.objects(id=in_schema['user_id']).first()
             if not user:

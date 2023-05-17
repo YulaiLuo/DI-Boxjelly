@@ -70,10 +70,7 @@ class ConceptResource(Resource):
          return make_response(jsonify(code=404, err="CODE_SYSTEM_NOT_FOUND"), 404)
 
       try:
-         # convert id string to object id
-         # TODO: read user id from request header
-         # user_id = request.headers.get('user_id')
-         user_id = '642d169c6f21e6617508fca9'
+         user_id = request.headers.get('User-ID')
 
          # create uil and save
          new_concept = Concept(code_system=code_system,

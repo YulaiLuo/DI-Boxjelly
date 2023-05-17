@@ -42,7 +42,7 @@ class GatewayResource(Resource):
         # Create headers with user id from token
         headers = {
             "Content-Type": request.content_type,
-            "UserID": str(user_id)
+            "User-ID": str(user_id)
         }
 
         # Forward request to target service
