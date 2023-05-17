@@ -1,27 +1,18 @@
 import React from 'react';
-import { List, Avatar, Layout, Menu } from 'antd';
+import { List, Avatar, Layout, Menu, Button } from 'antd';
+import { useRequest } from 'ahooks';
+import { getTeamInfo } from './api';
+import { BASE_URL } from '../../utils/constant/url';
 
 const { Sider, Content } = Layout;
 
 export default function TeamProfile() {
-  const data = [
-    {
-      title: 'Vlada',
-      description: 'vlada@unimelb.edu.au',
-    },
-    {
-      title: 'Daniel',
-      description: 'daniel@unimelb.edu.au',
-    },
-    {
-      title: 'Mike',
-      description: 'Mike@unimelb.edu.au',
-    },
-    {
-      title: 'Mike',
-      description: 'Mike@unimelb.edu.au',
-    },
-  ];
+  const teamId = localStorage.getItem('team');
+
+  const { data: teamInfo } = useRequest(() => getTeamInfo(teamId));
+  console.log('teamInfo', teamInfo);
+
+  const data = teamInfo?.data;
 
   const getSidebarItem = (label, key, icon, children) => ({
     label,
@@ -30,16 +21,13 @@ export default function TeamProfile() {
     icon,
   });
 
-  const sidebarItems = [
-    getSidebarItem('All members', 'all'),
-    getSidebarItem('Pending', 'pending')
-  ];
+  const sidebarItems = [getSidebarItem('All members', 'all'), getSidebarItem('Pending', 'pending')];
 
   return (
     <div class="mx-4 py-3">
-      <div class="flex items-center">
-        <h2 class="mr-5">You are currently in the XXXX team </h2>
-        <a>Switch team</a>
+      <div class="flex items-center justify-between">
+        <h2 class="mr-5">You are currently in the {data?.team_name} team </h2>
+        <Button type="primary">Invite Member</Button>
       </div>
 
       <Layout>
@@ -59,7 +47,7 @@ export default function TeamProfile() {
           <Content class="ml-3">
             <List
               itemLayout="horizontal"
-              dataSource={data}
+              dataSource={data?.members}
               renderItem={(item, index) => (
                 <List.Item actions={[<a key="remove">Remove</a>, <a key="leave">Leave</a>]}>
                   <List.Item.Meta
@@ -67,12 +55,12 @@ export default function TeamProfile() {
                     avatar={
                       <Avatar
                         // class="mt-4"
-                        src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`}
+                        src={`${BASE_URL}/auth/user/avatar?avatar=${item.avatar}`}
                       />
                       // <Avatar class="mt-4" src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`} />
                     }
-                    title={item.title}
-                    description={item.description}
+                    title={item.nickname}
+                    description={item.email}
                   />
                 </List.Item>
               )}

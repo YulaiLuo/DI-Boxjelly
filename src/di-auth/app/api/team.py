@@ -36,8 +36,7 @@ class TeamResource(Resource):
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
         
         try:
-            # TODO: Get user id from header token
-            user_id = "645a59c3052f3ebedab52d78"
+            user_id = request.headers.get('User-ID')
 
             new_team = Team(name=in_schema['name'],
                             create_by=ObjectId(user_id),
@@ -59,7 +58,7 @@ class TeamResource(Resource):
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
         
     def get(self):
-        """Get team members and informations
+        """Get all active status team members and informations
         """
         try:
             in_schema = GetTeamInputSchema()
@@ -87,8 +86,10 @@ class TeamResource(Resource):
                     "username": "$user_info.username",
                     "first_name": "$user_info.first_name",
                     "last_name": "$user_info.last_name",
+                    "nickname": "$user_info.nickname",
                     "email": "$user_info.email",
                     "gender": "$user_info.gender",
+                    "avatar": "$user_info.avatar",
                     "role": "$role",
                     "status": "$status"
                 }}
@@ -130,4 +131,41 @@ class TeamResource(Resource):
             return make_response(jsonify(code=200, msg="ok", data=data), 200)
         except ValidationError as err:
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+
+
+class PendingTeamResource(Resource):
         
+    def get(self):
+        """Get all active status team members and informations
+        """
+        try:
+            in_schema = GetTeamInputSchema()
+            in_schema = in_schema.load(request.args)
+        except ValidationError as err:
+            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+        
+        try:
+            team = Team.objects(id=in_schema['team_id']).first()
+            if not team:
+                return make_response(jsonify(code=404, err="TEAM_NOT_FOUND"), 404)
+            
+            user_teams = UserTeam.objects(team_id=in_schema['team_id']).get()
+
+            pending_members = [{
+                "role": user_team.role,
+                "invite_by": user_team.invite_by.nickname,
+                "status": user_team.status,
+                "created_at": user_team.created_at,
+                "invite_email": user_team.invite_email
+            } for user_team in user_teams]
+            
+            data = {
+                "team_id": str(team.id),
+                "team_name": team.name,
+                "members": pending_members
+            }
+
+            return make_response(jsonify(code=200, msg="ok", data=data), 200)
+        except Exception as err:
+            print(err.with_traceback())
+            return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)

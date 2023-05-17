@@ -4,6 +4,7 @@ import { useRequest } from 'ahooks';
 import { Form, Input, Button } from 'antd';
 import { login } from './api';
 import { useMessageStore, useUserStore } from '../../store';
+import Cookies from 'js-cookie';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -13,10 +14,18 @@ export default function Login() {
   const { loading, run } = useRequest(login, {
     manual: true,
     onSuccess: (res) => {
+      console.log('login', res);
+      localStorage.setItem('user', res.data?.user?.id);
+      localStorage.setItem('team', res.data?.team?.id);
+      localStorage.setItem('userDetail', JSON.stringify(res.data?.user));
       setLoggedIn(true);
+      // const cookies = document.cookie.split(';');
+      // console.log('cookies', cookies);
+      const csrfCookie = Cookies.get('csrf_access_token');
+      console.log('csrf', csrfCookie);
       msgApi.success('Login Successfully');
       localStorage.setItem('loggedIn', 'true');
-      navigate('/mapping', { replace: true });
+      navigate('/dashboard', { replace: true });
     },
   });
 

@@ -15,7 +15,7 @@ class DIDocument(Document):
         super(DIDocument, self).save(*args, **kwargs)
 
 class User(DIDocument):
-    # avatar = StringField(required=True)                               # group name
+    avatar = StringField(required=True)                               # group name
     username = StringField(unique=True,required=True)                               # group name
     email = StringField(unique=True,required=True)                               # group name
     password = StringField(required=True)                               # group name
@@ -37,4 +37,4 @@ class UserTeam(DIDocument):
    
     status = StringField(default='pending',choices=('active','absent','pending'))
     join_time = DateTimeField(required=False)    # join time
-
+    last_login_time = DateTimeField(default=datetime.utcnow)    # last login time

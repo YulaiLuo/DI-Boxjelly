@@ -11,7 +11,7 @@ import {
   MappingResult,
   Dashboard,
   CodeSystem,
-  Profile
+  Profile,
 } from './modules';
 import { checkAuthentication } from './utils/auth';
 
@@ -19,12 +19,10 @@ function App() {
   // global message display
   const [messageApi, contextHolder] = message.useMessage();
 
-  const loggedIn = process.env.NODE_ENV === 'development' || checkAuthentication();
+  const loggedIn = checkAuthentication();
   const setMsgApi = useMessageStore((state) => state.setMsgApi);
 
   setMsgApi(messageApi);
-  // document.cookie = "cookieName=cookieValue; SameSite=None; Secure";
-  // const loggedIn = checkAuthentication();
 
   return (
     <>
@@ -32,7 +30,6 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
-          {/* <Route path="/" element={<Navigate to="dashboard/mapping"/>} /> */}
           <Route element={loggedIn ? <Main /> : <Navigate to="/login" replace />}>
             <Route
               path="/"
@@ -53,7 +50,7 @@ function App() {
               element={loggedIn ? <MappingResult /> : <Navigate to="/login" replace />}
             />
             <Route
-              path="/mapping-history"
+              path="/mapping-history/:id"
               element={loggedIn ? <MappingHistory /> : <Navigate to="/login" replace />}
             />
             <Route

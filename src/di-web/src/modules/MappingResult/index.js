@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Tabs } from 'antd';
 import { useRequest } from 'ahooks';
-import InferenceMode from './InferenceMode';
 import TrainingMode from './TrainingMode';
 import { getMappingTaskDetail } from '../Mapping/api';
 
@@ -15,7 +13,6 @@ export default function MappingResult() {
   };
   const navigate = useNavigate();
   const { state } = useLocation();
-  const defaultActiveKey = state.mappingMode === 1 ? 'training' : 'inference';
   // TODO: should get mappingRes from backend
   const taskId = state.id;
   const teamId = state.team_id;
@@ -33,47 +30,21 @@ export default function MappingResult() {
 
   // TODO: wait for backend response update
   const transformedItems = mappedItems.map((item) => {
-    const mappedInfo = item.mapped_info[0];
-    const mappingStatus = mappedInfo ? 1 : 0;
-    const source = mappedInfo ? 'SNOMED_CT' : null;
-    const confidence = mappedInfo ? Number(mappedInfo.confidence * 100).toFixed(2) + '%' : null;
+    // const mappedInfo = item.mapped_info[0];
+    const mappingStatus = item.status !== 'fail' ? (item.status === 'success' ? 1 : 2) : 0;
+    const source = item.ontology;
+    const confidence = item.status !== 'fail' ? Number(item.accuracy * 100).toFixed(2) + '%' : null;
 
     return {
       originalText: item.text,
-      mappedText: mappedInfo?.sct_term,
+      mappedText: item.mapped_concept,
       curate: null,
       confidence,
       source,
       mappingStatus,
+      mappedItemId: item.map_item_id,
     };
   });
-
-  const items = [
-    {
-      key: 'inference',
-      label: `Inference`,
-      children: (
-        <InferenceMode
-          data={transformedItems}
-          taskId={taskId}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-        />
-      ),
-    },
-    {
-      key: 'training',
-      label: `Training`,
-      children: (
-        <TrainingMode
-          data={transformedItems}
-          taskId={taskId}
-          currentPage={currentPage}
-          onPageChange={handlePageChange}
-        />
-      ),
-    },
-  ];
 
   useEffect(() => {
     if (state === null) {

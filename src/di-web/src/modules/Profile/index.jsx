@@ -1,89 +1,121 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
+import { getUserProfile, updateUserProfile } from './api';
 
-const ProfilePage = () => {
-  const [profile, setProfile] = useState({
-    username: '',
-    email: '',
-    password: '',
-    firstName: '',
-    lastName: '',
-    nickname: '',
-    gender: ''
+const UserProfile = () => {
+  const [userData, setUserData] = useState({
+    email: "",
+    first_name: "",
+    last_name: "",
+    nickname: "",
+    gender: ""
   });
-
   const [editMode, setEditMode] = useState(false);
 
-  const handleInputChange = (event) => {
-    setProfile({
-      ...profile,
-      [event.target.name]: event.target.value
-    });
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const user_id = localStorage.getItem('user'); 
+      const response = await getUserProfile(user_id);
+      const [first_name, last_name] = response.data.name.split(' ');
+
+      const userDetails = {
+        email: response.data.email,
+        first_name,
+        last_name,
+        nickname: response.data.nickname,
+        gender: response.data.gender || "Not specified"
+      };
+
+      setUserData(userDetails);
+
+      // store the user detail in local storage
+      localStorage.setItem('userDetail', JSON.stringify(userDetails));
+      
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleEdit = () => {
-    setEditMode(true);
-  };
+  const handleSaveChanges = async () => {
+    const user_id = localStorage.getItem('user'); 
 
-  const handleSave = () => {
-    // Here you would typically send the updated profile to your server
-    console.log(profile);
-    setEditMode(false);
+    try {
+      const response = await updateUserProfile(user_id, {
+        first_name: userData.first_name,
+        last_name: userData.last_name,
+        nickname: userData.nickname,
+        gender: userData.gender,
+      });
+
+      if (response.code === 200) {
+        setEditMode(false);
+        fetchData();
+        //replace it with a better solution: let the dashboard detect the change and then update its details dynamically
+        window.location.reload();
+      } else {
+        console.log(response.msg);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <div>
-      <h1>Profile Page</h1>
+      <h1>User Profile</h1>
       {editMode ? (
-        <form>
-          <label>
-            Username:
-            <input type="text" name="username" value={profile.username} onChange={handleInputChange} />
-          </label>
-          <label>
-            Email:
-            <input type="email" name="email" value={profile.email} onChange={handleInputChange} />
-          </label>
-          <label>
-            Password:
-            <input type="password" name="password" value={profile.password} onChange={handleInputChange} />
-          </label>
-          <label>
-            First Name:
-            <input type="text" name="firstName" value={profile.firstName} onChange={handleInputChange} />
-          </label>
-          <label>
-            Last Name:
-            <input type="text" name="lastName" value={profile.lastName} onChange={handleInputChange} />
-          </label>
-          <label>
-            Nickname:
-            <input type="text" name="nickname" value={profile.nickname} onChange={handleInputChange} />
-          </label>
-          <label>
-            Gender:
-            <select name="gender" value={profile.gender} onChange={handleInputChange}>
-              <option value="">Select...</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
-          </label>
-          <button type="button" onClick={handleSave}>Save Changes</button>
-        </form>
+        <div>
+          <label>First name:</label>
+          <input
+            value={userData.first_name}
+            onChange={(e) => setUserData({ ...userData, first_name: e.target.value })}
+          />
+          <label>Last name:</label>
+          <input
+            value={userData.last_name}
+            onChange={(e) => setUserData({ ...userData, last_name: e.target.value })}
+          />
+          <label>Nickname:</label>
+          <input
+            value={userData.nickname}
+            onChange={(e) =>
+              setUserData({ ...userData, nickname: e.target.value })
+            }
+          />
+          <label>Email:</label>
+          <input
+            value={userData.email}
+            readOnly
+          />
+          <label>Gender:</label>
+          <select
+            value={userData.gender}
+            onChange={(e) =>
+              setUserData({ ...userData, gender: e.target.value })
+            }
+          >
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+          <button onClick={handleSaveChanges}>Save Changes</button>
+        </div>
       ) : (
         <div>
-          <p>Username: {profile.username}</p>
-          <p>Email: {profile.email}</p>
-          <p>Password: {profile.password}</p>
-          <p>First Name: {profile.firstName}</p>
-          <p>Last Name: {profile.lastName}</p>
-          <p>Nickname: {profile.nickname}</p>
-          <p>Gender: {profile.gender}</p>
-          <button onClick={handleEdit}>Edit Profile</button>
+          <p>Name: {`${userData.first_name} ${userData.last_name}`}</p>
+          <p>First Name: {userData.first_name}</p>
+          <p>Last Name: {userData.last_name}</p>
+          <p>Nickname: {userData.nickname}</p>
+          <p>Email: {userData.email}</p>
+          <p>Gender: {userData.gender}</p>
+          <button onClick={() => setEditMode(true)}>Edit Profile</button>
         </div>
       )}
     </div>
   );
 };
 
-export default ProfilePage;
+export default UserProfile;

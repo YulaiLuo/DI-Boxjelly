@@ -4,6 +4,7 @@ from app.models import Team, UserTeam, User
 from bson import ObjectId
 from flask import request, make_response, jsonify
 from mongoengine.errors import DoesNotExist
+from app.models import User
 
 class GetUserInputSchema(Schema):
     user_id = fields.String(required=True)
@@ -30,8 +31,7 @@ class UserResource(Resource):
         except ValidationError as err:
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
 
-        # TODO: Get user id from token
-        user_id = "645da08427eb73c12b252cef"
+        user_id = request.headers.get('User-ID')
 
         try:
             # Update the user's profile
@@ -59,9 +59,8 @@ class UserResource(Resource):
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
         
         try:
-            # TODO: Get user id from header token 
             # to check if the requester is in the team
-            user_id = '645da08427eb73c12b252cef'
+            user_id = request.headers.get('User-ID')
 
             user = User.objects(id=in_schema['user_id']).first()
             if not user:
@@ -71,7 +70,8 @@ class UserResource(Resource):
                 'name': f'{user.first_name} {user.last_name}',
                 'nickname': user.nickname,
                 'email':user.email,
-                'gender':user.gender
+                'gender':user.gender,
+                'avatar': 'default' if not user.avatar else user.avatar
             }
             return make_response(jsonify(code=200, msg="ok", data=data), 200)
         except Exception as err:

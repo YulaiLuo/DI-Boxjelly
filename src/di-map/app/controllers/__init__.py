@@ -1,0 +1,1 @@
+from .medcat import MedcatController

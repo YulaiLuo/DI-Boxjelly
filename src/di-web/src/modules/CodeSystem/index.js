@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Collapse, Button, Layout, Menu, Modal, Input, Dropdown, Space, Tooltip } from 'antd';
+import { Button, Layout, Menu, Modal, Input, Dropdown, Space, Tooltip } from 'antd';
 import { MoreOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import CodeCard from './components/CodeCard';
 import { getAllConcepts, getCodeSystemList, getCodeSystemListByGroup } from './api';
 import { Spin } from '../../components';
 
-const { Panel } = Collapse;
 const { Sider, Content } = Layout;
 
 export default function CodeSystem() {
@@ -51,20 +50,6 @@ export default function CodeSystem() {
   // const data = codeSystemList?.data?.groups[0].concepts;
   // const group = codeSystemList?.data?.groups[0].group;
 
-  const getIcon = (group) => {
-    return;
-  };
-
-  const onEditGroupClick = () => {};
-
-  const onDeleteGroupClick = () => {};
-
-  const onDropdownItemClick = (e) => {
-    console.log(e);
-    if (e.key === 'edit') onEditGroupClick();
-    else if (e.key === 'delete') onDeleteGroupClick();
-  };
-
   const sidebarItems = [
     {
       label: 'All',
@@ -77,19 +62,6 @@ export default function CodeSystem() {
             <Tooltip title={group.group}>
               <span className="overflow-hidden overflow-ellipsis">{group.group}</span>
             </Tooltip>
-
-            <Dropdown
-              menu={{
-                items: [
-                  { key: 'edit', label: 'edit' },
-                  { key: 'delete', label: 'delete' },
-                ],
-                onClick: onDropdownItemClick,
-              }}
-              // open={true}
-            >
-              <MoreOutlined>dfd</MoreOutlined>
-            </Dropdown>
           </div>
         ),
         key: group.group_id,
@@ -107,13 +79,11 @@ export default function CodeSystem() {
   };
 
   const handleModalOk = () => {
-    console.log(newGroupInputRef.current?.input.value, newGroupName);
     setIsModalOpen(false);
   };
 
   const handleModalCancel = () => {
     setIsModalOpen(false);
-    setNewGroupName('');
   };
 
   return (
@@ -131,20 +101,12 @@ export default function CodeSystem() {
       </div>
       <Layout class="p-4">
         <div class="flex flex-col items-stretch" style={{ height: '80vh' }}>
-          <Button
-            type="primary"
-            style={{ marginBottom: '6px' }}
-            onClick={() => setIsModalOpen(true)}
-          >
-            Add a new group
-          </Button>
           <div class="flex flex-col items-stretch overflow-scroll" style={{ flex: '0 auto' }}>
-            <Sider breakpoint="md" theme="light" style={{ background: '#fafafa' }}>
+            <Sider width={250} breakpoint="sm" theme="light" style={{ background: '#fafafa' }}>
               <Menu
                 style={{ background: '#fafafa' }}
                 onClick={onMenuItemClick}
                 defaultSelectedKeys={['all']}
-                // selectedKeys={[selectedPath]}
                 mode="inline"
                 items={sidebarItems}
                 theme="light"
@@ -160,17 +122,8 @@ export default function CodeSystem() {
         </Layout>
       </Layout>
 
-      <Modal
-        title="Add a new group"
-        open={isModalOpen}
-        onOk={handleModalOk}
-        onCancel={handleModalCancel}
-      >
-        <Input
-          placeholder="please input the group name"
-          onChange={(e) => setNewGroupName(e.target.value)}
-          value={newGroupName}
-        />
+      <Modal open={isModalOpen} onOk={handleModalOk} onCancel={handleModalCancel}>
+        <Input placeholder="UIL" />
       </Modal>
     </div>
   );

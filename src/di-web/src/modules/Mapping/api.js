@@ -1,37 +1,42 @@
+import Cookies from 'js-cookie';
 import {
-  ONTOSERVER_BASE_URL,
+  // ONTOSERVER_BASE_URL,
   MAP_URL,
   MAP_TASK_URL,
-  MAP_BOARD_URL,
+  MAP_BOARDS_URL,
+  MAP_TASK_META_URL,
+  MAP_TASK_DETAIL_URL,
+  MAP_TASK_DOWNLOAD_URL,
+  MAP_TASK_CURATE_URL,
 } from '../../utils/constant/url';
-import axios from 'axios';
 import http from '../../utils/http';
 
-const instance = axios.create({
-  baseURL: ONTOSERVER_BASE_URL,
-});
+// const instance = axios.create({
+//   baseURL: ONTOSERVER_BASE_URL,
+// });
 
-const _mapParametersToRes = (parameters) => {
-  const matches = parameters.filter((value) => value.name === 'match');
-  const concepts = matches.map((match) => match.part?.filter((value) => value.name === 'concept'));
-  if (!concepts.length) return Promise.reject('fail to match');
-  const valueCodings = concepts.map((concept) => concept[0]?.valueCoding);
-  const disorders = valueCodings.filter(
-    (valueCoding) => valueCoding.extension[0]?.valueString === 'disorder'
-  );
-  if (!disorders.length) return Promise.reject('fail to match');
-  const mappedRes = disorders.map((disorder) => ({
-    code: disorder.code,
-    display: disorder.display.split(' (')[0],
-    mappingSuccess: true,
-  }));
-  // TODO: currently we haven't found a way to select the most appropriate result among multiple possible mappings
-  return Promise.resolve(mappedRes[0]);
-};
+// const _mapParametersToRes = (parameters) => {
+//   const matches = parameters.filter((value) => value.name === 'match');
+//   const concepts = matches.map((match) => match.part?.filter((value) => value.name === 'concept'));
+//   if (!concepts.length) return Promise.reject('fail to match');
+//   const valueCodings = concepts.map((concept) => concept[0]?.valueCoding);
+//   const disorders = valueCodings.filter(
+//     (valueCoding) => valueCoding.extension[0]?.valueString === 'disorder'
+//   );
+//   if (!disorders.length) return Promise.reject('fail to match');
+//   const mappedRes = disorders.map((disorder) => ({
+//     code: disorder.code,
+//     display: disorder.display.split(' (')[0],
+//     mappingSuccess: true,
+//   }));
+//   // TODO: currently we haven't found a way to select the most appropriate result among multiple possible mappings
+//   return Promise.resolve(mappedRes[0]);
+// };
 
 // export const mapSingleText = (code) => http.get(SINGLE_TEXT_MAPPING_URL, { code });
 export const mapSingleText = (text) => {
-  return http.post(`${MAP_URL}`, { texts: [text] }, {});
+  const csrfCookie = Cookies.get('csrf_access_token');
+  return http.post(`${MAP_URL}`, { texts: [text] }, { 'X-CSRF-TOKEN': csrfCookie });
 };
 
 // export const mapMultipleText = async (codes) => {
@@ -97,29 +102,30 @@ export const mapSingleText = (text) => {
 // };
 
 // Create a mapping task
-export const createMappingTask = (file, teamId, boardId) => {
+export const createMappingTask = (teamId, boardId, file) => {
+  const csrfCookie = Cookies.get('csrf_access_token');
   const formData = new FormData();
   formData.append('file', file);
   formData.append('team_id', teamId);
   formData.append('board_id', boardId);
-  return http.postFormData(`${MAP_TASK_URL}`, formData);
+  return http.postFormData(`${MAP_BOARDS_URL}/tasks`, formData, { 'X-CSRF-TOKEN': csrfCookie });
 };
 
 // Get mapping task detail
 export const getMappingTaskDetail = (task_id, team_id, board_id, page = 1, size = 10) => {
-  return http.get(`${MAP_TASK_URL}`, { task_id, team_id, board_id, page, size });
+  return http.get(`${MAP_TASK_DETAIL_URL}`, { task_id, team_id, board_id, page, size });
 };
 
 // Get mapping task meta detail
 export const getMappingTaskMetaDetail = (task_id) => {
-  return http.get(`${MAP_TASK_URL}/meta`, { task_id });
+  return http.get(`${MAP_TASK_META_URL}`, { task_id });
 };
 
-export const exportFile = async (task_id) => {
+export const exportFile = async (team_id, task_id) => {
   try {
     const response = await http.get(
-      `${MAP_TASK_URL}/${task_id}/download`,
-      {},
+      `${MAP_TASK_DOWNLOAD_URL}`,
+      { team_id, task_id },
       {
         responseType: 'blob',
       }
@@ -140,4 +146,8 @@ export const exportFile = async (task_id) => {
   } catch (error) {
     console.error('Error downloading CSV:', error);
   }
+};
+
+export const curateMapping = (map_item_id, concept_id) => {
+  return http.post(MAP_TASK_CURATE_URL, { map_item_id, concept_id });
 };

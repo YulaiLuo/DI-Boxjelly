@@ -4,33 +4,70 @@ import {
   UserOutlined,
   DownOutlined,
   HomeOutlined,
-  PieChartOutlined,
+  PlusOutlined,
   InsertRowAboveOutlined,
+  MoreOutlined,
 } from '@ant-design/icons';
-import { Layout, Menu, Avatar, Space, Dropdown } from 'antd';
-import { useUserStore } from '../../store';
+import { Layout, Menu, Avatar, Space, Dropdown, Tooltip, Modal, Input, Form } from 'antd';
+import { useRequest } from 'ahooks';
+import { useUserStore, useMessageStore } from '../../store';
+import { getBoardList, editBoard, createBoard, deleteBoard } from './api';
+import { BASE_URL } from '../../utils/constant/url';
 
 const { Sider, Header, Content } = Layout;
 const { PUBLIC_URL } = process.env;
 
 export default function Main() {
   const [collapsed, setCollapsed] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [boardId, setBoardId] = useState(null);
   const setLoggedIn = useUserStore((state) => state.setLoggedIn);
+  const msgApi = useMessageStore((state) => state.msgApi);
+
+  const [createBoardForm] = Form.useForm();
+  const [editBoardForm] = Form.useForm();
 
   const navigate = useNavigate();
   const location = useLocation();
-  let selectedPath = location.pathname.split('/').pop();
-  if (selectedPath === '') selectedPath = 'mapping';
+  const teamId = localStorage.getItem('team');
+  const user = JSON.parse(localStorage.getItem('userDetail'));
+  let selectedPath = location.pathname;
+  if (selectedPath === '') selectedPath = 'dashboard';
+
+  const { data, refresh: refreshBoardList } = useRequest(() => getBoardList(teamId));
+  const taskBoards = data?.data?.boards ?? [];
+
+  const { run: runCreateBoard, loading: createBoardLoading } = useRequest(createBoard, {
+    manual: true,
+    onSuccess: () => {
+      msgApi.success('A new board created successfully');
+      setIsModalOpen(false);
+      createBoardForm.resetFields();
+      refreshBoardList(teamId);
+    },
+  });
+
+  const { run: runEditBoard, loading: editBoardLoading } = useRequest(editBoard, {
+    manual: true,
+    onSuccess: () => {
+      msgApi.success('A new board created successfully');
+      setIsEditModalOpen(false);
+      editBoardForm.resetFields();
+      refreshBoardList(teamId);
+    },
+  });
 
   const onMenuItemClick = (item) => {
-    navigate(`/${item.key}`, { replace: true });
+    navigate(`${item.key}`, { replace: true });
   };
 
-  const getSidebarItem = (label, key, icon, children) => ({
+  const getSidebarItem = (label, key, icon, type, children) => ({
     label,
     key,
     children,
     icon,
+    type,
   });
 
   const getMemberItem = () => {
@@ -41,16 +78,63 @@ export default function Main() {
     );
   };
 
+  const onBoardEditClick = (board) => {
+    console.log('edit', board);
+    editBoardForm.setFieldsValue({
+      name: board.name,
+      description: board.description,
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const onBoardDeleteClick = (board) => {
+    console.log('delete', board);
+  };
+
+  const taskBoardItems = taskBoards.map((board) => {
+    return getSidebarItem(
+      <div class="flex justify-between">
+        <Tooltip title={board.name}>
+          <span className="overflow-hidden overflow-ellipsis">{board.name}</span>
+        </Tooltip>
+
+        <Dropdown
+          menu={{
+            items: [
+              { key: 'edit', label: 'edit' },
+              { key: 'delete', label: 'delete' },
+            ],
+            onClick: (e) => {
+              if (e.key === 'edit') {
+                setBoardId(board.id);
+                onBoardEditClick(board);
+              } else {
+                onBoardDeleteClick(board);
+              }
+            },
+          }}
+        >
+          <MoreOutlined>dfd</MoreOutlined>
+        </Dropdown>
+      </div>,
+      `/mapping-history/${board.id}`
+    );
+  });
+
+  const getBoardListTitle = () => {
+    return (
+      <div class="flex justify-between">
+        <span>Boards</span>
+        <PlusOutlined class="cursor-pointer" onClick={() => setIsModalOpen(true)} />
+      </div>
+    );
+  };
+
   const sidebarItems = [
-    getSidebarItem('Dashboard', 'dashboard', <HomeOutlined />),
-    getSidebarItem(getMemberItem(), 'team-profile', <UserOutlined />),
-    getSidebarItem('Code System', 'code-system', <InsertRowAboveOutlined />),
-    // getSidebarItem('Mapping', 'mapping', <HomeOutlined />),
-    getSidebarItem('Task Board', 'mapping-history', <PieChartOutlined />),
-    // getSidebarItem('History Status', 'history', <PieChartOutlined />, [
-    //   getSidebarItem('Retrain History', 'retrain-history'),
-    //   getSidebarItem('Mapping History', 'mapping-history'),
-    // ]),
+    getSidebarItem('Dashboard', '/dashboard', <HomeOutlined />),
+    getSidebarItem(getMemberItem(), '/team-profile', <UserOutlined />),
+    getSidebarItem('Code System', '/code-system', <InsertRowAboveOutlined />),
+    getSidebarItem(getBoardListTitle(), '/mapping-history', null, 'group', taskBoardItems),
   ];
 
   const ProfileDropdownItems = [
@@ -77,6 +161,22 @@ export default function Main() {
   const onDropdownItemClick = (e) => {
     if (e.key === 'profile') onProfileClick();
     else if (e.key === 'signOut') onSignOutClick();
+  };
+
+  const handleCreateBoardModalOk = () => {
+    createBoardForm.validateFields().then((data) => {
+      const boardName = data.name;
+      const description = data.description ?? '';
+      runCreateBoard(teamId, boardName, description);
+    });
+  };
+
+  const handleEditBoardModalOk = () => {
+    editBoardForm.validateFields().then((data) => {
+      const boardName = data.name;
+      const description = data.description ?? '';
+      runEditBoard(boardId, teamId, boardName, description);
+    });
   };
 
   return (
@@ -109,11 +209,15 @@ export default function Main() {
             {/* <span class="self-center">Header</span> */}
 
             <Space class="flex-1 flex justify-end items-center" size={12}>
-              <Avatar icon={<UserOutlined />} size="large" />
+              <Avatar
+                icon={<UserOutlined />}
+                size="large"
+                src={`${BASE_URL}/auth/user/avatar?avatar=${user?.avatar}`}
+              />
 
               <Dropdown menu={{ items: ProfileDropdownItems, onClick: onDropdownItemClick }}>
                 <div>
-                  <span class="text-lg cursor-pointer mr-2">User</span>
+                  <span class="text-lg cursor-pointer mr-2">{user?.nickname}</span>
                   <DownOutlined />
                 </div>
               </Dropdown>
@@ -126,6 +230,57 @@ export default function Main() {
           </Content>
         </Layout>
       </Layout>
+      <Modal
+        title="Add a new Board"
+        open={isModalOpen}
+        onOk={handleCreateBoardModalOk}
+        onCancel={() => setIsModalOpen(false)}
+        confirmLoading={createBoardLoading}
+      >
+        <Form form={createBoardForm} layout="vertical">
+          <Form.Item
+            label="Board Name"
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: 'Please input the board name!',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item label="Description" name="description">
+            <Input.TextArea />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
+        title="Edit the Board"
+        open={isEditModalOpen}
+        onOk={handleEditBoardModalOk}
+        onCancel={() => setIsEditModalOpen(false)}
+        confirmLoading={editBoardLoading}
+      >
+        <Form form={editBoardForm} layout="vertical">
+          <Form.Item
+            label="Board Name"
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: 'Please input the board name!',
+              },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item label="Description" name="description">
+            <Input.TextArea />
+          </Form.Item>
+        </Form>
+      </Modal>
     </>
   );
 }

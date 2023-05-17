@@ -1,6 +1,6 @@
 from flask import Blueprint
 from flask_restful import Api
-from .auth import UserEmailLoginResource, UserEmailRegisterResource
+from .auth import UserEmailLoginResource
 from .gateway import GatewayResource 
 
 
@@ -17,7 +17,6 @@ def init_api(app):
 
     # Auth service routes
     api.add_resource(UserEmailLoginResource, '/auth/login/email')
-    api.add_resource(UserEmailRegisterResource, '/auth/register/email')
 
     # All other routes are forwarded to the appropriate service
     api.add_resource(GatewayResource, '/<path:path>')

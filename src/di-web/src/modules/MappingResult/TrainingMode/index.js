@@ -1,54 +1,48 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { useRequest } from 'ahooks';
 import { BarChartOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';
-import { Form, Col, Row, Button, Select, Space, Pagination, Drawer, Card } from 'antd';
-import { columns as TrainingColumns } from './columns';
-import { getMappingTaskMetaDetail, exportFile } from '../../Mapping/api';
-import { PieChart, Pie, BarChart, Bar, ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Cell } from 'recharts';
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28'];
+import { Form, Col, Row, Button, Select, Space, Pagination } from 'antd';
+import { getColumns } from './columns';
+import { getMappingTaskMetaDetail, exportFile, curateMapping } from '../../Mapping/api';
+import { VisualizationDrawer } from '../../../components';
+import { getCodeSystemList } from '../../CodeSystem/api';
 
 export default function TrainingMode({ data, taskId, currentPage, onPageChange }) {
   const PAGE_SIZE = 10;
+  const team_id = localStorage.getItem('team');
+  const { id: board_id } = useParams();
   const [editableKeys, setEditableRowKeys] = useState([]);
   const { data: meta_data } = useRequest(() => getMappingTaskMetaDetail(taskId));
+  const { data: codeSystemList } = useRequest(
+    () => getCodeSystemList('60c879e72cb0e6f96d6b0f65', '645a4f69203d1d8b3fbb80b4'),
+    {
+      initialData: [],
+    }
+  );
+  const { run: runCurateMapping } = useRequest(curateMapping, {
+    manual: true,
+  });
+
+  console.log('sss', codeSystemList);
+
+  const mappedCodeSystemList = codeSystemList?.data?.groups.map((item) => {
+    return {
+      // value: [item.group, item.group_id],
+      value: item.group_id,
+      label: item.group,
+      children: item.concepts.map((child) => ({
+        // value: [child.name, child.id],
+        value: child.id,
+        label: child.name,
+      })),
+    };
+  });
+
+  console.log('asfdsfasd');
 
   const num = meta_data?.data.num;
-  const num_success = meta_data?.data.num_success;
-  const num_failed = meta_data?.data.num_failed;
-  const num_reviewed = meta_data?.data.num_reviewed;
-
-  const chartData = [
-    { name: 'Success', value: num_success },
-    { name: 'Failed', value: num_failed },
-    { name: 'Reviewed', value: num_reviewed },
-  ];
-  
-  const transformedChartData = [
-    { name: 'Success', Success: num_success },
-    { name: 'Failed', Failed: num_failed },
-    { name: 'Reviewed', Reviewed: num_reviewed },
-  ];
-
-  const renderCustomizedShape = (props) => {
-    const { cx, cy, name } = props;
-    let fill;
-    switch (name) {
-      case 'Success':
-        fill = 'green';
-        break;
-      case 'Failed':
-        fill = 'red';
-        break;
-      case 'Reviewed':
-        fill = 'orange';
-        break;
-      default:
-        fill = 'gray';
-    }
-    return <circle cx={cx} cy={cy} r={6} fill={fill} />;
-  };
 
   const [dataSource, setDataSource] = useState(() =>
     data.map((v, i) => {
@@ -80,50 +74,11 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
     setOpen(false);
   };
 
-  const GreenDot = () => {
-    const dotGreen = {
-      display: 'inline-block',
-      width: '10px',
-      height: '10px',
-      borderRadius: '50%',
-      backgroundColor: 'green',
-      marginRight: '10px',
-    };
-
-    return <div style={dotGreen}></div>;
-  };
-
-  const RedDot = () => {
-    const dotRed = {
-      display: 'inline-block',
-      width: '10px',
-      height: '10px',
-      borderRadius: '50%',
-      backgroundColor: 'red',
-      marginRight: '10px',
-    };
-
-    return <div style={dotRed}></div>;
-  };
-
-  const OrangeDot = () => {
-    const dotOrange = {
-      display: 'inline-block',
-      width: '10px',
-      height: '10px',
-      borderRadius: '50%',
-      backgroundColor: 'orange',
-      marginRight: '10px',
-    };
-
-    return <div style={dotOrange}></div>;
-  };
-
   return (
     <>
       <Form layout="vertical">
         <Row>
-          <Col span={16}>
+          <Col xs={24} sm={24} md={12} lg={12} xl={4}>
             <Form.Item label="Mapping Status" name="mappingStatus">
               <Select
                 style={{ width: 160 }}
@@ -135,15 +90,27 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
               />
             </Form.Item>
           </Col>
-          <Col span={8}>
-            <div class="pt-3">
+          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+            <Form.Item label="Source" name="source">
+              <Select
+                style={{ width: 160 }}
+                allowClear
+                options={[
+                  { value: 'SNOMED_CT', label: 'SNOMED_CT' },
+                  { value: 'UIL', label: 'UIL' },
+                ]}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={24} xl={8}>
+            <div class="pt-3 flex flex-row-reverse">
               <Space>
                 <Button type="primary" size="large">
                   Filter
                 </Button>
                 <Button size="large">Reset</Button>
                 <span class="ml-4">
-                  <Button type="primary" size="large" onClick={() => exportFile(taskId)}>
+                  <Button type="primary" size="large" onClick={() => exportFile(team_id, taskId)}>
                     Export
                   </Button>
                 </span>
@@ -155,109 +122,10 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
           </Col>
         </Row>
       </Form>
-
-      {/* <Drawer title="Overall Performance" width={400} onClose={onClose} open={open}>
-        <Card
-          bordered={false}
-          style={{
-            width: 300,
-          }}
-        >
-          <div>
-            <h4>Total Mapping Text: {num}</h4>
-            <h4>Successful Mapping Rate: {num > 0 ? ((num_success / num) * 100).toFixed(2) : 0} %</h4>            
-          </div>
-          <div>
-            <GreenDot />
-            Number of Success: {num_success}
-          </div>
-          <div>
-            <RedDot />
-            Number of Failure: {num_failed}
-          </div>
-          <div>
-            <OrangeDot />
-            Number of Reviewed: {num_reviewed}
-          </div>
-        </Card>
-      </Drawer> */}
-
-      <Drawer title="Overall Performance" width={900} onClose={onClose} open={open}>
-        <Row gutter={16}>
-          <Col span={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <Card
-              bordered={true}
-              style={{
-                width: 300,
-              }}
-            >
-              <div>
-                <h4>Total Mapping Text: {num}</h4>
-                <h4>Successful Mapping Rate: {num > 0 ? ((num_success / num) * 100).toFixed(2) : 0} %</h4>            
-              </div>
-              <div>
-                <GreenDot />
-                Number of Success: {num_success}
-              </div>
-              <div>
-                <RedDot />
-                Number of Failure: {num_failed}
-              </div>
-              <div>
-                <OrangeDot />
-                Number of Reviewed: {num_reviewed}
-              </div>
-            </Card>
-          </Col>
-          <Col span={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <PieChart width={400} height={400}>
-            <Pie
-              data={chartData}
-              cx={200}
-              cy={200}
-              innerRadius={60}
-              outerRadius={80}
-              fill="#8884d8"
-              paddingAngle={5}
-              dataKey="value"
-              label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(2)}%`}
-              labelLine={false}
-            >
-              {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.name === 'Success' ? 'green' : entry.name === 'Failed' ? 'red' : 'orange'} />
-              ))}
-            </Pie>
-            <Tooltip />
-          </PieChart>
-          </Col>
-          <Col span={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <BarChart width={400} height={300} data={transformedChartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="Success" fill="green" />
-            <Bar dataKey="Failed" fill="red" />
-            <Bar dataKey="Reviewed" fill="orange" />
-          </BarChart>
-          </Col>
-          <Col span={12} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <ScatterChart width={400} height={400} margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" type="category" allowDuplicatedCategory={false} />
-            <YAxis dataKey="value" type="number" name="value" />
-            <Tooltip />
-            <Legend />
-            <Scatter data={chartData} shape={renderCustomizedShape} line />
-          </ScatterChart>
-          </Col>
-        </Row>
-      </Drawer>
-
+      <VisualizationDrawer onClose={onClose} open={open} metaData={meta_data} />
       <EditableProTable
         rowKey="id"
-        columns={TrainingColumns}
+        columns={getColumns(mappedCodeSystemList)}
         value={dataSource}
         editable={{
           type: 'multiple',
@@ -266,6 +134,7 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
             // TODO
             console.log(rowKey, data, row);
             data.mappingStatus = 2;
+            runCurateMapping(data.mappedItemId, data.curate[1]);
           },
           onChange: setEditableRowKeys,
           actionRender: (row, config, dom) => [dom.save, dom.cancel],
