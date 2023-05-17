@@ -207,7 +207,7 @@ export default function Dashboard() {
           </Row>
         </div>
 
-        <div class="mt-5" style={{ background: 'White' }}>
+        <div class="mt-5 bg-white pl-5 py-5">
           <Column {...config} />
         </div>
       </div>
