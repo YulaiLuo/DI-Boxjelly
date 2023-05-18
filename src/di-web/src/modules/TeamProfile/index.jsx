@@ -30,18 +30,6 @@ export default function TeamProfile() {
       </div>
 
       <Layout>
-        <Sider breakpoint="md" theme="light" style={{ background: '#fafafa' }}>
-          <Menu
-            style={{ background: '#fafafa' }}
-            // onClick={onMenuItemClick}
-            defaultSelectedKeys={['all']}
-            // selectedKeys={[selectedPath]}
-            mode="inline"
-            items={sidebarItems}
-            theme="light"
-          />
-        </Sider>
-
         <Layout>
           <Content class="ml-3">
             <List
