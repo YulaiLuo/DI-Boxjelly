@@ -8,6 +8,7 @@ WORKDIR /src/di-map
 
 # duplicate the required library into the base image
 COPY requirements.txt requirements.txt
+RUN pip config set global.index-url http://mirrors.aliyun.com/pypi/simple/
 RUN pip3 install -r requirements.txt
 
 # copy all file into the image
