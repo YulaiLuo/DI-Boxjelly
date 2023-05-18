@@ -228,10 +228,9 @@ class MapTaskResource(Resource):
       try:
          # TODO: Check if the task is permitted to be deleted by this user
 
-         # TODO: Check if the task is deleted
-
          # Change the deleted field as deleted
          MapTask.objects(id=ObjectId(in_schema['task_id'])).update_one(deleted=True)
+         MapItem.objects(task=ObjectId(in_schema['task_id'])).update(deleted=True)
 
          response = jsonify(code=200, msg="ok")
          response.status_code = 200

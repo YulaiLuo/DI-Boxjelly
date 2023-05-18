@@ -4,8 +4,12 @@ from app.models import ConceptGroup, Concept, CodeSystem, MapItem, MapTask
 from flask import current_app as app
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta, MO
-from mongoengine import Q
+from marshmallow import Schema, fields, ValidationError, validates, validate
 import requests
+
+class GetMapItemStatusRatioSchema(Schema):
+    range = fields.String(required=False, missing='day', validate=validate.OneOf(['day', 'week', 'month']))
+
 
 def get_start_of_weeks():
     """
@@ -47,14 +51,11 @@ class TopMiddleResource(Resource):
         # Calculate the start of this week and the start of the last week
         start_of_this_week, start_of_last_week = get_start_of_weeks()
 
-        # Get all undeleted MapTask ids
-        undeleted_task_ids = [task.id for task in MapTask.objects(deleted=False)]
-
-        this_week_count = MapItem.objects(Q(task__in=undeleted_task_ids) & Q(create_at__gte=start_of_this_week)).count()
-        last_week_count = MapItem.objects(Q(task__in=undeleted_task_ids) & Q(create_at__gte=start_of_last_week) & Q(create_at__lt=start_of_this_week)).count()
+        this_week_count = MapItem.objects(deleted=False, create_at__gte=start_of_this_week).count()
+        last_week_count = MapItem.objects(deleted=False, create_at__gte=start_of_last_week, create_at__lt=start_of_this_week).count()
 
         delta = this_week_count - last_week_count
-        total_count = MapItem.objects(task__in=undeleted_task_ids).count()
+        total_count = MapItem.objects(deleted=False).count()
 
         return make_response(jsonify(code=200, msg="ok", data={
             "title": f"Total texts: {total_count}",
@@ -70,11 +71,11 @@ class TopRightResource(Resource):
         # Calculate the start of this week and the start of the last week
         start_of_this_week, start_of_last_week = get_start_of_weeks()
 
-        this_week_count = MapItem.objects(status='reviewed', create_at__gte=start_of_this_week).count()
-        last_week_count = MapItem.objects(status='reviewed', create_at__gte=start_of_last_week, create_at__lt=start_of_this_week).count()
+        this_week_count = MapItem.objects(status='reviewed', deleted=False, create_at__gte=start_of_this_week).count()
+        last_week_count = MapItem.objects(status='reviewed', deleted=False, create_at__gte=start_of_last_week, create_at__lt=start_of_this_week).count()
         
         delta = this_week_count - last_week_count
-        total_count = MapItem.objects(status='reviewed').count()
+        total_count = MapItem.objects(status='reviewed', deleted=False).count()
 
         return make_response(jsonify(code=200, msg="ok", data={
             "title": f"Total curated: {total_count}",
@@ -92,7 +93,60 @@ class HelloResource(Resource):
 
 class MapItemStatusRatioResource(Resource):
 
+    def __get_day(self):
+        # Calculate the start date
+        start_date = datetime.now() - timedelta(days=30)
+
+        pipeline = [
+            {
+                "$match": {
+                    "create_at": {"$gte": start_date}
+                }
+            },
+            {
+                "$group": {
+                    "_id": {
+                        "date": {
+                            "$dateToString": {"format": "%Y-%m-%d", "date": "$create_at"}
+                        },
+                        "status": "$status"
+                    },
+                    "count": {"$sum": 1}
+                }
+            },
+            {
+                "$sort": {"_id.date": 1}
+            }
+        ]
+
+        results = MapItem.objects().aggregate(*pipeline)
+        print(results)
+        data = [{
+            'year': result['_id']['date'],
+            'value': result['count'],
+            'type': result['_id']['status']
+        }for result in results]
+        return make_response(jsonify(code=200, msg="ok", data=data),200)
+
+
     def get(self):
+        
+            
+
+        try:
+            in_schema = GetMapItemStatusRatioSchema().load(request.args)
+        except ValidationError as err:
+            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+        
+        range = in_schema['range']
+
+        if range == 'day':
+            return self.__get_day()
+        elif range == 'week':
+            pass
+        elif range == 'month':
+            pass
+        
         import random
         
         data = []
