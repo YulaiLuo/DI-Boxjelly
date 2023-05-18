@@ -1,3 +1,4 @@
+import re
 from flask_restful import Resource
 from flask import jsonify, request, make_response
 from app.models import MapTask, MapItem, TaskBoard
@@ -159,8 +160,10 @@ class MapTaskResource(Resource):
          texts = []
 
          if file_ext == 'txt':
-            texts = file.readlines()
-            texts = [text.decode('utf-8').strip() for text in texts]
+            #texts = file.readlines()
+            file_content = file.read().decode('utf-8')
+            texts = re.findall(r'\d+\s+(.+)', file_content)
+            #texts = [text.decode('utf-8').strip() for text in texts]
             if texts and codecs.BOM_UTF8.decode('utf-8') in texts[0]:
                texts[0] = texts[0].replace(codecs.BOM_UTF8.decode('utf-8'), '')
 
