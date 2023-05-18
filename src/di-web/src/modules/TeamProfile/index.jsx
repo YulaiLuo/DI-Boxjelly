@@ -25,7 +25,7 @@ export default function TeamProfile() {
   return (
     <div class="mx-4 py-3">
       <div class="flex items-center justify-between">
-        <h2 class="mr-5">You are currently in the {data?.team_name} team </h2>
+        <h2 class="mr-5">Team {data?.team_name} </h2>
         <Button type="primary">Invite Member</Button>
       </div>
 
