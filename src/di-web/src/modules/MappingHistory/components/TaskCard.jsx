@@ -21,8 +21,30 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
     </div>
   );
 
-  const formattedCreateAt = formatTime(new Date(createAt));
+  const CreatTime=new Date(createAt);
+
+  const formattedCreateAt = formatTime(CreatTime);
   const formattedUpdateAt = updateAt ? formatTime(new Date(updateAt)) : null;
+
+  const currentTime = new Date();
+  const timeDifference = Math.abs(currentTime - CreatTime);
+  const formattedcurrentTime = formatTime(currentTime);
+
+  const formattedTime = transferTime(timeDifference); 
+
+
+  function transferTime(time) {
+    const hours = Math.floor(time / 3600000);
+    const minutes = Math.floor((time % 3600000) / 60000);
+    const seconds = Math.floor((time % 60000) / 1000);
+  
+    return `${hours} hours ${minutes} minutes ${seconds} seconds ago`;
+  }
+  
+
+  
+  
+  //const formattedTime = currentTime.toLocaleString(); 
 
   const getActions = () => {
     let actions = [
@@ -65,7 +87,9 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
         </div>
         <div>File name: {fileName}</div>
         <div>Created at: {formattedCreateAt}</div>
-        {updateAt && <div>Last curated at: {formattedUpdateAt}</div>}
+        {/* <div>Last modified time: {formattedcurrentTime}</div> */}
+        <div>Last modified time: {formattedTime}</div>
+        {/* {updateAt && <div>Last curated at: {formattedUpdateAt}</div>} */}
       </div>
     </Card>
   );
