@@ -28,7 +28,7 @@ class PostAcceptInviteInputSchema(Schema):
     first_name = fields.String(required=True)
     last_name = fields.String(required=True)
     gender = fields.String(
-        required=False, validate=validate.OneOf(['male', 'female', 'other']))
+        required=False, validate=validate.OneOf(['Male', 'Female', 'Other']))
 
     @validates('username')
     def validate_username(self, username):
@@ -43,7 +43,7 @@ class PostAcceptInviteInputSchema(Schema):
 
 class InviteResource(Resource):
     def post(self):
-        """Invite a member into the team
+        """ Generate an invitation token to invite members into the team
         """
 
         try:

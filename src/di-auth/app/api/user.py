@@ -14,7 +14,7 @@ class PutUserInputSchema(Schema):
     first_name = fields.String(required=False,min_len=1)
     last_name = fields.String(required=False,min_len=1)
     nickname = fields.String(required=False,min_len=1)
-    gender = fields.String(required=False,validate=validate.OneOf(['male','female','other']))                              # group name
+    gender = fields.String(required=False,validate=validate.OneOf(['Male','Female','Other']))                              # group name
     @validates_schema
     def validate_not_empty(self, data, **kwargs):
         if not data:

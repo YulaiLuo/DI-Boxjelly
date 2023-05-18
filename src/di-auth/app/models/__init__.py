@@ -35,7 +35,7 @@ class User(DIDocument):
     # group name
     nickname = StringField(required=False)
     gender = StringField(required=False, choices=(
-        'male', 'female', 'other'))                               # gender
+        'Male', 'Female', 'Other'))
 
 
 class Team(DIDocument):
