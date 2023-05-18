@@ -87,7 +87,7 @@ class HelloResource(Resource):
 
     def get(self):
         return make_response(jsonify(code=200, msg="ok", data={
-            "hello": "This is a title",
+            "hello": f"Hello! This is the dashboard service of the Data Integration Center. Today is  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
         }))
 
 class MapItemStatusRatioResource(Resource):
