@@ -73,7 +73,7 @@ export const getColumns = (options) => {
       // },
       valueType: 'cascader',
       fieldProps: (form, config, x) => {
-        console.log('sss', form, config, x);
+        // console.log('sss', form, config, x);
         return {
           options,
           showSearch: {
