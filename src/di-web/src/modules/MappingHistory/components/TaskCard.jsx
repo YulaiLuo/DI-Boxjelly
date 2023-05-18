@@ -72,9 +72,10 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
           <span class="ml-4 text-lg">{num}</span>
         </div>
         <div>File name: {fileName}</div>
-        <div>Created at: {formattedCreateAt}</div>
+        <div>Created at: {formattedTimeDifference}</div>
+        <div>{formattedCreateAt}</div>
         {/* <div>Last curated time: {formattedTimeDifference}</div> */}
-        {createAt !== updateAt && <div>Last curated time: {formattedTimeDifference}</div>}
+        {/* {createAt !== updateAt && <div></div>} */}
       </div>
     </Card>
   );
