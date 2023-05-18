@@ -3,8 +3,7 @@ from datetime import datetime, timedelta
 
 class DIDocument(Document):
 
-    create_at = DateTimeField(default=datetime.utcnow()-timedelta(days=10))           
-    # create_at = DateTimeField(default=datetime.utcnow)              # create time
+    create_at = DateTimeField(default=datetime.utcnow)              # create time
     update_at = DateTimeField(default=datetime.utcnow)              # update time
 
     # set meta allow_inheritance as true
