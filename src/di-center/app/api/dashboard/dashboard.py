@@ -32,3 +32,10 @@ class TopRightResource(Resource):
             "delta": "+16% since last week",
             "percent": 0.16
         }))
+
+class HelloResource(Resource):
+
+    def get(self):
+        return make_response(jsonify(code=200, msg="ok", data={
+            "hello": "This is a title",
+        }))
