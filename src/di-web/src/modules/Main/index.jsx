@@ -93,7 +93,7 @@ export default function Main() {
 
   const taskBoardItems = taskBoards.map((board) => {
     return getSidebarItem(
-      <div class="flex justify-between">
+      <div class="flex justify-between overflow-y-scroll">
         <Tooltip title={board.name}>
           <span className="overflow-hidden overflow-ellipsis">{board.name}</span>
         </Tooltip>
@@ -187,7 +187,7 @@ export default function Main() {
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
           breakpoint="md"
-          style={{ position: 'fixed' }}
+          style={{ position: 'fixed', height: '100vh', overflow: 'auto' }}
           theme="light"
         >
           <div class="m-4 flex items-center justify-center">
@@ -195,7 +195,7 @@ export default function Main() {
             {!collapsed && <span class="font-bold text-primary ml-2 text-xl">Mapping</span>}
           </div>
           <Menu
-            style={{ height: '100vh' }}
+            // style={{ height: '100vh', overflowY: 'scroll' }}
             onClick={onMenuItemClick}
             defaultSelectedKeys={[selectedPath]}
             selectedKeys={[selectedPath]}
@@ -204,6 +204,7 @@ export default function Main() {
             theme="light"
           />
         </Sider>
+
         <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
           <Header class="bg-white px-8 py-3 flex sticky top-0 z-10 w-full">
             {/* <span class="self-center">Header</span> */}
