@@ -111,7 +111,7 @@ export default function Main() {
 
   const taskBoardItems = taskBoards.map((board) => {
     return getSidebarItem(
-      <div class="flex justify-between overflow-y-scroll">
+      <div class="flex justify-between">
         <Tooltip title={board.name}>
           <span className="overflow-hidden overflow-ellipsis">{board.name}</span>
         </Tooltip>
