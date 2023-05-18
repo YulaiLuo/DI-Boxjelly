@@ -42,6 +42,7 @@ class MapTaskMetaResource(Resource):
          
          # count the status of map items
          status_ctr = Counter([item.status for item in map_items])
+         ontology_ctr = Counter([item.ontology for item in map_items])
 
          # Get the task meta
          data = {
@@ -52,7 +53,9 @@ class MapTaskMetaResource(Resource):
             'update_at': map_task.update_at,
             'num_success': status_ctr.get('success', 0),
             'num_failed': status_ctr.get('fail', 0),
-            'num_reviewed': status_ctr.get('reviewed', 0)
+            'num_reviewed': status_ctr.get('reviewed', 0),
+            'num_uil': ontology_ctr.get('UIL', 0),
+            'num_snomed': ontology_ctr.get('SNOMED-CT', 0),
          }
 
          return make_response(jsonify(code=200, msg="ok", data=data),200)
