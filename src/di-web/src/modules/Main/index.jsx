@@ -52,9 +52,18 @@ export default function Main() {
   const { run: runEditBoard, loading: editBoardLoading } = useRequest(editBoard, {
     manual: true,
     onSuccess: () => {
-      msgApi.success('A new board created successfully');
+      msgApi.success('board updated successfully');
       setIsEditModalOpen(false);
       editBoardForm.resetFields();
+      refreshBoardList(teamId);
+    },
+  });
+
+  const { run: runDeleteBoard } = useRequest(deleteBoard, {
+    manual: true,
+    onSuccess: () => {
+      msgApi.success('board deleted successfully');
+      navigate('/dashboard', { replace: true });
       refreshBoardList(teamId);
     },
   });
@@ -97,7 +106,7 @@ export default function Main() {
   };
 
   const onBoardDeleteClick = (board) => {
-    console.log('delete', board);
+    runDeleteBoard(board.id, teamId);
   };
 
   const taskBoardItems = taskBoards.map((board) => {

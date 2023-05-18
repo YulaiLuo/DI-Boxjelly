@@ -19,6 +19,10 @@ class PutMapTaskBoardsInputSchema(Schema):
     new_name = fields.String(required=True)
     new_description = fields.String(required=True)
 
+class DeleteMapTaskBoardsInputSchema(Schema):
+    team_id = fields.String(required=True)
+    board_id = fields.String(required=True)
+
 class MapTaskBoardsResource(Resource):
 
     def put(self):
@@ -103,4 +107,20 @@ class MapTaskBoardsResource(Resource):
             print(err)
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
 
+    def delete(self):
+        """Delete a task board
+        """
+        try:
+            in_schema = DeleteMapTaskBoardsInputSchema()
+            in_schema = in_schema.load(request.args)
+        except:
+            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+        
+        try:
+            TaskBoard.objects(id=ObjectId(in_schema['board_id'])).update_one(deleted=True)
+
+            return make_response(jsonify(code=200, msg="ok"), 200)
+        except Exception as err:
+            print(err)
+            return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
 
