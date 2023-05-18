@@ -65,7 +65,8 @@ class MapTaskDetailResource(Resource):
 
             page = in_schema['page']  # min_value 1
             size = in_schema['size']  # min_value 10
-            map_items = MapItem.objects(**filter_conditions).skip((page-1)*size).limit(size)
+            total_map_items = MapItem.objects(**filter_conditions)
+            map_items = total_map_items.skip((page-1)*size).limit(size)
             items = [
                 {'map_item_id': str(item.id),
                  'text':item.text, 
@@ -83,8 +84,9 @@ class MapTaskDetailResource(Resource):
                 'items': items,
                 'page': page,
                 'size': size,
-                'page_num': math.ceil(len(map_items)/size),
-                'file_name': map_task.file_name
+                'page_num': math.ceil(len(total_map_items)/size),
+                'total': len(total_map_items),
+                'file_name': map_task.file_name,
             }
 
             return make_response(jsonify(code=200, msg="ok", data=data),200)

@@ -1,18 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useRequest } from 'ahooks';
 import { BarChartOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';
-import { Form, Col, Row, Button, Select, Space, Pagination } from 'antd';
+import { Form, Col, Row, Button, Select, Space, Pagination, Slider } from 'antd';
 import { getColumns } from './columns';
 import { getMappingTaskMetaDetail, exportFile, curateMapping } from '../../Mapping/api';
 import { VisualizationDrawer } from '../../../components';
 import { getCodeSystemList } from '../../CodeSystem/api';
 
-export default function TrainingMode({ data, taskId, currentPage, onPageChange }) {
-  const PAGE_SIZE = 10;
+const TrainingMode = forwardRef((props, ref) => {
+  const {
+    data,
+    taskId,
+    currentPage,
+    isTableLoading,
+    totalNumber,
+    pageSize,
+    onPageChange,
+    onFilter,
+    onReset,
+  } = props;
+
   const team_id = localStorage.getItem('team');
-  const { id: board_id } = useParams();
+
+  const [filterForm] = Form.useForm();
+
+  useImperativeHandle(ref, () => ({
+    form: filterForm,
+  }));
+
   const [editableKeys, setEditableRowKeys] = useState([]);
   const { data: meta_data } = useRequest(() => getMappingTaskMetaDetail(taskId));
   const { data: codeSystemList } = useRequest(
@@ -37,8 +53,6 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
       })),
     };
   });
-
-  const num = meta_data?.data.num;
 
   const [dataSource, setDataSource] = useState(() =>
     data.map((v, i) => {
@@ -71,8 +85,8 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
   };
 
   return (
-    <>
-      <Form layout="vertical">
+    <div class="h-[calc(100vh-95px)] relative">
+      <Form layout="vertical" form={filterForm}>
         <Row>
           <Col xs={24} sm={24} md={12} lg={12} xl={4}>
             <Form.Item label="Mapping Status" name="mappingStatus">
@@ -86,25 +100,32 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
               />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <Col xs={24} sm={24} md={12} lg={12} xl={4}>
             <Form.Item label="Source" name="source">
               <Select
                 style={{ width: 160 }}
                 allowClear
                 options={[
-                  { value: 'SNOMED_CT', label: 'SNOMED_CT' },
+                  { value: 'SNOMED-CT', label: 'SNOMED-CT' },
                   { value: 'UIL', label: 'UIL' },
                 ]}
               />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={12} lg={24} xl={8}>
+          <Col xs={24} sm={24} md={12} lg={12} xl={4}>
+            <Form.Item label="Confidence Range" name="confidence">
+              <Slider style={{ width: 160 }} range defaultValue={[0, 100]} />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={12} xl={8}>
             <div class="pt-3 flex flex-row-reverse">
               <Space>
-                <Button type="primary" size="large">
+                <Button type="primary" size="large" onClick={onFilter}>
                   Filter
                 </Button>
-                <Button size="large">Reset</Button>
+                <Button size="large" onClick={onReset}>
+                  Reset
+                </Button>
                 <span class="ml-4">
                   <Button type="primary" size="large" onClick={() => exportFile(team_id, taskId)}>
                     Export
@@ -119,16 +140,16 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
         </Row>
       </Form>
       <VisualizationDrawer onClose={onClose} open={open} metaData={meta_data} />
+
       <EditableProTable
         rowKey="id"
+        loading={isTableLoading}
         columns={getColumns(mappedCodeSystemList)}
         value={dataSource}
         editable={{
           type: 'multiple',
           editableKeys,
           onSave: async (rowKey, data, row) => {
-            // TODO
-            console.log(rowKey, data, row);
             data.mappingStatus = 2;
             runCurateMapping(data.mappedItemId, data.curate[1]);
           },
@@ -137,20 +158,22 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
         }}
         onChange={setDataSource}
         maxLength={dataSource.length}
-        scroll={{ x: 1200 }}
+        scroll={{ x: 1200, y: 'calc(100vh - 310px)' }}
       />
+
       {data.length !== 0 && (
-        <Pagination
-          showQuickJumper
-          style={{ display: 'flex', justifyContent: 'flex-end' }}
-          current={currentPage}
-          // onChange={(page) => setCurrentPage(page)}
-          onChange={(page) => onPageChange(page)}
-          pageSize={PAGE_SIZE}
-          total={num}
-          showSizeChanger={false}
-        />
+        <div class="absolute bottom-2 right-0">
+          <Pagination
+            showQuickJumper
+            current={currentPage}
+            onChange={(page, pageSize) => onPageChange(page, pageSize)}
+            pageSize={pageSize}
+            total={totalNumber}
+          />
+        </div>
       )}
-    </>
+    </div>
   );
-}
+});
+
+export default TrainingMode;
