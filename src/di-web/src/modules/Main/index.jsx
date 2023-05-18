@@ -119,8 +119,8 @@ export default function Main() {
         <Dropdown
           menu={{
             items: [
-              { key: 'edit', label: 'edit' },
-              { key: 'delete', label: 'delete' },
+              { key: 'edit', label: 'Edit' },
+              { key: 'delete', label: 'Delete' },
             ],
             onClick: (e) => {
               if (e.key === 'edit') {
