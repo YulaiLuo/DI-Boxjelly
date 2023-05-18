@@ -40,7 +40,7 @@ def init_api(app):
     api.add_resource(TopMiddleResource, '/center/dashboard/top-middle')
     api.add_resource(TopRightResource, '/center/dashboard/top-right')
     api.add_resource(HelloResource, '/center/dashboard/hello')
-
+    api.add_resource(MapItemStatusRatioResource, '/center/dashboard/item-status-ratio')
 
     # Initialize the API
     api.init_app(app)

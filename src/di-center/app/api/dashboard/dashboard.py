@@ -39,3 +39,17 @@ class HelloResource(Resource):
         return make_response(jsonify(code=200, msg="ok", data={
             "hello": "This is a title",
         }))
+
+class MapItemStatusRatioResource(Resource):
+
+    def get(self):
+        import random
+        
+        data = []
+        years = [1995,1996,1997,1998,1999,2000,2001]
+        for year in years:
+            data.append({'year':str(year),'value':random.randint(1,10),'type':'success'})
+        for year in years:
+            data.append({'year':str(year),'value':random.randint(1,10),'type':'failed'})
+
+        return make_response(jsonify(code=200, msg="ok", data=data))
