@@ -3,6 +3,7 @@ import { getUserProfile, updateUserProfile } from './api';
 import { Avatar, Button, Form, Input, Select, Space, Typography, Upload } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { BASE_URL } from '../../utils/constant/url';
+import { getCSRFTokenHeader } from "../../utils/auth";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -126,7 +127,7 @@ const UserProfile = () => {
               </Select>
             </Form.Item>
             <Form.Item label="Avatar">
-              <Upload action={`${BASE_URL}/auth/user/avatar`}>
+              <Upload action={`${BASE_URL}/auth/user/avatar`} headers={getCSRFTokenHeader()} withCredentials={true} >
                 <Button icon={<UploadOutlined />}>Click to Upload</Button>
               </Upload>
             </Form.Item>
