@@ -2,7 +2,7 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import { Card, Badge, Popconfirm } from 'antd';
 import { DeleteOutlined, BarChartOutlined, DownloadOutlined } from '@ant-design/icons';
-import formatTime from '../../../utils/formatTime';
+import { formatTime, calTimeDifference } from '../../../utils/formatTime';
 
 const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisualizeClick }) => {
   const { status, num, createBy, createAt, updateAt, fileName } = item;
@@ -16,35 +16,21 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
   const title = (
     <div class="flex justify-between">
       {/* <span class="w-3/5 overflow-hidden text-ellipsis">{createBy}</span> */}
-      <span class="w-3/5 overflow-hidden text-ellipsis">{'User'}</span>
+      <span class="w-3/5 overflow-hidden text-ellipsis">{'Vlada'}</span>
       <Badge status={badgeStatus[status]} text={status}></Badge>
     </div>
   );
 
-  const CreatTime=new Date(createAt);
+  const CreatTime = new Date(createAt);
+  const UpdateTime = new Date(updateAt);
 
   const formattedCreateAt = formatTime(CreatTime);
   const formattedUpdateAt = updateAt ? formatTime(new Date(updateAt)) : null;
 
   const currentTime = new Date();
-  const timeDifference = Math.abs(currentTime - CreatTime);
-  const formattedcurrentTime = formatTime(currentTime);
+  const timeDifference = Math.abs(currentTime - UpdateTime);
 
-  const formattedTime = transferTime(timeDifference); 
-
-
-  function transferTime(time) {
-    const hours = Math.floor(time / 3600000);
-    const minutes = Math.floor((time % 3600000) / 60000);
-    const seconds = Math.floor((time % 60000) / 1000);
-  
-    return `${hours} hours ${minutes} minutes ${seconds} seconds ago`;
-  }
-  
-
-  
-  
-  //const formattedTime = currentTime.toLocaleString(); 
+  const formattedTimeDifference = calTimeDifference(timeDifference);
 
   const getActions = () => {
     let actions = [
@@ -87,9 +73,8 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
         </div>
         <div>File name: {fileName}</div>
         <div>Created at: {formattedCreateAt}</div>
-        {/* <div>Last modified time: {formattedcurrentTime}</div> */}
-        <div>Last modified time: {formattedTime}</div>
-        {/* {updateAt && <div>Last curated at: {formattedUpdateAt}</div>} */}
+        {/* <div>Last curated time: {formattedTimeDifference}</div> */}
+        {createAt !== updateAt && <div>Last curated time: {formattedTimeDifference}</div>}
       </div>
     </Card>
   );
