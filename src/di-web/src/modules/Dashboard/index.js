@@ -6,10 +6,7 @@ import DashboardCard from './components/DashboardCard';
 import { Column } from '@ant-design/plots';
 import MessageCard from './components/MessageCard';
 import { BASE_URL } from '../../utils/constant/url';
-
-//import Column from 'antd/es/table/Column';
-//import React, { useState, useEffect } from 'react';
-//import { Column } from '@ant-design/charts';
+import { getDashboardInfo } from './api';
 
 const { Search } = Input;
 
@@ -32,6 +29,11 @@ export default function Dashboard() {
       }
     },
   });
+
+  const { data: dashboardInfoResponse } = useRequest(getDashboardInfo);
+
+  const dashboardInfo = dashboardInfoResponse?.map((res) => res?.data);
+  console.log(dashboardInfo);
 
   const onSingleTextSearch = (value) => {
     if (value.trim() !== '') {
@@ -147,63 +149,20 @@ export default function Dashboard() {
               </div>
             )}
           </Modal>
-
-          {/* <Col xs={24} sm={24} md={12} lg={6} xl={6} class="flex items-center">
-          {showSingleMapping && (
-            <div class="mt-12 w-full flex justify-center">
-              {singleMapLoading ? (
-                <Spin />
-              ) : (
-                <div class="text-center">
-                  <div class="mb-4 text-lg">Mapping Result:</div>
-                  <div class="text-2xl">{singleMappingResult}</div>
-                </div>
-              )}
-            </div>
-          )}
-        </Col> */}
-
-          {/* <Row>
-          <Col xs={2} sm={2} md={3} lg={4} xl={5} />
-          <Col xs={20} sm={20} md={18} lg={16} xl={14}>
-            <div class="pt-6">
-              <div class="mt-16 mb-14 text-center text-slate-500 text-2xl">Mapping:</div>
-              <Search
-                placeholder="Input a single text"
-                allowClear
-                onSearch={onSingleTextSearch}
-                ref={inputRef}
-                onChange={onSingleTextChange}
-              />
-              {showSingleMapping && (
-                <div class="mt-12 w-full flex justify-center">
-                  {singleMapLoading ? (
-                    <Spin />
-                  ) : (
-                    <div class="text-center">
-                      <div class="mb-4 text-lg">Mapping Result:</div>
-                      <div class="text-2xl">{singleMappingResult}</div>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </Col>
-          <Col xs={2} sm={2} md={3} lg={4} xl={5} />
-        </Row> */}
         </Row>
 
         <div class="mt-5">
           <Row gutter={[24, 8]}>
-            <Col xs={24} sm={24} md={12} lg={8} xl={8}>
-              <DashboardCard title="Total xxxx" percent={74} totalNumber={878} />
-            </Col>
-            <Col xs={24} sm={24} md={12} lg={8} xl={8}>
-              <DashboardCard title="Total xxxx" percent={63} totalNumber={343} />
-            </Col>
-            <Col xs={24} sm={24} md={12} lg={8} xl={8}>
-              <DashboardCard title="Total xxxx" percent={25} totalNumber={82} />
-            </Col>
+            {dashboardInfo?.map((item) => (
+              <Col xs={24} sm={24} md={12} lg={8} xl={8}>
+                <DashboardCard
+                  title={item?.title}
+                  percent={item?.percent}
+                  totalNumber={item?.total_number}
+                  delta={item?.delta}
+                />
+              </Col>
+            ))}
           </Row>
         </div>
 

@@ -33,3 +33,6 @@ export const USER_PROFILE_URL = '/auth/user';
 
 // Avatar module
 export const AVATAR_URL = '/auth/user/avatar';
+
+// Dashboard module
+export const DASHBOARD_INFO_URL = '/center/dashboard';

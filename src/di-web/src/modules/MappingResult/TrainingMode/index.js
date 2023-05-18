@@ -25,8 +25,6 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
     manual: true,
   });
 
-  console.log('sss', codeSystemList);
-
   const mappedCodeSystemList = codeSystemList?.data?.groups.map((item) => {
     return {
       // value: [item.group, item.group_id],
@@ -39,8 +37,6 @@ export default function TrainingMode({ data, taskId, currentPage, onPageChange }
       })),
     };
   });
-
-  console.log('asfdsfasd');
 
   const num = meta_data?.data.num;
 

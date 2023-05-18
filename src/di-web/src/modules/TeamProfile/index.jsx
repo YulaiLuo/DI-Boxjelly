@@ -10,7 +10,6 @@ export default function TeamProfile() {
   const teamId = localStorage.getItem('team');
 
   const { data: teamInfo } = useRequest(() => getTeamInfo(teamId));
-  console.log('teamInfo', teamInfo);
 
   const data = teamInfo?.data;
 
