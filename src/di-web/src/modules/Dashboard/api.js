@@ -8,3 +8,11 @@ export const getDashboardInfo = () => {
 
   return Promise.all([topLeftInfo, topMiddleInfo, topRightInfo]);
 };
+
+export const getBarChartInfo = () => {
+  return http.get(`${DASHBOARD_INFO_URL}/item-status-ratio`);
+};
+
+export const getHelloInfo = () => {
+  return http.get(`${DASHBOARD_INFO_URL}/hello`);
+};

@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Col, Row, Input, Spin, Avatar, Card, Modal, Button } from 'antd';
+import React, { useState, useRef } from 'react';
+import { Col, Row, Input, Spin, Avatar, Card, Modal } from 'antd';
+import { Column } from '@ant-design/plots';
 import { useRequest } from 'ahooks';
 import { mapSingleText } from '../Mapping/api';
 import DashboardCard from './components/DashboardCard';
-import { Column } from '@ant-design/plots';
 import MessageCard from './components/MessageCard';
 import { BASE_URL } from '../../utils/constant/url';
-import { getDashboardInfo } from './api';
+import { getDashboardInfo, getBarChartInfo, getHelloInfo } from './api';
 
 const { Search } = Input;
 
@@ -31,9 +31,10 @@ export default function Dashboard() {
   });
 
   const { data: dashboardInfoResponse } = useRequest(getDashboardInfo);
+  const { data: dashboardBarChartResponse } = useRequest(getBarChartInfo);
+  const { data: dashboardHelloInfoResponse } = useRequest(getHelloInfo);
 
   const dashboardInfo = dashboardInfoResponse?.map((res) => res?.data);
-  console.log(dashboardInfo);
 
   const onSingleTextSearch = (value) => {
     if (value.trim() !== '') {
@@ -50,39 +51,23 @@ export default function Dashboard() {
       setShowSingleMapping(false);
     }
   };
-  const [data, setData] = useState([]);
 
-  useEffect(() => {
-    asyncFetch();
-  }, []);
-
-  const asyncFetch = () => {
-    fetch('https://gw.alipayobjects.com/os/antfincdn/8elHX%26irfq/stack-column-data.json')
-      .then((response) => response.json())
-      .then((json) => setData(json))
-      .catch((error) => {
-        console.log('fetch data failed', error);
-      });
-  };
   const config = {
-    data,
+    data: dashboardBarChartResponse?.data ?? [],
     isStack: true,
     xField: 'year',
     yField: 'value',
     seriesField: 'type',
     label: {
-      // 可手动配置 label 数据标签位置
       position: 'middle',
-      // 'top', 'bottom', 'middle'
-      // 可配置附加的布局方法
+
       layout: [
-        // 柱形图数据标签位置自动调整
         {
           type: 'interval-adjust-position',
-        }, // 数据标签防遮挡
+        },
         {
           type: 'interval-hide-overlap',
-        }, // 数据标签文颜色自动调整
+        },
         {
           type: 'adjust-color',
         },
@@ -105,21 +90,15 @@ export default function Dashboard() {
   };
 
   return (
-    // <div>
-    //   <div>
-    //
-    //   </div>
-    //   <div>Current Tasks to do</div>
-    //   <div>total Mapping</div>
-    // </div>
-
     <div style={{ display: 'flex', height: '100%' }}>
       <div class="mx-8 pt-4 flex-1">
         <Row>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <div>
               <h1 class="">Dashboard</h1>
-              <div>Hello, {user?.nickname}. Welcome!</div>
+              <div>
+                {dashboardHelloInfoResponse ? dashboardHelloInfoResponse?.data['hello'] : ''}
+              </div>
             </div>
           </Col>
 

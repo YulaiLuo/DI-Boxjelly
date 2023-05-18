@@ -11,8 +11,9 @@ import {
 import { Layout, Menu, Avatar, Space, Dropdown, Tooltip, Modal, Input, Form } from 'antd';
 import { useRequest } from 'ahooks';
 import { useUserStore, useMessageStore } from '../../store';
-import { getBoardList, editBoard, createBoard, deleteBoard } from './api';
+import { getBoardList, editBoard, createBoard, deleteBoard, logout } from './api';
 import { BASE_URL } from '../../utils/constant/url';
+// import { removeTokens } from '../../utils/auth';
 
 const { Sider, Header, Content } = Layout;
 const { PUBLIC_URL } = process.env;
@@ -55,6 +56,14 @@ export default function Main() {
       setIsEditModalOpen(false);
       editBoardForm.resetFields();
       refreshBoardList(teamId);
+    },
+  });
+
+  const { run: runLogout } = useRequest(logout, {
+    manual: true,
+    onSuccess: () => {
+      // removeTokens();
+      navigate('/login', { replace: true });
     },
   });
 
@@ -148,11 +157,6 @@ export default function Main() {
     },
   ];
 
-  const onSignOutClick = () => {
-    setLoggedIn(false);
-    navigate('/login', { replace: true });
-  };
-
   const onProfileClick = () => {
     console.log('go to profile page');
     navigate('/profile');
@@ -160,7 +164,7 @@ export default function Main() {
 
   const onDropdownItemClick = (e) => {
     if (e.key === 'profile') onProfileClick();
-    else if (e.key === 'signOut') onSignOutClick();
+    else if (e.key === 'signOut') runLogout();
   };
 
   const handleCreateBoardModalOk = () => {

@@ -21,8 +21,11 @@ export default function Login() {
       setLoggedIn(true);
       // const cookies = document.cookie.split(';');
       // console.log('cookies', cookies);
+      // localStorage.setItem('csrf_access_token', Cookies.get(AUTH.CSRF_ACCESS_TOKEN_COOKIE));
+      // localStorage.setItem('csrf_refresh_token', Cookies.get(AUTH.CSRF_REFRESH_TOKEN_COOKIE));
       const csrfCookie = Cookies.get('csrf_access_token');
       console.log('csrf', csrfCookie);
+
       msgApi.success('Login Successfully');
       localStorage.setItem('loggedIn', 'true');
       navigate('/dashboard', { replace: true });

@@ -5,6 +5,7 @@ export const ONTOSERVER_BASE_URL = 'https://r4.ontoserver.csiro.au/fhir';
 
 // Auth module
 export const EMAIL_LOGIN_URL = '/auth/login/email';
+export const LOG_OUT_URL = '/auth/logout';
 export const TEAM_INFO_URL = '/auth/team';
 
 // Mapping module

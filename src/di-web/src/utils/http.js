@@ -10,7 +10,7 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-const csrfTokenHeader = getCSRFTokenHeader();
+// const csrfTokenHeader = getCSRFTokenHeader();
 
 instance.interceptors.response.use(
   (res) => {
@@ -54,7 +54,7 @@ const _post = (api, data, headers = {}) => {
   });
 };
 
-const post = (api, data, headers = csrfTokenHeader) => {
+const post = (api, data, headers = getCSRFTokenHeader()) => {
   headers['Content-Type'] = 'application/json;charset=utf-8';
   return _post(api, JSON.stringify(data), headers);
 };
@@ -64,7 +64,7 @@ const postFormData = (api, data, headers = {}) => {
   return _post(api, data, headers);
 };
 
-const deleteData = (api, params = {}, headers = csrfTokenHeader) => {
+const deleteData = (api, params = {}, headers = getCSRFTokenHeader()) => {
   return new Promise((resolve, reject) => {
     instance
       .delete(api, { params, headers })
@@ -77,7 +77,7 @@ const deleteData = (api, params = {}, headers = csrfTokenHeader) => {
   });
 };
 
-const put = (api, data, headers = csrfTokenHeader) => {
+const put = (api, data, headers = getCSRFTokenHeader()) => {
   return new Promise((resolve, reject) => {
     instance
       .put(api, data, { headers })
