@@ -52,7 +52,7 @@ class PredictStrategy(Strategy):
                 'text': failed_text,
                 'name':  concept_map.curated_uil_name if not concept_map.sct_code else concept_map.sct_pretty_name,
                 'ontology': 'UIL' if not concept_map.sct_code else 'SNOMED-CT',
-                'accuracy': max_similarity,
+                'accuracy': max_similarity/100,
                 'status': 'success',
                 'extra': {
                     '0':{
