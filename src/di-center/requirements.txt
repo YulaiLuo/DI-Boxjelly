@@ -14,3 +14,4 @@ marshmallow
 mongoengine
 python-dateutil
 pandas
+xlsxwriter
