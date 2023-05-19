@@ -38,8 +38,8 @@ class TopLeftResource(Resource):
         delta = this_week_count - last_week_count
 
         return make_response(jsonify(code=200, msg="ok", data={
-            "title": f"Total Tasks: {task_count}",
-            "total_number": f"This week: {this_week_count}",
+            "title": f"Total Task submitted: {task_count}",
+            "total_number": f"This week submit: {this_week_count}",
             "delta": f"{'+' if delta>0 else '1'}{delta} since last week",
             "percent": delta/last_week_count*100 if last_week_count > 0 else 0
         }))
@@ -58,8 +58,8 @@ class TopMiddleResource(Resource):
         total_count = MapItem.objects(deleted=False).count()
 
         return make_response(jsonify(code=200, msg="ok", data={
-            "title": f"Total texts: {total_count}",
-            "total_number": f"This week: {this_week_count}",
+            "title": f"Total texts mapped: {total_count}",
+            "total_number": f"This week mapped: {this_week_count}",
             "delta": f"{'+' if delta>0 else '1'}{delta} since last week",
             "percent": delta/last_week_count*100 if last_week_count > 0 else 0
         }))
@@ -78,8 +78,8 @@ class TopRightResource(Resource):
         total_count = MapItem.objects(status='reviewed', deleted=False).count()
 
         return make_response(jsonify(code=200, msg="ok", data={
-            "title": f"Total curated: {total_count}",
-            "total_number": f"This week: {this_week_count}",
+            "title": f"Total curated texts: {total_count}",
+            "total_number": f"This week curated: {this_week_count}",
             "delta": f"{'+' if delta>0 else '1'}{delta} since last week",
             "percent": delta/last_week_count*100 if last_week_count > 0 else 0
         }))
@@ -87,6 +87,11 @@ class TopRightResource(Resource):
 class HelloResource(Resource):
 
     def get(self):
+        user_id = request.headers.get('User-ID')
+        if user_id is None:
+            return make_response(jsonify(code=401, msg="Unauthorized", data={
+                "hello": f"Hello! This is the dashboard service of the Data Integration Center. Today is  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+            }), 401)
         return make_response(jsonify(code=200, msg="ok", data={
             "hello": f"Hello! This is the dashboard service of the Data Integration Center. Today is  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
         }))
