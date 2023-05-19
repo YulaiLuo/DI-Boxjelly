@@ -11,7 +11,7 @@ class Logout(Resource):
 
     Example:
         >>> api = Api(app)
-        >>> api.add_resource(Logout, '/di-auth/logout', resource_class_args=(mongo,))
+        >>> api.add_resource(Logout, '/auth/logout', resource_class_args=(mongo,))
     """
 
     def __init__(self, mongo, jwt):
@@ -40,5 +40,5 @@ class Logout(Resource):
 
         # This step remove the access token and refresh token from the cookies on the client side
         unset_jwt_cookies(response)
-
+        print(response.headers)
         return response
