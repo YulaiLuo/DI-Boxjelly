@@ -41,6 +41,7 @@ def init_api(app):
     api.add_resource(TopRightResource, '/center/dashboard/top-right')
     api.add_resource(HelloResource, '/center/dashboard/hello')
     api.add_resource(MapItemStatusRatioResource, '/center/dashboard/item-status-ratio')
+    api.add_resource(PredictSingleResource, '/center/dashboard/predict')
 
     # Initialize the API
     api.init_app(app)

@@ -52,9 +52,18 @@ export default function Main() {
   const { run: runEditBoard, loading: editBoardLoading } = useRequest(editBoard, {
     manual: true,
     onSuccess: () => {
-      msgApi.success('A new board created successfully');
+      msgApi.success('board updated successfully');
       setIsEditModalOpen(false);
       editBoardForm.resetFields();
+      refreshBoardList(teamId);
+    },
+  });
+
+  const { run: runDeleteBoard } = useRequest(deleteBoard, {
+    manual: true,
+    onSuccess: () => {
+      msgApi.success('board deleted successfully');
+      navigate('/dashboard', { replace: true });
       refreshBoardList(teamId);
     },
   });
@@ -97,12 +106,12 @@ export default function Main() {
   };
 
   const onBoardDeleteClick = (board) => {
-    console.log('delete', board);
+    runDeleteBoard(board.id, teamId);
   };
 
   const taskBoardItems = taskBoards.map((board) => {
     return getSidebarItem(
-      <div class="flex justify-between overflow-y-scroll">
+      <div class="flex justify-between">
         <Tooltip title={board.name}>
           <span className="overflow-hidden overflow-ellipsis">{board.name}</span>
         </Tooltip>
@@ -110,8 +119,8 @@ export default function Main() {
         <Dropdown
           menu={{
             items: [
-              { key: 'edit', label: 'edit' },
-              { key: 'delete', label: 'delete' },
+              { key: 'edit', label: 'Edit' },
+              { key: 'delete', label: 'Delete' },
             ],
             onClick: (e) => {
               if (e.key === 'edit') {

@@ -112,8 +112,50 @@ export const createMappingTask = (teamId, boardId, file) => {
 };
 
 // Get mapping task detail
-export const getMappingTaskDetail = (task_id, team_id, board_id, page = 1, size = 10) => {
-  return http.get(`${MAP_TASK_DETAIL_URL}`, { task_id, team_id, board_id, page, size });
+export const getMappingTaskDetail = (
+  task_id,
+  team_id,
+  board_id,
+  page = 1,
+  size = 10,
+  filter = {}
+) => {
+  let params = {
+    task_id,
+    team_id,
+    board_id,
+    page,
+    size,
+  };
+  if (filter.mappingStatus) {
+    params = {
+      ...params,
+      status: filter.mappingStatus,
+    };
+  }
+  if (filter.source) {
+    params = {
+      ...params,
+      ontology: filter.source,
+    };
+  }
+  if (
+    filter.minConfidence !== 'undefined' &&
+    filter.maxConfidence !== 'undefined' &&
+    filter.minConfidence <= filter.maxConfidence
+  ) {
+    params = {
+      ...params,
+      min_accuracy: filter.minConfidence,
+      max_accuracy: filter.maxConfidence,
+    };
+  }
+  if (filter.mappingStatus === 'fail') {
+    delete params.min_accuracy;
+    delete params.max_accuracy;
+  }
+  console.log('para', params);
+  return http.get(`${MAP_TASK_DETAIL_URL}`, params);
 };
 
 // Get mapping task meta detail

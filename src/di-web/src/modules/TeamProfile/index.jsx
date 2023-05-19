@@ -25,23 +25,11 @@ export default function TeamProfile() {
   return (
     <div class="mx-4 py-3">
       <div class="flex items-center justify-between">
-        <h2 class="mr-5">You are currently in the {data?.team_name} team </h2>
+        <h2 class="mr-5">Team {data?.team_name} </h2>
         <Button type="primary">Invite Member</Button>
       </div>
 
       <Layout>
-        <Sider breakpoint="md" theme="light" style={{ background: '#fafafa' }}>
-          <Menu
-            style={{ background: '#fafafa' }}
-            // onClick={onMenuItemClick}
-            defaultSelectedKeys={['all']}
-            // selectedKeys={[selectedPath]}
-            mode="inline"
-            items={sidebarItems}
-            theme="light"
-          />
-        </Sider>
-
         <Layout>
           <Content class="ml-3">
             <List

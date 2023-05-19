@@ -2,10 +2,10 @@ import React from 'react';
 import { PropTypes } from 'prop-types';
 import { Card, Badge, Popconfirm } from 'antd';
 import { DeleteOutlined, BarChartOutlined, DownloadOutlined } from '@ant-design/icons';
-import formatTime from '../../../utils/formatTime';
+import { formatTime, calTimeDifference } from '../../../utils/formatTime';
 
 const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisualizeClick }) => {
-  const { status, num, createBy, createAt, updateAt, fileName } = item;
+  const { status, num, nickname, createAt, updateAt, fileName } = item;
 
   const badgeStatus = {
     success: 'success',
@@ -16,13 +16,21 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
   const title = (
     <div class="flex justify-between">
       {/* <span class="w-3/5 overflow-hidden text-ellipsis">{createBy}</span> */}
-      <span class="w-3/5 overflow-hidden text-ellipsis">{'User'}</span>
+      <span class="w-3/5 overflow-hidden text-ellipsis">{nickname}</span>
       <Badge status={badgeStatus[status]} text={status}></Badge>
     </div>
   );
 
-  const formattedCreateAt = formatTime(new Date(createAt));
+  const CreatTime = new Date(createAt);
+  const UpdateTime = new Date(updateAt);
+
+  const formattedCreateAt = formatTime(CreatTime);
   const formattedUpdateAt = updateAt ? formatTime(new Date(updateAt)) : null;
+
+  const currentTime = new Date();
+  const timeDifference = Math.abs(currentTime - UpdateTime);
+
+  const formattedTimeDifference = calTimeDifference(timeDifference);
 
   const getActions = () => {
     let actions = [
@@ -64,8 +72,10 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
           <span class="ml-4 text-lg">{num}</span>
         </div>
         <div>File name: {fileName}</div>
-        <div>Created at: {formattedCreateAt}</div>
-        {updateAt && <div>Last curated at: {formattedUpdateAt}</div>}
+        <div>Created at: {formattedTimeDifference}</div>
+        <div>{formattedCreateAt}</div>
+        {/* <div>Last curated time: {formattedTimeDifference}</div> */}
+        {/* {createAt !== updateAt && <div></div>} */}
       </div>
     </Card>
   );

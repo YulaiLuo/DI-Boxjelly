@@ -7,38 +7,34 @@ export default function VisualizationDrawer({ onClose, open, metaData }) {
   const num_success = metaData?.data.num_success;
   const num_failed = metaData?.data.num_failed;
   const num_reviewed = metaData?.data.num_reviewed;
+  const num_uil = metaData?.data.num_uil;
+  const num_snomed = metaData?.data.num_snomed;
 
-  const chartData = [
-    { name: 'Success', value: num_success },
-    { name: 'Failed', value: num_failed },
-    { name: 'Reviewed', value: num_reviewed },
+  const data1 = [
+    { name: 'Success', value: 100 },
+    { name: 'Failed', value: 230 },
+    { name: 'Reviewed', value: 90 },
+  ];
+  
+  const data2 = [
+    { name: 'UIL', value: 120 },
+    { name: 'SNOMED CT', value: 180 },
   ];
 
-  const transformedChartData = [
-    { name: 'Success', Success: num_success },
-    { name: 'Failed', Failed: num_failed },
-    { name: 'Reviewed', Reviewed: num_reviewed },
-  ];
+  const COLORS1 = ['#82ca9d', '#f44336', '#ffa500']; // Green, Red, Orange
+  const COLORS2 = ['#0000FF', '#000000']; // Blue, Black
 
-  const renderCustomizedShape = (props) => {
-    const { cx, cy, name } = props;
-    let fill;
-    switch (name) {
-      case 'Success':
-        fill = 'green';
-        break;
-      case 'Failed':
-        fill = 'red';
-        break;
-      case 'Reviewed':
-        fill = 'orange';
-        break;
-      default:
-        fill = 'gray';
-    }
-    return <circle cx={cx} cy={cy} r={6} fill={fill} />;
-  };
-
+  const renderLegend = (data, colors) => (
+    <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center' }}>
+      {data.map((entry, index) => (
+        <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+          <div style={{ backgroundColor: colors[index], height: '10px', width: '10px', marginRight: '5px' }}></div>
+          <span>{entry.name}</span>
+        </li>
+      ))}
+    </ul>
+  );
+  
   const GreenDot = () => {
     const dotGreen = {
       display: 'inline-block',
@@ -78,7 +74,46 @@ export default function VisualizationDrawer({ onClose, open, metaData }) {
     return <div style={dotOrange}></div>;
   };
 
-  const StatisticsCard = ({ num, num_success, num_failed, num_reviewed }) => (
+  const BlueDot = () => {
+    const dotBlue = {
+      display: 'inline-block',
+      width: '10px',
+      height: '10px',
+      borderRadius: '50%',
+      backgroundColor: 'blue',
+      marginRight: '10px',
+    };
+
+    return <div style={dotBlue}></div>;
+  };
+
+  const BlackDot = () => {
+    const dotBlack = {
+      display: 'inline-block',
+      width: '10px',
+      height: '10px',
+      borderRadius: '50%',
+      backgroundColor: 'black',
+      marginRight: '10px',
+    };
+
+    return <div style={dotBlack}></div>;
+  };
+
+  const WhiteDot = () => {
+    const dotWhtie = {
+      display: 'inline-block',
+      width: '10px',
+      height: '10px',
+      borderRadius: '50%',
+      backgroundColor: 'whtie',
+      marginRight: '10px',
+    };
+
+    return <div style={dotWhtie}></div>;
+  };
+
+  const StatisticsCard1 = ({ num, num_success, num_failed, num_reviewed }) => (
     <Card
       bordered={true}
       style={{ width: '90%', margin: '0 auto', marginBottom: '5vh', left: '5%' }}
@@ -102,7 +137,30 @@ export default function VisualizationDrawer({ onClose, open, metaData }) {
     </Card>
   );
 
-  const CustomBarChart = ({ data }) => {
+  const StatisticsCard2 = ({ num_success, num_uil, num_snomed }) => (
+    <Card
+      bordered={true}
+      style={{ width: '90%', margin: '0 auto', marginBottom: '5vh', left: '5%' }}
+    >
+      <div>
+        <h4>UIL Mapping Ratio : {num_success > 0 ? ((num_uil / num_success) * 100).toFixed(2) : 0} %</h4>
+        <h4>SNOMED CT Mapping Ratio: {num_success > 0 ? ((num_snomed / num_success) * 100).toFixed(2) : 0} %</h4>
+      </div>
+      <div>
+        <BlueDot />
+        Number of UIL: {num_uil}
+      </div>
+      <div>
+        <BlackDot />
+        Number of SNOMED CT: {num_snomed}
+      </div>
+      <div>
+        <WhiteDot />
+      </div>
+    </Card>
+  );
+
+  const CustomBarChart1 = ({ data }) => {
     const [chartWidth, setChartWidth] = useState(
       window.innerWidth < 768 ? window.innerWidth * 0.6 : window.innerWidth * 0.3
     );
@@ -119,16 +177,72 @@ export default function VisualizationDrawer({ onClose, open, metaData }) {
     }, []);
 
     return (
-      <BarChart width={chartWidth} height={300} data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="Success" fill="green" />
-        <Bar dataKey="Failed" fill="red" />
-        <Bar dataKey="Reviewed" fill="orange" />
-      </BarChart>
+      <div>
+        <BarChart
+          width={chartWidth}
+          height={300}
+          data={data1}
+          margin={{
+            top: 5, right: 30, left: 20, bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey="value" barSize={50}>
+            {
+              data1.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS1[index % COLORS1.length]} />
+              ))
+            }
+          </Bar>
+        </BarChart>
+        {renderLegend(data1, COLORS1)}        
+      </div>
+    );
+  };
+
+  const CustomBarChart2 = ({ data }) => {
+    const [chartWidth, setChartWidth] = useState(
+      window.innerWidth < 768 ? window.innerWidth * 0.6 : window.innerWidth * 0.3
+    );
+
+    useEffect(() => {
+      const handleResize = () => {
+        setChartWidth(window.innerWidth < 768 ? window.innerWidth * 0.6 : window.innerWidth * 0.3);
+      };
+
+      window.addEventListener('resize', handleResize);
+
+      // Cleanup the event listener on component unmount
+      return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return (
+      <div>
+        <BarChart
+          width={chartWidth}
+          height={300}
+          data={data2}
+          margin={{
+            top: 5, right: 30, left: 20, bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey="value" barSize={50}>
+            {
+              data2.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS2[index % COLORS2.length]} />
+              ))
+            }
+          </Bar>
+        </BarChart>
+        {renderLegend(data2, COLORS2)}        
+      </div>
     );
   };
 
@@ -136,22 +250,21 @@ export default function VisualizationDrawer({ onClose, open, metaData }) {
     <Drawer title="Overall Performance" width={'70vw'} onClose={onClose} open={open}>
       <Row gutter={16}>
         <Col xs={24} md={12} style={{ marginBottom: '30px' }}>
-          <StatisticsCard
+          <StatisticsCard1
             num={num}
             num_success={num_success}
             num_failed={num_failed}
             num_reviewed={num_reviewed}
           />
-          <CustomBarChart data={transformedChartData} />
+          <CustomBarChart1 data={data1} />
         </Col>
         <Col xs={24} md={12} style={{ marginBottom: '30px' }}>
-          <StatisticsCard
-            num={num}
+          <StatisticsCard2
             num_success={num_success}
-            num_failed={num_failed}
-            num_reviewed={num_reviewed}
+            num_uil={num_uil}
+            num_snomed={num_snomed}
           />
-          <CustomBarChart data={transformedChartData} />
+          <CustomBarChart2 data={data2} />
         </Col>
       </Row>
     </Drawer>

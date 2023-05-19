@@ -1,3 +1,4 @@
+import re
 from flask_restful import Resource
 from flask import jsonify, request, make_response
 from app.models import MapTask, MapItem, TaskBoard
@@ -48,8 +49,7 @@ class MapTaskResource(Resource):
       
       try:
             # TODO: check the permission
-            # user_id = request.headers.get('user_id')
-            # team_id = team_id
+            user_id = request.headers.get('User-ID')
 
             in_schema = in_schema.load(request.args)
 
@@ -61,27 +61,53 @@ class MapTaskResource(Resource):
             if not task_board:
                return make_response(jsonify(code=404, err="BOARD_NOT_FOUND"), 404)
             
-            all_map_tasks = MapTask.objects(board=task_board,deleted=False).order_by('-id').all()
+            map_task_count = MapTask.objects(board=task_board,deleted=False).count()
 
             # Paginate the tasks
-            map_tasks_page = all_map_tasks.skip((page-1)*size).limit(size)
+            map_tasks_page = MapTask.objects(board=task_board,deleted=False).order_by('-id').skip((page-1)*size).limit(size)
             
+            pipeline = [
+               {"$match": {"board": ObjectId(board_id), "deleted": False}},
+               {"$sort": {"create_at": -1}},
+               {"$skip": (page - 1) * size},
+               {"$limit": size},
+               {"$lookup": {
+                     "from": "user",   # Assuming your User collection is named "user"
+                     "localField": "create_by",
+                     "foreignField": "_id",
+                     "as": "creator"
+               }},
+               {"$unwind": "$creator"},
+               {"$project": {
+                     "id": 1,
+                     "status": 1,
+                     "num": 1,
+                     "create_at": 1,
+                     "update_at": 1,
+                     "file_name": 1,
+                     "creator_id": "$create_by",
+                     "creator_nickname": "$creator.nickname",
+               }}
+            ]
+
+            map_tasks_page = list(MapTask.objects.aggregate(*pipeline))
+
             # Convert the tasks to a list of dictionaries
-            # TODO: search pipeline
             data = {
                'page': page,
                'size': size,
                'board_name':task_board.name,
                'board_description':task_board.description,
-               'page_num': math.ceil(len(all_map_tasks)/size),
+               'page_num': math.ceil(map_task_count/size),
                'tasks':[{
-                  "id": str(task.id),
-                  "status": task.status,
-                  "num": task.num,
-                  "create_by": str(task.create_by),
-                  "create_at": task.create_at,
-                  "update_at": task.update_at,
-                  "file_name": str(task.file_name)
+                  "id": str(task['_id']),
+                  "status": task['status'],
+                  "num": task['num'],
+                  "create_by": str(task['creator_id']),
+                  "nickname": str(task['creator_nickname']),
+                  "create_at": task['create_at'],
+                  "update_at": task['update_at'],
+                  "file_name": str(task['file_name'])
                }
                for task in map_tasks_page]
             }
@@ -159,8 +185,10 @@ class MapTaskResource(Resource):
          texts = []
 
          if file_ext == 'txt':
-            texts = file.readlines()
-            texts = [text.decode('utf-8').strip() for text in texts]
+            #texts = file.readlines()
+            file_content = file.read().decode('utf-8')
+            texts = re.findall(r'\d+\s+(.+)', file_content)
+            #texts = [text.decode('utf-8').strip() for text in texts]
             if texts and codecs.BOM_UTF8.decode('utf-8') in texts[0]:
                texts[0] = texts[0].replace(codecs.BOM_UTF8.decode('utf-8'), '')
 
@@ -225,10 +253,9 @@ class MapTaskResource(Resource):
       try:
          # TODO: Check if the task is permitted to be deleted by this user
 
-         # TODO: Check if the task is deleted
-
          # Change the deleted field as deleted
          MapTask.objects(id=ObjectId(in_schema['task_id'])).update_one(deleted=True)
+         MapItem.objects(task=ObjectId(in_schema['task_id'])).update(deleted=True)
 
          response = jsonify(code=200, msg="ok")
          response.status_code = 200
