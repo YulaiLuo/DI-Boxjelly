@@ -53,7 +53,7 @@ class MapTaskCurateResource(Resource):
                 "id": str(map_item.id),
                 "text": map_item.text,
                 "concept": curated_concept.name,
-                "confidence": 1,   # curated item has default 100% confidence
+                "confidence": 0,   
                 "source": curated_concept.code_system.name,
                 "status": map_item.status,
                 "concept_id": str(curated_concept.id),
