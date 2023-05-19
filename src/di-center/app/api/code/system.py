@@ -1,20 +1,27 @@
 from flask_restful import Resource
 from flask import jsonify, request, make_response
-from mongoengine.errors import DoesNotExist
+from mongoengine.errors import DoesNotExist, NotUniqueError
 from bson import ObjectId, json_util
-from app.models import CodeSystem, ConceptGroup
+from app.models import CodeSystem, ConceptGroup, Concept, Tag, ConceptVersion
 from marshmallow import Schema, fields, ValidationError
-import json, traceback
+import json, traceback, io
+import pandas as pd
+from collections import defaultdict
 
 class PostCodeSystemInputSchema(Schema):
-   team_id = fields.String(required=True)          # team id
+   # team_id = fields.String(required=True)          # team id
    name = fields.String(required=True)
    description = fields.String(required=False)     # description of the version
+   
+   file = fields.Field(required=True)              # file of the code system
+   version = fields.String(required=True)          # version of the code system
 
 class GetCodeSystemInputSchema(Schema):
-   team_id = fields.String(required=True)
-   code_system_id = fields.String(required=True)
-   
+   version = fields.String(missing='latest')
+
+class DeleteCodeSystemInputSchema(Schema):
+   version = fields.String(required=True)
+
 
 class CodeSystemResource(Resource):
 
@@ -31,114 +38,211 @@ class CodeSystemResource(Resource):
       """
 
       try:
-         in_schema = GetCodeSystemInputSchema()
-         in_schema = in_schema.load(request.args)
+         in_schema = GetCodeSystemInputSchema().load(request.args)
       except ValidationError as err:
          return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
       
-      try:
-         code_system = CodeSystem.objects(id=ObjectId(in_schema['code_system_id'])).get()
-      except DoesNotExist as err:
-         return make_response(jsonify(code=404, err="CODE_SYSTEM_NOT_FOUND"), 404)
-      # except MultipleObjectsReturned as err:
-      #    return make_response(jsonify(code=400, err='MULTIPLE_CODE_SYSTEM_FOUND'), 400)
-
-      try:
-
-         pipeline = [
-            {"$match": {"code_system": ObjectId(code_system.id)}},
-            {"$lookup": {
+      if in_schema['version'] == 'latest':
+         code_system = CodeSystem.objects(deleted=False).order_by('-create_at').first()
+      else:
+         code_system = CodeSystem.objects(version=in_schema['version'], deleted=False).first()
+      
+      if not code_system:
+         return make_response(jsonify(code=404, err="INVALID_INPUT"), 404)
+      
+      pipeline = [
+         # Step one: Match the ConceptVersions of CodeSystem
+         {"$match": {"code_system": ObjectId(code_system.id)}},
+         # Step two: Add related Concept, ConceptGroup, and Tag docs to every ConceptVersion doc
+         {"$lookup": {
                "from": "concept",
-               "let": {"group_id": "$_id"},
-               "pipeline": [
-                  {"$match": {
-                     "$and": [
-                        {"$expr": {"$eq": ["$group", "$$group_id"]}},
-                        {"$or": [{"child_concept_id": None}, {"child_concept_id": {"$exists": False}}]}
-                     ]
-                  }},
-                  {"$addFields": {"id": "$_id"}},  
-               ],
-               "as": "concepts"}},
-            {"$project": {
-                  "_id": 0,
-                  "group": "$name",
-                  "group_id": "$_id",
-                  "concepts.id": 1,
-                  "concepts.name": 1,
-                  "concepts.description": 1,
-                  # "concepts.create_at":1   # has error
-            }}
-         ]
+               "localField": "concept",
+               "foreignField": "_id",
+               "as": "concept_doc"
+         }},
+         {"$lookup": {
+               "from": "concept_group",
+               "localField": "group",
+               "foreignField": "_id",
+               "as": "group_doc"
+         }},
+         {"$lookup": {
+               "from": "tag",
+               "localField": "tags",
+               "foreignField": "_id",
+               "as": "tag_docs"
+         }},
+         # Step 3: Format the doc strtucture to desired format
+         {"$project": {
+               "_id": 0,
+               "group_name": {"$arrayElemAt": ["$group_doc.name", 0]},
+               "concept_name": {"$arrayElemAt": ["$concept_doc.name", 0]},
+               "tag_names": "$tag_docs.name",
+               "alias": 1,
+               "tags":{
+                  "$filter": {
+                     "input": "$tag_docs",
+                     "as": "tag",
+                     "cond": {"$eq": ["$$tag.source", "official"]}
+                  }
+               },
+               "my_tags": {
+                "$filter": {
+                    "input": "$tag_docs",
+                    "as": "tag",
+                    "cond": {"$eq": ["$$tag.source", "user"]}
+                }
+            },
+         }},
+         # Step 4: Group the concept version by groups, and collect each group into one array
+         {"$group": {
+               "_id": "$group_name",
+               "concept_versions": {"$push": {
+                  "concept_name": "$concept_name",
+                  "alias": "$alias",
+                  "tags": "$tags.name",
+                  "my_tags": "$my_tags.name"
+               }}
+         }},
+         # Step 5: Reformat the docs sturcture to the final output
+         {"$project": {
+               "_id": 0,
+               "group_name": "$_id",
+               "concept_versions": 1
+         }}
+      ]
 
-         groups = list(ConceptGroup.objects.aggregate(*pipeline))
-         groups = json.loads(json.dumps(groups, default=self._handle_objectid))
+      result = list(ConceptVersion.objects().aggregate(*pipeline))
 
-         data = {
-            'name':  code_system.name,
-            'code_system_id': str(code_system.id),
-            'create_at': code_system.create_at,
-            'description': code_system.description,
-            'groups':groups
-         }
+      data = {
+         'name': code_system.name,
+         'description': code_system.description,
+         'version': code_system.version,
+         'create_at': code_system.create_at,
+         'groups':result
+      }
 
-         response = jsonify(code=200, msg="ok", data=data)
-         return make_response(response,200)
-      
-      except Exception as err:
-         print(traceback.format_exc())
-         return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
-      
-   def update(self):
-      # TODO: Update detail of code system
-      pass
+      return make_response(jsonify(code=200, msg='ok', date=data))
 
    def post(self):
       """
-      Create new code system
+      Create a new version of code system
       """
+      data = {}
+      data.update(request.files)
+      data.update(request.form)
       try:
          # Create new code system API input schema
-         in_schema = PostCodeSystemInputSchema()
+         in_schema = PostCodeSystemInputSchema().load(data)
 
-         # load the data
-         in_schema = in_schema.load(request.get_json())
       except ValidationError as err:
          print(err)
          return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
-      
 
-      existing_code_system = CodeSystem.objects(team_id=ObjectId(in_schema['team_id'])).first()
-      if existing_code_system:
-         return make_response(jsonify(code=400, err="CODE_SYSTEM_EXIST_IN_TEAM"), 400)
-      
       try:
-         # TODO: read user id from request header
-         # user_id = request.headers.get('user_id')
-         user_id = '60c879e72cb0e6f96d6b0f65'
+         user_id = request.headers.get('User-ID')
 
-         # convert id string to object id
-         in_schema['create_by'] = ObjectId(user_id)
+         file = in_schema['file']
+         if file.filename == '':
+            return make_response(jsonify(code=400, err="FILE_NOT_FOUND"), 400)
+         if not file:
+            return make_response(jsonify(code=400, err="NO_FILE"), 400)
+         
+         data = io.BytesIO(file.read())
+         df = pd.read_excel(data)
+         df.fillna('', inplace=True)
 
-         # create uil and save
-         new_code_system = CodeSystem(
-            team_id = in_schema['team_id'],
-            name = in_schema['name'],
-            description = in_schema['description'],
-            create_by = ObjectId(user_id)
+         code_system = CodeSystem(
+            name=in_schema['name'],
+            description=in_schema['description'],
+            create_by = '64665a00068cb193ee286aa5',
+            version=in_schema['version']
          )
-         new_code_system.save()
+         
+         existing_concepts = {concept.name: concept for concept in Concept.objects().all()}
+         existing_groups = {group.name: group for group in ConceptGroup.objects().all()}
+         existing_tags = {(tag.name, tag.source): tag for tag in Tag.objects().all()}
 
-         response = jsonify(code=200,msg="ok",
-            data={
-               'id':str(new_code_system.id),
-               'name': new_code_system.name,
-               'description': new_code_system.description
-         })
-         return make_response(response, 200)
+         new_concepts = []
+         new_groups = []
+         new_tags = []
+         new_concept_versions = []
+         
+         for _, row in df.iterrows():
+            concept_name = str(row['Indication'])
+            group_name = str(row['Groups'])
+            alias = str(row['User alias']).strip()
+            tag_names = [tag.strip() for tag in str(row['Tags']).split(',')] if str(row['Tags']).strip() != '' else []
+            my_tag_names = [tag.strip() for tag in str(row['My tags']).split(',')] if str(row['My tags']).strip() != '' else []
+               
+            if row['Indication'] not in existing_concepts:
+               concept = Concept(name=concept_name)
+               new_concepts.append(concept)
+               existing_concepts[concept_name] = concept
+            concept = existing_concepts[concept_name]
+            
+            if row['Groups'] not in existing_groups:
+               group = ConceptGroup(name=group_name)
+               new_groups.append(group)
+               existing_groups[group_name] = group
+            group = existing_groups[group_name]
+                  
+            tags = []
+            for tag_name in tag_names + my_tag_names:
+               source = 'official' if tag_name not in my_tag_names else 'user'
+               if (tag_name, source) not in existing_tags:
+                  tag = Tag(name=tag_name, source=source)
+                  new_tags.append(tag)
+                  existing_tags[(tag_name, source)] = tag
+               else:
+                  tag = existing_tags[(tag_name, source)]
+               tags.append(tag)
+            new_concept_versions.append(ConceptVersion(
+               code_system = code_system,
+               concept = concept,
+               alias = alias,
+               tags = tags,
+               group = group
+            ))
+            
+         try:
+            code_system.save()
+            if len(new_concepts)>0: Concept.objects.insert(new_concepts, load_bulk=False) 
+            if len(new_groups)>0: ConceptGroup.objects.insert(new_groups, load_bulk=False)
+            if len(new_tags)>0: Tag.objects.insert(new_tags, load_bulk=False)
+            if len(new_concept_versions)>0: ConceptVersion.objects.insert(new_concept_versions, load_bulk=False)
+            return make_response(jsonify(code=200,msg='ok',data={'code_system_id':str(code_system.id),
+                                                              "name":code_system.name,
+                                                              "version":code_system.version,
+                                                              "description":code_system.description}), 200)
+
+         except NotUniqueError as err:
+            print(err)
+            return make_response(jsonify(code=400, err="NOT_UNIQUE_ERROR"), 400)
 
       except Exception as err:
          print(err)
-         response = jsonify(code=500, err="INTERNAL_SERVER_ERROR")
-         response.status_code=500
-         return response
+         return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"),500)
+
+   def delete(self):
+      try:
+         in_schema = DeleteCodeSystemInputSchema().load(request.args)
+      except ValidationError as err:
+         err
+         return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+
+      # Delete the codesystem given a unique version as input
+      code_system = CodeSystem.objects(version=in_schema['version']).first()
+      if not code_system:
+         return make_response(jsonify(code=404,err="NOT_FOUND",msg="Code system version not found"))
+      
+      code_system.deleted=True
+      code_system.save()
+
+      data = {
+         'name':code_system.name,
+         'description':code_system.description,
+         'version':code_system.version,
+         'deleted':code_system.deleted
+      }
+      return make_response(jsonify(code=200,msg='ok',data=data),200)

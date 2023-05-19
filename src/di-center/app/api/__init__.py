@@ -23,7 +23,7 @@ def init_api(app):
     # Create the API instance
     api = Api()
 
-    api.add_resource(CodeSystemResource, '/center')
+    api.add_resource(CodeSystemResource, '/center/codesystem')
     api.add_resource(ConceptGroupResource, '/center/groups')
     api.add_resource(ConceptResource, '/center/concepts')
     api.add_resource(AllConceptResource, '/center/concepts/all')
