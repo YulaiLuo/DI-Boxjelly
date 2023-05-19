@@ -42,7 +42,7 @@ const UserProfile = () => {
       setUserData(userDetails);
 
       // store the user detail in local storage
-      localStorage.setItem('userDetail', JSON.stringify(userDetails));
+      localStorage.setItem('userDetails', JSON.stringify(userDetails));
     } catch (error) {
       console.log(error);
     }
