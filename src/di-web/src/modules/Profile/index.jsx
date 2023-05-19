@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { getUserProfile, updateUserProfile } from './api';
-import { Avatar, Button, Form, Input, Select, Space, Typography, Upload } from 'antd';
+import { Avatar, Button, Form, Input, Select, Space, Upload, Row, Col, Card, notification  } from 'antd';
+import { UserOutlined, SmileOutlined, MailOutlined, EditOutlined, ManOutlined, WomanOutlined, QuestionOutlined } from '@ant-design/icons';
 import { UploadOutlined } from '@ant-design/icons';
 import { BASE_URL } from '../../utils/constant/url';
 import { getCSRFTokenHeader } from '../../utils/auth';
 
-const { Title } = Typography;
 const { Option } = Select;
 
 const UserProfile = () => {
@@ -62,13 +62,26 @@ const UserProfile = () => {
       if (response.code === 200) {
         setEditMode(false);
         fetchData();
-        //replace it with a better solution: let the dashboard detect the change and then update its details dynamically
-        window.location.reload();
+        notification.success({
+          message: 'Success',
+          description: 'Profile updated successfully!',
+          duration: 3,
+        });
       } else {
         console.log(response.msg);
+        notification.error({
+          message: 'Error',
+          description: response.msg,
+          duration: 3,
+        });
       }
     } catch (error) {
       console.log(error);
+      notification.error({
+        message: 'Error',
+        description: 'There was a problem updating your profile',
+        duration: 3,
+      });
     }
   };
 
@@ -85,9 +98,9 @@ const UserProfile = () => {
     >
       <div style={{ maxWidth: '400px', width: '100%', textAlign: 'center' }}>
         <Space direction="vertical" size="large" style={{ width: '100%' }}>
-          <Avatar size={128} src={`${BASE_URL}/auth/user/avatar?avatar=${userData.avatar}`} />
           {editMode ? (
             <Form form={form} layout="vertical">
+              <Avatar size={128} src={`${BASE_URL}/auth/user/avatar?avatar=${userData.avatar}`} />
               <Form.Item>
                 <Upload
                   action={`${BASE_URL}/auth/user/avatar`}
@@ -135,23 +148,35 @@ const UserProfile = () => {
               </Form.Item>
             </Form>
           ) : (
-            <Space direction="vertical" style={{ width: '100%', textAlign: 'center' }}>
-              <p>
-                <strong>Name:</strong> {`${userData.first_name} ${userData.last_name}`}
-              </p>
-              <p>
-                <strong>Nickname:</strong> {userData.nickname}
-              </p>
-              <p>
-                <strong>Email:</strong> {userData.email}
-              </p>
-              <p>
-                <strong>Gender:</strong> {userData.gender}
-              </p>
-              <Button type="primary" onClick={() => setEditMode(true)}>
-                Edit Profile
-              </Button>
-            </Space>
+            <Row justify="center">
+              <Card
+                bordered={false}
+                style={{ width: 300 }}
+              >
+                <Row justify="center">
+                  <Avatar size={128} src={`${BASE_URL}/auth/user/avatar?avatar=${userData.avatar}`} />
+                </Row>
+                <Row justify="start">
+                  <Col span={24} align="left">
+                    <p><UserOutlined /> <strong>Name:</strong> {`${userData.first_name} ${userData.last_name}`}</p>
+                    <p><SmileOutlined /> <strong>Nickname:</strong> {userData.nickname}</p>
+                    <p><MailOutlined /> <strong>Email:</strong> {userData.email}</p>
+                    <p>
+                      {userData.gender === 'Male' ? <ManOutlined /> : userData.gender === 'Female' ? <WomanOutlined /> : <QuestionOutlined />} <strong>Gender:</strong> {userData.gender} 
+                    </p>
+                  </Col>
+                </Row>
+                <Row justify="center">
+                  <Button 
+                    type="primary" 
+                    icon={<EditOutlined />}
+                    onClick={() => setEditMode(true)}
+                  >
+                    Edit Profile
+                  </Button>
+                </Row>
+              </Card>
+            </Row>
           )}
         </Space>
       </div>
