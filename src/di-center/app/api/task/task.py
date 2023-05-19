@@ -68,23 +68,23 @@ class MapTaskResource(Resource):
             
             # Convert the tasks to a list of dictionaries
             # TODO: search pipeline
-            # data = {
-            #    'page': page,
-            #    'size': size,
-            #    'board_name':task_board.name,
-            #    'board_description':task_board.description,
-            #    'page_num': math.ceil(map_task_count/size),
-            #    'tasks':[{
-            #       "id": str(task.id),
-            #       "status": task.status,
-            #       "num": task.num,
-            #       "create_by": str(task.create_by),
-            #       "create_at": task.create_at,
-            #       "update_at": task.update_at,
-            #       "file_name": str(task.file_name)
-            #    }
-            #    for task in map_tasks_page]
-            # }
+            data = {
+               'page': page,
+               'size': size,
+               'board_name':task_board.name,
+               'board_description':task_board.description,
+               'page_num': math.ceil(map_task_count/size),
+               'tasks':[{
+                  "id": str(task.id),
+                  "status": task.status,
+                  "num": task.num,
+                  "create_by": str(task.create_by),
+                  "create_at": task.create_at,
+                  "update_at": task.update_at,
+                  "file_name": str(task.file_name)
+               }
+               for task in map_tasks_page]
+            }
             
             response = jsonify(code=200, msg="ok", data=data)
             response.status_code = 200
