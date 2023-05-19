@@ -5,7 +5,7 @@ import { DeleteOutlined, BarChartOutlined, DownloadOutlined } from '@ant-design/
 import { formatTime, calTimeDifference } from '../../../utils/formatTime';
 
 const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisualizeClick }) => {
-  const { status, num, createBy, createAt, updateAt, fileName } = item;
+  const { status, num, nickname, createAt, updateAt, fileName } = item;
 
   const badgeStatus = {
     success: 'success',
@@ -16,7 +16,7 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
   const title = (
     <div class="flex justify-between">
       {/* <span class="w-3/5 overflow-hidden text-ellipsis">{createBy}</span> */}
-      <span class="w-3/5 overflow-hidden text-ellipsis">{'Vlada'}</span>
+      <span class="w-3/5 overflow-hidden text-ellipsis">{nickname}</span>
       <Badge status={badgeStatus[status]} text={status}></Badge>
     </div>
   );
