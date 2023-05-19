@@ -10,36 +10,31 @@ export default function VisualizationDrawer({ onClose, open, metaData }) {
   const num_uil = metaData?.data.num_uil;
   const num_snomed = metaData?.data.num_snomed;
 
-  const chartData = [
-    { name: 'Success', Success: num_success },
-    { name: 'Failed', Failed: num_failed },
-    { name: 'Reviewed', Reviewed: num_reviewed },
+  const data1 = [
+    { name: 'Success', value: 100 },
+    { name: 'Failed', value: 230 },
+    { name: 'Reviewed', value: 90 },
+  ];
+  
+  const data2 = [
+    { name: 'UIL', value: 120 },
+    { name: 'SNOMED CT', value: 180 },
   ];
 
-  const transformedChartData = [
-    { name: 'UIL', UIL: num_uil },
-    { name: 'SNOMED', SNOMED: num_snomed },
-  ];
+  const COLORS1 = ['#82ca9d', '#f44336', '#ffa500']; // Green, Red, Orange
+  const COLORS2 = ['#0000FF', '#000000']; // Blue, Black
 
-  // const renderCustomizedShape = (props) => {
-  //   const { cx, cy, name } = props;
-  //   let fill;
-  //   switch (name) {
-  //     case 'Success':
-  //       fill = 'green';
-  //       break;
-  //     case 'Failed':
-  //       fill = 'red';
-  //       break;
-  //     case 'Reviewed':
-  //       fill = 'orange';
-  //       break;
-  //     default:
-  //       fill = 'gray';
-  //   }
-  //   return <circle cx={cx} cy={cy} r={6} fill={fill} />;
-  // };
-
+  const renderLegend = (data, colors) => (
+    <ul style={{ listStyle: 'none', display: 'flex', justifyContent: 'center' }}>
+      {data.map((entry, index) => (
+        <li key={`item-${index}`} style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
+          <div style={{ backgroundColor: colors[index], height: '10px', width: '10px', marginRight: '5px' }}></div>
+          <span>{entry.name}</span>
+        </li>
+      ))}
+    </ul>
+  );
+  
   const GreenDot = () => {
     const dotGreen = {
       display: 'inline-block',
@@ -182,16 +177,29 @@ export default function VisualizationDrawer({ onClose, open, metaData }) {
     }, []);
 
     return (
-      <BarChart width={chartWidth} height={300} data={data}>
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="Success" fill="green" />
-        <Bar dataKey="Failed" fill="red" />
-        <Bar dataKey="Reviewed" fill="orange" />
-      </BarChart>
+      <div>
+        <BarChart
+          width={chartWidth}
+          height={300}
+          data={data1}
+          margin={{
+            top: 5, right: 30, left: 20, bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey="value" barSize={50}>
+            {
+              data1.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS1[index % COLORS1.length]} />
+              ))
+            }
+          </Bar>
+        </BarChart>
+        {renderLegend(data1, COLORS1)}        
+      </div>
     );
   };
 
@@ -212,15 +220,29 @@ export default function VisualizationDrawer({ onClose, open, metaData }) {
     }, []);
 
     return (
-      <BarChart width={chartWidth} height={300} data={data}>
-        <CartesianGrid strokeDasharray="2 2" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="UIL" fill="blue" />
-        <Bar dataKey="SNOMED" fill="black" />
-      </BarChart>
+      <div>
+        <BarChart
+          width={chartWidth}
+          height={300}
+          data={data2}
+          margin={{
+            top: 5, right: 30, left: 20, bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Bar dataKey="value" barSize={50}>
+            {
+              data2.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS2[index % COLORS2.length]} />
+              ))
+            }
+          </Bar>
+        </BarChart>
+        {renderLegend(data2, COLORS2)}        
+      </div>
     );
   };
 
@@ -234,7 +256,7 @@ export default function VisualizationDrawer({ onClose, open, metaData }) {
             num_failed={num_failed}
             num_reviewed={num_reviewed}
           />
-          <CustomBarChart1 data={chartData} />
+          <CustomBarChart1 data={data1} />
         </Col>
         <Col xs={24} md={12} style={{ marginBottom: '30px' }}>
           <StatisticsCard2
@@ -242,7 +264,7 @@ export default function VisualizationDrawer({ onClose, open, metaData }) {
             num_uil={num_uil}
             num_snomed={num_snomed}
           />
-          <CustomBarChart2 data={transformedChartData} />
+          <CustomBarChart2 data={data2} />
         </Col>
       </Row>
     </Drawer>
