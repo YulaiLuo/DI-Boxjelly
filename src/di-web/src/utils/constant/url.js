@@ -43,3 +43,6 @@ export const CODE_SYSTEM_URL = '/center/codesystem';
 export const CODE_SYSTEM_VERSION_URL = '/center/codesystem/versions';
 export const CODE_SYSTEM_GROUP_URL = '/center/codesystem/groups';
 export const CODE_SYSTEM_DOWNLOAD = '/center/codesystem/download';
+
+// Register module
+export const REGISTER_URL = '/register';

@@ -12,6 +12,7 @@ import {
   Dashboard,
   CodeSystem,
   Profile,
+  Register
 } from './modules';
 import { checkAuthentication } from './utils/auth';
 
@@ -29,6 +30,7 @@ function App() {
       {contextHolder}
       <Router>
         <Routes>
+          <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route element={loggedIn ? <Main /> : <Navigate to="/login" replace />}>
             <Route
