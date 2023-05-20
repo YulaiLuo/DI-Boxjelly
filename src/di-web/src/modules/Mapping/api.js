@@ -36,7 +36,7 @@ import http from '../../utils/http';
 // export const mapSingleText = (code) => http.get(SINGLE_TEXT_MAPPING_URL, { code });
 export const mapSingleText = (text) => {
   const csrfCookie = Cookies.get('csrf_access_token');
-  return http.post(`${MAP_URL}`, { texts: [text] }, { 'X-CSRF-TOKEN': csrfCookie });
+  return http.post(`${MAP_URL}`, { text: text }, { 'X-CSRF-TOKEN': csrfCookie });
 };
 
 // export const mapMultipleText = async (codes) => {
