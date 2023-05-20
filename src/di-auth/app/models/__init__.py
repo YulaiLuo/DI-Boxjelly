@@ -1,4 +1,4 @@
-from mongoengine import Document, ReferenceField, StringField, IntField, EmbeddedDocument, EmbeddedDocumentField, DateTimeField, FloatField, ListField, ObjectIdField
+from mongoengine import Document, ReferenceField, StringField, DateTimeField, NotUniqueError
 from datetime import datetime, timedelta
 import uuid
 
@@ -51,15 +51,23 @@ class UserTeam(DIDocument):
 
 
 class Invitation(DIDocument):
-    def generate_unique_uuid():
-        return str(uuid.uuid4())
     # unique token for the invitation
-    invite_token = StringField(default=generate_unique_uuid(), unique=True)
+    invite_token = StringField(unique=True)
     team_id = ReferenceField(Team, required=True)  # team id
     # user id of the person who created the invitation
     invite_by = ReferenceField(User, required=True)
     expiry_date = DateTimeField(default=lambda: datetime.utcnow(
     ) + timedelta(days=1))  # expiry date for the invitation
+
+    def save(self, *args, **kwargs):
+        if not self.invite_token:
+            self.invite_token = str(uuid.uuid4())
+
+        try:
+            return super(Invitation, self).save(*args, **kwargs)
+        except NotUniqueError:
+            self.invite_token = str(uuid.uuid4())
+            return self.save(*args, **kwargs)
 
 
 class BlackList(DIDocument):
