@@ -64,7 +64,9 @@ class CodeSystemController:
                 "_id": 0,
                 "group_name": "$_id",
                 "concept_versions": 1
-            }}
+            }},
+            # Step 6: Sort by group_name
+            {"$sort": {"group_name": 1}}
         ]
 
         result = list(ConceptVersion.objects().aggregate(*pipeline))
