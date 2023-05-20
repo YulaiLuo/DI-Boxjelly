@@ -18,8 +18,8 @@ class Config:
     NEW_UIL_ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
 
     # Map Service URL
-    MAP_SERVICE_URL = os.environ.get('MAP_SERVICE_URL') or 'http://localhost:8003'
-    AUTH_SERVICE_URL = os.environ.get('MAP_SERVICE_URL') or 'http://localhost:8001'
+    MAP_SERVICE_URL = os.environ.get('MAP_SERVICE_URL') or 'http://localhost:8003/map'
+    AUTH_SERVICE_URL = os.environ.get('MAP_SERVICE_URL') or 'http://localhost:8001/auth'
     # MAP_SERVICE_URL = 'http://di-map:8003'
 
     # MongoDB

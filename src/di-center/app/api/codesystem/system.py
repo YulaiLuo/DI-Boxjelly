@@ -8,6 +8,8 @@ import json, traceback, io
 import pandas as pd
 from collections import defaultdict
 from app.controllers import CodeSystemController
+from flask import current_app as app
+import requests
 
 class PostCodeSystemInputSchema(Schema):
    # team_id = fields.String(required=True)          # team id
@@ -47,11 +49,17 @@ class CodeSystemResource(Resource):
       
       result = CodeSystemController.get_code_system_data(code_system)
 
+      auth_url = app.config['AUTH_SERVICE_URL']
+      res = requests.get(auth_url+'/user', params={'user_id': code_system.create_by})
+      if res.status_code != 200:
+         return make_response(jsonify(code=400, err="CREATER_NOT_FOUND", msg="The creater of this code system is not found in database"), 400)
+
       data = {
          'name': code_system.name,
          'description': code_system.description,
          'version': code_system.version,
          'create_at': code_system.create_at,
+         'create_by': res.json()['data'],
          'groups':result
       }
 

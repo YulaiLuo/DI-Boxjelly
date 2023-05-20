@@ -246,7 +246,7 @@ class MapTaskResource(Resource):
          new_map_task.save()
 
          # Create a new thread to process the mapping task
-         map_url = app.config['MAP_SERVICE_URL']
+         map_url = app.config['MAP_SERVICE_URL']+'/predict'
          thread = threading.Thread(target=self.map_items, args=(map_url,new_map_task, texts))
          thread.start()
 
