@@ -43,7 +43,7 @@ class MapTaskCurateResource(Resource):
                 'curated_uil_group': map_item.curated_concept.group.name,
             }
             print(send_data)
-            response = requests.post(app.config['MAP_SERVICE_URL']+'/map/retrain', json=send_data)
+            response = requests.post(app.config['MAP_SERVICE_URL']+'/retrain', json=send_data)
             if response.status_code != 200:
                 return make_response(jsonify(code=400, err="CURATING_FAIL"), 400)
 

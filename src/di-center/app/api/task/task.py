@@ -68,26 +68,49 @@ class MapTaskResource(Resource):
             
             pipeline = [
                {"$match": {"board": ObjectId(board_id), "deleted": False}},
-               {"$sort": {"create_at": -1}},
                {"$skip": (page - 1) * size},
                {"$limit": size},
                {"$lookup": {
-                     "from": "user",   # Assuming your User collection is named "user"
-                     "localField": "create_by",
-                     "foreignField": "_id",
-                     "as": "creator"
+                  "from": "user",  
+                  "localField": "create_by",
+                  "foreignField": "_id",
+                  "as": "creator"
                }},
-               {"$unwind": "$creator"},
+               {"$unwind": {"path": "$creator"}},
+               {"$lookup": {
+                  "from": "map_item",   
+                  "localField": "_id",
+                  "foreignField": "task",
+                  "as": "map_items"
+               }},
+               {"$unwind": {"path": "$map_items", "preserveNullAndEmptyArrays": True}},
+               {"$group": {
+                  "_id": "$_id",
+                  "status": {"$first": "$status"},
+                  "num": {"$first": "$num"},
+                  "create_at": {"$first": "$create_at"},
+                  "update_at": {"$first": "$update_at"},
+                  "file_name": {"$first": "$file_name"},
+                  "creator_id": {"$first": "$creator._id"},
+                  "creator_nickname": {"$first": "$creator.nickname"},
+                  "fail_count": {"$sum": {"$cond": [{"$eq": ["$map_items.status", "fail"]}, 1, 0]}},
+                  "success_count": {"$sum": {"$cond": [{"$eq": ["$map_items.status", "success"]}, 1, 0]}},
+                  "reviewed_count": {"$sum": {"$cond": [{"$eq": ["$map_items.status", "reviewed"]}, 1, 0]}}
+               }},
                {"$project": {
-                     "id": 1,
-                     "status": 1,
-                     "num": 1,
-                     "create_at": 1,
-                     "update_at": 1,
-                     "file_name": 1,
-                     "creator_id": "$create_by",
-                     "creator_nickname": "$creator.nickname",
-               }}
+                  "id": 1,
+                  "status": 1,
+                  "num": 1,
+                  "create_at": 1,
+                  "update_at": 1,
+                  "file_name": 1,
+                  "creator_id": 1,
+                  "creator_nickname": 1,
+                  "fail_count": 1,
+                  "success_count": 1,
+                  "reviewed_count": 1
+               }},
+               {"$sort": {"create_at": -1}}
             ]
 
             map_tasks_page = list(MapTask.objects.aggregate(*pipeline))
@@ -107,7 +130,10 @@ class MapTaskResource(Resource):
                   "nickname": str(task['creator_nickname']),
                   "create_at": task['create_at'],
                   "update_at": task['update_at'],
-                  "file_name": str(task['file_name'])
+                  "file_name": str(task['file_name']),
+                  "fail_count": task['fail_count'],
+                  "success_count": task['success_count'],
+                  "reviewed_count": task['reviewed_count']
                }
                for task in map_tasks_page]
             }
@@ -220,7 +246,7 @@ class MapTaskResource(Resource):
          new_map_task.save()
 
          # Create a new thread to process the mapping task
-         map_url = app.config['MAP_SERVICE_URL']
+         map_url = app.config['MAP_SERVICE_URL']+'/predict'
          thread = threading.Thread(target=self.map_items, args=(map_url,new_map_task, texts))
          thread.start()
 

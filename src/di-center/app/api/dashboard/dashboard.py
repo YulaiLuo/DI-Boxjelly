@@ -174,7 +174,7 @@ class PredictSingleResource(Resource):
         
         text = data['text']
         map_url = app.config['MAP_SERVICE_URL']
-        res = requests.post(f'{map_url}/map/predict', json={'texts': [text]})
+        res = requests.post(f'{map_url}/predict', json={'texts': [text]})
 
         if res.status_code != 200:
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
