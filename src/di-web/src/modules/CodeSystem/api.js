@@ -1,14 +1,25 @@
+import Cookies from 'js-cookie';
 import http from '../../utils/http';
-import { UIL_URL, UIL_BY_GROUP, UIL_ALL } from '../../utils/constant/url';
+import { CODE_SYSTEM_URL, CODE_SYSTEM_VERSION_URL } from '../../utils/constant/url';
 
-export const getCodeSystemList = (team_id, code_system_id) => {
-  return http.get(`${UIL_URL}`, { team_id, code_system_id });
+export const getCodeSystemList = (version = 'latest') => {
+  return http.get(CODE_SYSTEM_URL, { version });
 };
 
-export const getCodeSystemListByGroup = (group_id) => {
-  return http.get(`${UIL_BY_GROUP}`, { group_id });
+export const createNewCodeSystem = (file, name, description, version) => {
+  const csrfCookie = Cookies.get('csrf_access_token');
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('name', name);
+  formData.append('description', description);
+  formData.append('version', version);
+  return http.postFormData(CODE_SYSTEM_URL, formData, { 'X-CSRF-TOKEN': csrfCookie });
 };
 
-export const getAllConcepts = (code_system_id) => {
-  return http.get(`${UIL_ALL}`, { code_system_id });
+export const getAllCodeSystemVersion = () => {
+  return http.get(CODE_SYSTEM_VERSION_URL);
+};
+
+export const deleteCodeSystem = (version) => {
+  return http.deleteData(CODE_SYSTEM_URL, { version });
 };

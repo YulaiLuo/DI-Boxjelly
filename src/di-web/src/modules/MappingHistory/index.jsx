@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { List, Pagination, Button, Modal } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import { getAllMappingTasks, deleteMappingTask } from './api';
 import TaskCard from './components/TaskCard';
@@ -106,7 +107,7 @@ export default function MappingHistory() {
               <div class="text-xl mb-2">{boardName}</div>
               <span class="text-gray-500">{boardDescription}</span>
             </div>
-            <Button type="primary" onClick={showModal}>
+            <Button type="primary" onClick={showModal} icon={<PlusOutlined />}>
               Create Task
             </Button>
             <Modal

@@ -37,3 +37,9 @@ export const AVATAR_URL = '/auth/user/avatar';
 
 // Dashboard module
 export const DASHBOARD_INFO_URL = '/center/dashboard';
+
+// CodeSystem module
+export const CODE_SYSTEM_URL = '/center/codesystem';
+export const CODE_SYSTEM_VERSION_URL = '/center/codesystem/versions';
+export const CODE_SYSTEM_GROUP_URL = '/center/codesystem/groups';
+export const CODE_SYSTEM_DOWNLOAD = '/center/codesystem/download';
