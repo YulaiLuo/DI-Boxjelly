@@ -63,4 +63,4 @@ class Invitation(DIDocument):
 
 
 class BlackList(DIDocument):
-    jti = StringField(required=True)
+    jti = StringField(required=True, index=True)
