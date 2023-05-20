@@ -80,9 +80,30 @@ class AcceptInviteResource(Resource):
         """
 
         try:
-            in_schema = PostAcceptInviteInputSchema().load(request.get_json())
+            invite_token = request.form.get('invite_token')
+            username = request.form.get('username')
+            email = request.form.get('email')
+            password = request.form.get('password')
+            first_name = request.form.get('first_name')
+            last_name = request.form.get('last_name')
+            gender = request.form.get('gender')
         except ValidationError as err:
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+
+        # Create a dictionary with the retrieved data
+        data = {
+            'invite_token': invite_token,
+            'username': username,
+            'email': email,
+            'password': password,
+            'first_name': first_name,
+            'last_name': last_name,
+            'gender': gender
+        }
+
+        # Load the data into the schema
+        in_schema = PostAcceptInviteInputSchema()
+        in_schema = in_schema.load(data)
 
         try:
             # Retrieve the invitation

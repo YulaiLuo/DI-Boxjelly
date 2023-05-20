@@ -45,4 +45,4 @@ export const CODE_SYSTEM_GROUP_URL = '/center/codesystem/groups';
 export const CODE_SYSTEM_DOWNLOAD = '/center/codesystem/download';
 
 // Register module
-export const REGISTER_URL = '/register';
+export const REGISTER_URL = '/auth/team/accept';
