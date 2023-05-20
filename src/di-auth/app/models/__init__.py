@@ -20,26 +20,18 @@ class DIDocument(Document):
 
 
 class User(DIDocument):
-    # group name
     avatar = StringField(required=False, default='fae8532f1684325376')
-    # group name
     username = StringField(unique=True, required=True)
-    # group name
     email = StringField(unique=True, required=True)
-    # group name
     password = StringField(required=True)
-    # group name
     first_name = StringField(required=True)
-    # group name
     last_name = StringField(required=True)
-    # group name
     nickname = StringField(required=False)
     gender = StringField(required=False, choices=(
         'Male', 'Female', 'Other'))
 
 
 class Team(DIDocument):
-    # group name
     name = StringField(required=True)
     create_by = ReferenceField(
         User, required=True)                       # creator id
@@ -68,3 +60,7 @@ class Invitation(DIDocument):
     invite_by = ReferenceField(User, required=True)
     expiry_date = DateTimeField(default=lambda: datetime.utcnow(
     ) + timedelta(days=1))  # expiry date for the invitation
+
+
+class BlackList(DIDocument):
+    jti = StringField(required=True)
