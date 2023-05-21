@@ -1,7 +1,7 @@
 from datetime import datetime
 from mongoengine import EmbeddedDocument, EmbeddedDocumentField, DictField, FloatField, ReferenceField, StringField, IntField, ListField, ObjectIdField, BooleanField
 from .document import DIDocument as Document
-from .code import CodeSystem, Concept, ConceptGroup
+from .code import CodeSystem, Concept, ConceptGroup, ConceptVersion
 
 class Mapper(Document):
     name = StringField(required=True, unique=True)
@@ -38,6 +38,6 @@ class MapItem(Document):
     extra = DictField(default={})
 
     # From curator
-    curated_concept = ReferenceField(Concept, required=False)       # curated concept id
+    curated_concept = ReferenceField(ConceptVersion, required=False)       # curated concept id
     
     deleted = BooleanField(default=False)                           # soft delete
