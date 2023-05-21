@@ -66,8 +66,8 @@ class PredictStrategy(Strategy):
             res = self._find_similar(failed_text, text_maps)
             if not res:
                 continue
-            matched_text_map, similarity_score = res
-
+            text_map, similarity = res
+            print("similarity",similarity)
             curated_results[i] = {
                 'text': failed_text,
                 'name':  text_map.curated_uil_name,
@@ -231,14 +231,22 @@ class RetrainStrategy(Strategy):
             text_map.curated_uil_name = data['curated_uil_name']
             text_map.curated_uil_group = data['curated_uil_group']
             text_map.save()
+        print(data)
+
+        #Predict the sct code to conduct the concept map
+        entities = cat.get_entities(data['text'])['entities']
+        if len(entities)>0:
+            highest_context_similarity_idx = max(entities, key=lambda x: entities[x]['context_similarity'])
+            sct_code = entities[highest_context_similarity_idx]['cui']
+            concept_map = MedcatConceptMap.objects(sct_code=sct_code).first()
+            if not concept_map:
+                pass
+            else:
+                concept_map.curated_uil_name = data['curated_uil_name']
+                concept_map.curated_uil_group = data['curated_uil_group']
+                concept_map.save()
+
         
-        concept_map = MedcatConceptMap.objects(sct_code=data['sct_code']).first()
-        if not concept_map:
-            pass
-        else:
-            concept_map.curated_uil_name = data['curated_uil_name']
-            concept_map.curated_uil_group = data['curated_uil_group']
-            concept_map.save()
         
 
 class ResetStrategy(Strategy):

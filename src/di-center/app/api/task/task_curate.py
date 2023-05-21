@@ -25,32 +25,31 @@ class MapTaskCurateResource(Resource):
         map_item = MapItem.objects(id=in_schema['map_item_id']).first()
         if not map_item:
             return make_response(jsonify(code=404, err="MAP_ITEM_NOT_FOUND"), 404)
-        
         code_system = CodeSystem.objects(version=in_schema['code_system_version']).first()
+        if not code_system:
+            return make_response(jsonify(code=404, err="CODE_SYSTEM_NOT_FOUND"), 404)
         concept = Concept.objects(name=in_schema['concept_name']).first()
-        curated_concept_version = (
-            ConceptVersion.objects(code_system=code_system, concept=concept).first()
-            if code_system and concept
-            else None
-        )           
-
+        if not concept:
+            return make_response(jsonify(code=404, err="CONCEPT_NOT_FOUND"), 404)
+        
+        curated_concept_version = ConceptVersion.objects(code_system=code_system, concept=concept).first()
         if not curated_concept_version:
             return make_response(jsonify(code=404, err="CONCEPT_NOT_FOUND"), 404)
+        
         try:            
-            map_item.curated_concept = curated_concept_version
-            map_item.status = 'reviewed'
-            
             # Send this curate to the mapper
             send_data = {
                 'text': map_item.text,
-                'curated_uil_name': map_item.curated_concept.concept.name,
-                'curated_uil_group': map_item.curated_concept.group.name,
+                'curated_uil_name': curated_concept_version.concept.name,
+                'curated_uil_group': curated_concept_version.group.name,
             }
-            print(send_data)
+
             response = requests.post(app.config['MAP_SERVICE_URL']+'/retrain', json=send_data)
             if response.status_code != 200:
                 return make_response(jsonify(code=400, err="CURATING_FAIL"), 400)
-
+            
+            map_item.curated_concept = curated_concept_version
+            map_item.status = 'reviewed'
             map_item.save()
 
             data = {

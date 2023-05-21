@@ -39,5 +39,4 @@ class MapItem(Document):
 
     # From curator
     curated_concept = ReferenceField(ConceptVersion, required=False)       # curated concept id
-    
     deleted = BooleanField(default=False)                           # soft delete
