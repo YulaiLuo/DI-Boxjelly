@@ -67,7 +67,6 @@ class PredictStrategy(Strategy):
             if not res:
                 continue
             text_map, similarity = res
-            print("similarity",similarity)
             curated_results[i] = {
                 'text': failed_text,
                 'name':  text_map.curated_uil_name,
@@ -121,8 +120,8 @@ class PredictStrategy(Strategy):
             "sct_code":selected_entity['cui'],
             "sct_term":selected_entity['detected_name'],
             "sct_pretty_name": selected_entity['pretty_name'],
-            "sct_status": selected_entity['meta_anns']['Status']['value'],
-            "sct_status_confidence": selected_entity['meta_anns']['Status']['confidence'],
+            "sct_status": None if not selected_entity['meta_anns']['Status'] else selected_entity['meta_anns']['Status']['value'],
+            "sct_status_confidence": None if not selected_entity['meta_anns']['Status'] else selected_entity['meta_anns']['Status']['confidence'],
             "sct_types": selected_entity['types'],
             "sct_types_ids": selected_entity['type_ids'],
             "status": 'success'
@@ -138,30 +137,14 @@ class PredictStrategy(Strategy):
         # Return an empty dictionary if there are no entities
         if len(texts) <=0:
             return {}
-
-        # If the text is less than the threshold, process it in a single thread
-        if len(texts) < app.config['MEDCAR_PROC_THRESHOLD']:
-            
-            res = {}
-            for i, text in enumerate(texts):
-                entities = cat.get_entities(text)['entities']
-                result = self._extract_data(entities)
-
-                res[i] = result
-
-            return res
         
-        # Otherwise, process the texts in parallel using MedCAT's multiprocessing function
-        nproc = app.config['MEDCAT_NPROC']
-        batch_size_chars = len(texts) // nproc + 1
-        predictions = cat.multiprocessing(self._data_iterator(texts),
-                                        batch_size_chars=batch_size_chars,
-                                        nproc=nproc)
-        res={}
-        for i, pred in predictions.items():
-            result = self._extract_data(pred['entities'])
+        res = {}
+        for i, text in enumerate(texts):
+            entities = cat.get_entities(text)['entities']
+            result = self._extract_data(entities)
+
             res[i] = result
-        
+
         return res
 
     def _translate_to_uil(self,medcat_predictions, texts):
@@ -231,7 +214,6 @@ class RetrainStrategy(Strategy):
             text_map.curated_uil_name = data['curated_uil_name']
             text_map.curated_uil_group = data['curated_uil_group']
             text_map.save()
-        print(data)
 
         #Predict the sct code to conduct the concept map
         entities = cat.get_entities(data['text'])['entities']
