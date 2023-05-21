@@ -2,6 +2,7 @@ import axios from 'axios';
 import { message } from 'antd';
 import { BASE_URL } from './constant/url';
 import { getCSRFTokenHeader } from './auth';
+import { redirectToLogin } from './router';
 
 const instance = axios.create({
   // baseURL: 'http://localhost:8000',
@@ -22,6 +23,16 @@ instance.interceptors.response.use(
     return res.data;
   },
   (error) => {
+    const errMsg = error.response.data?.err;
+    if (
+      error.response.data?.code === 401 &&
+      (errMsg === 'TOKEN_EXPIRED' || errMsg === 'UNAUTHORIZED')
+    ) {
+      if (errMsg === 'TOKEN_EXPIRED') message.error('Token has expired!');
+      else message.error('Unauthorized access!');
+      redirectToLogin();
+      return;
+    }
     const msg = error.response.data?.msg ?? 'Something wrong with the network request';
     message.error(msg);
     throw error;
