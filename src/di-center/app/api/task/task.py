@@ -63,6 +63,17 @@ class MapTaskResource(Resource):
             tasks = MapTask.objects(board=ObjectId(board_id),deleted=False).order_by('-create_at').skip((page - 1) * size).limit(size)
             map_task_count = MapTask.objects(board=task_board.id,deleted=False).count()
 
+            # Retrieve the task creater's information
+            task_creaters = {}
+            auth_url = app.config['AUTH_SERVICE_URL']
+            for task in tasks:
+               task.create_by = str(task.create_by)
+               if task.create_by not in task_creaters:
+                  res = requests.get(auth_url+'/user', params={'user_id': task.create_by})
+                  
+                  task_creaters[task.create_by] = res.json()['data'] if res.status_code == 200 else {}
+                  task.nickname = res.json()['data']['nickname'] if res.status_code == 200 else 'USER NOT FOUND'
+
             # Convert the tasks to a list of dictionaries
             data = {
                'page': page,
@@ -74,8 +85,8 @@ class MapTaskResource(Resource):
                   "id": str(task.id),
                   "status": task.status,
                   "num": task.num,
-                  "create_by": str(task.create_by),
-                  "nickname": 'y',
+                  "create_by": task_creaters[task.create_by],
+                  "nickname": task_creaters[task.create_by]['nickname'],
                   "create_at": task.create_at,
                   "update_at": task.update_at,
                   "file_name": str(task.file_name)
