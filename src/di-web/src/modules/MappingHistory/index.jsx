@@ -92,11 +92,11 @@ export default function MappingHistory() {
   };
 
   return (
-    <div class="p-4 h-full">
+    <div class="p-4 ">
       {loading ? (
         <Spin />
       ) : (
-        <div>
+        <div class="h-[calc(100vh-95px)] relative">
           <VisualizationDrawer
             onClose={() => setDrawerOpen(false)}
             open={drawerOpen}
@@ -147,7 +147,7 @@ export default function MappingHistory() {
             )}
           />
           {tasks.length !== 0 && (
-            <div class="flex flex-row-reverse">
+            <div class="absolute bottom-2 right-0">
               <Pagination
                 showQuickJumper
                 current={currentPage}
