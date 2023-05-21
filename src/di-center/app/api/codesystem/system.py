@@ -47,7 +47,7 @@ class CodeSystemResource(Resource):
       if not code_system:
          return make_response(jsonify(code=404, err="INVALID_INPUT"), 404)
       
-      result = CodeSystemController().get_code_system_data(code_system)
+      result = CodeSystemController.get_code_system_data(code_system)
 
       auth_url = app.config['AUTH_SERVICE_URL']
       res = requests.get(auth_url+'/user', params={'user_id': code_system.create_by})

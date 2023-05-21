@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from marshmallow import Schema, fields, ValidationError, validates
 from flask import jsonify, request, make_response
-from app.models import MapTask, MapItem, TaskBoard, Concept, ConceptVersion
+from app.models import MapTask, MapItem, TaskBoard, Concept, ConceptVersion, CodeSystem
 from bson import ObjectId
 from mongoengine.errors import DoesNotExist
 from flask import current_app as app
@@ -10,7 +10,7 @@ import requests, traceback
 class PostMapTaskCurateSchema(Schema):
     map_item_id = fields.String(required=True)
     concept_name = fields.String(required=True)
-    codesystem_version = fields.String(required=True)
+    code_system_version = fields.String(required=True)
 
 class MapTaskCurateResource(Resource):
     
@@ -26,7 +26,14 @@ class MapTaskCurateResource(Resource):
         if not map_item:
             return make_response(jsonify(code=404, err="MAP_ITEM_NOT_FOUND"), 404)
         
-        curated_concept_version = ConceptVersion.objects(concept__name=in_schema['concept_name'], code_system__version=in_schema['code_system_version']).first()
+        code_system = CodeSystem.objects(version=in_schema['code_system_version']).first()
+        concept = Concept.objects(name=in_schema['concept_name']).first()
+        curated_concept_version = (
+            ConceptVersion.objects(code_system=code_system, concept=concept).first()
+            if code_system and concept
+            else None
+        )           
+
         if not curated_concept_version:
             return make_response(jsonify(code=404, err="CONCEPT_NOT_FOUND"), 404)
         try:            
@@ -36,7 +43,7 @@ class MapTaskCurateResource(Resource):
             # Send this curate to the mapper
             send_data = {
                 'text': map_item.text,
-                'curated_uil_name': map_item.curated_concept.name,
+                'curated_uil_name': map_item.curated_concept.concept.name,
                 'curated_uil_group': map_item.curated_concept.group.name,
             }
             print(send_data)

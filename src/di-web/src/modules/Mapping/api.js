@@ -190,6 +190,6 @@ export const exportFile = async (team_id, task_id) => {
   }
 };
 
-export const curateMapping = (map_item_id, concept_id) => {
-  return http.post(MAP_TASK_CURATE_URL, { map_item_id, concept_id });
+export const curateMapping = (map_item_id, concept_name, code_system_version) => {
+  return http.post(MAP_TASK_CURATE_URL, { map_item_id, concept_name, code_system_version });
 };
