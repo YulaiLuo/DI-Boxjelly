@@ -28,8 +28,7 @@ def init_jwt(app):
 
     @jwt.expired_token_loader
     def custom_expired_token_response(expired_token, err):
-        print(err)
-        response = jsonify(code=401 ,err="TOKEN_EXPIRED", msg="Token has expired, please refresh token")
+        response = jsonify(code=401 ,err="TOKEN_EXPIRED", msg="Token has expired, please login again")
         response.status_code = 401
         return response
 
