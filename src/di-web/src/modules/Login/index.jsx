@@ -4,12 +4,12 @@ import { useRequest } from 'ahooks';
 import { Form, Input, Button } from 'antd';
 import { login } from './api';
 import { useMessageStore, useUserStore } from '../../store';
-import Cookies from 'js-cookie';
 
 export default function Login() {
   const navigate = useNavigate();
   const msgApi = useMessageStore((state) => state.msgApi);
   const setLoggedIn = useUserStore((state) => state.setLoggedIn);
+  const setUserData = useUserStore((state) => state.setUser);
 
   const { loading, run } = useRequest(login, {
     manual: true,
@@ -17,6 +17,7 @@ export default function Login() {
       localStorage.setItem('user', res.data?.user?.id);
       localStorage.setItem('team', res.data?.team?.id);
       localStorage.setItem('userDetail', JSON.stringify(res.data?.user));
+      setUserData(res.data?.user);
       setLoggedIn(true);
       msgApi.success('Login Successfully');
       localStorage.setItem('loggedIn', 'true');

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useRequest } from 'ahooks';
 import { getUserProfile, updateUserProfile } from './api';
 import {
   Avatar,
@@ -21,86 +22,66 @@ import {
   ManOutlined,
   WomanOutlined,
   QuestionOutlined,
+  UploadOutlined,
 } from '@ant-design/icons';
-import { UploadOutlined } from '@ant-design/icons';
 import { BASE_URL } from '../../utils/constant/url';
 import { getCSRFTokenHeader } from '../../utils/auth';
+import { useUserStore } from '../../store';
 
 const { Option } = Select;
 
 const UserProfile = () => {
-  const [userData, setUserData] = useState({
-    email: '',
-    first_name: '',
-    last_name: '',
-    nickname: '',
-    gender: '',
-    avatar: '',
-  });
+  // Use global state management so that other pages (Main) can receive the update
+  const userData = useUserStore((state) => state.user);
+  const setUserData = useUserStore((state) => state.setUser);
+
+  const user_id = localStorage.getItem('user');
   const [editMode, setEditMode] = useState(false);
   const [form] = Form.useForm();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      const user_id = localStorage.getItem('user');
-      const response = await getUserProfile(user_id);
+  // get user profile request
+  const { run: runGetUserProfile } = useRequest(() => getUserProfile(user_id), {
+    onSuccess: (response) => {
       const [first_name, last_name] = response.data.name.split(' ');
-
       const userDetails = {
         email: response.data.email,
         first_name,
         last_name,
         nickname: response.data.nickname,
-        gender: response.data.gender || 'Not specified',
-        avatar: response.data.avatar || 'Not specified', // Store avatar
+        gender: response.data.gender || '',
+        avatar: response.data.avatar || '', // Store avatar
       };
 
       setUserData(userDetails);
-
       // store the user detail in local storage
-      localStorage.setItem('userDetails', JSON.stringify(userDetails));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+      localStorage.setItem('userDetail', JSON.stringify(userDetails));
+    },
+  });
 
-  const handleSaveChanges = async () => {
-    const user_id = localStorage.getItem('user');
-
-    try {
-      const response = await updateUserProfile(user_id, {
-        first_name: userData.first_name,
-        last_name: userData.last_name,
-        nickname: userData.nickname,
-        gender: userData.gender,
-      });
-
-      if (response.code === 200) {
+  // update user profile request
+  const { run: runUpdateUserProfile, loading: updateUserProfileLoading } = useRequest(
+    updateUserProfile,
+    {
+      manual: true,
+      onSuccess: () => {
         setEditMode(false);
-        fetchData();
+        runGetUserProfile(user_id);
         notification.success({
           message: 'Success',
           description: 'Profile updated successfully!',
           duration: 3,
         });
-      } else {
-        notification.error({
-          message: 'Error',
-          description: response.msg,
-          duration: 3,
-        });
-      }
-    } catch (error) {
-      notification.error({
-        message: 'Error',
-        description: 'There was a problem updating your profile',
-        duration: 3,
-      });
+      },
     }
+  );
+
+  const handleSaveChanges = (values) => {
+    runUpdateUserProfile(user_id, {
+      first_name: values.first_name,
+      last_name: values.last_name,
+      nickname: values.nickname,
+      gender: values.gender,
+    });
   };
 
   return (
@@ -110,7 +91,12 @@ const UserProfile = () => {
           <Card style={{ width: '100%', textAlign: 'center' }}>
             <Space direction="vertical" size="large" style={{ width: '100%' }}>
               {editMode ? (
-                <Form form={form} layout="vertical">
+                <Form
+                  form={form}
+                  layout="vertical"
+                  onFinish={handleSaveChanges}
+                  initialValues={userData}
+                >
                   <Avatar
                     size={128}
                     src={`${BASE_URL}/auth/user/avatar?avatar=${userData.avatar}`}
@@ -124,39 +110,27 @@ const UserProfile = () => {
                       <Button icon={<UploadOutlined />}>Change Avatar</Button>
                     </Upload>
                   </Form.Item>
-                  <Form.Item label="First name">
-                    <Input
-                      value={userData.first_name}
-                      onChange={(e) => setUserData({ ...userData, first_name: e.target.value })}
-                    />
+                  <Form.Item label="First name" name="first_name">
+                    <Input />
                   </Form.Item>
-                  <Form.Item label="Last name">
-                    <Input
-                      value={userData.last_name}
-                      onChange={(e) => setUserData({ ...userData, last_name: e.target.value })}
-                    />
+                  <Form.Item label="Last name" name="last_name">
+                    <Input />
                   </Form.Item>
-                  <Form.Item label="Nickname">
-                    <Input
-                      value={userData.nickname}
-                      onChange={(e) => setUserData({ ...userData, nickname: e.target.value })}
-                    />
+                  <Form.Item label="Nickname" name="nickname">
+                    <Input />
                   </Form.Item>
-                  <Form.Item label="Email">
-                    <Input value={userData.email} readOnly />
+                  <Form.Item label="Email" name="email">
+                    <Input disabled />
                   </Form.Item>
-                  <Form.Item label="Gender">
-                    <Select
-                      value={userData.gender}
-                      onChange={(value) => setUserData({ ...userData, gender: value })}
-                    >
+                  <Form.Item label="Gender" name="gender">
+                    <Select>
                       <Option value="Male">Male</Option>
                       <Option value="Female">Female</Option>
                       <Option value="Other">Other</Option>
                     </Select>
                   </Form.Item>
                   <Form.Item>
-                    <Button type="primary" onClick={handleSaveChanges}>
+                    <Button type="primary" htmlType="submit" loading={updateUserProfileLoading}>
                       Save Changes
                     </Button>
                   </Form.Item>

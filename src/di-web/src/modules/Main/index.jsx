@@ -23,7 +23,7 @@ export default function Main() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [boardId, setBoardId] = useState(null);
-  const setLoggedIn = useUserStore((state) => state.setLoggedIn);
+  const user = useUserStore((state) => state.user);
   const msgApi = useMessageStore((state) => state.msgApi);
 
   const [createBoardForm] = Form.useForm();
@@ -32,7 +32,7 @@ export default function Main() {
   const navigate = useNavigate();
   const location = useLocation();
   const teamId = localStorage.getItem('team');
-  const user = JSON.parse(localStorage.getItem('userDetail'));
+  // const user = JSON.parse(localStorage.getItem('userDetail'));
   let selectedPath = location.pathname;
   if (selectedPath === '') selectedPath = 'dashboard';
 

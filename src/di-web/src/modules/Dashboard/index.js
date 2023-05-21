@@ -127,8 +127,8 @@ export default function Dashboard() {
 
         <div class="mt-5">
           <Row gutter={[24, 8]}>
-            {dashboardInfo?.map((item) => (
-              <Col xs={24} sm={24} md={12} lg={8} xl={8}>
+            {dashboardInfo?.map((item, index) => (
+              <Col xs={24} sm={24} md={12} lg={8} xl={8} key={index}>
                 <DashboardCard
                   title={item?.title}
                   percent={item?.percent}
