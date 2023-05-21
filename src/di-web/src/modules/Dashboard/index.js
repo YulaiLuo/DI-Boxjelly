@@ -1,11 +1,9 @@
 import React, { useState, useRef } from 'react';
-import { Col, Row, Input, Spin, Avatar, Card, Modal } from 'antd';
+import { Col, Row, Input, Spin, Modal } from 'antd';
 import { Column } from '@ant-design/plots';
 import { useRequest } from 'ahooks';
 import { mapSingleText } from '../Mapping/api';
 import DashboardCard from './components/DashboardCard';
-import MessageCard from './components/MessageCard';
-import { BASE_URL } from '../../utils/constant/url';
 import { getDashboardInfo, getBarChartInfo, getHelloInfo } from './api';
 
 const { Search } = Input;
@@ -13,8 +11,6 @@ const { Search } = Input;
 export default function Dashboard() {
   const [showSingleMapping, setShowSingleMapping] = useState(false);
   const [singleMappingResult, setSingleMappingResult] = useState('');
-
-  const user = JSON.parse(localStorage.getItem('userDetail'));
 
   // ref of single text search input
   const inputRef = useRef(null);
@@ -80,10 +76,6 @@ export default function Dashboard() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
   const handleOk = () => {
     setIsModalOpen(false);
   };
@@ -93,7 +85,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100%' }}>
+    <div>
       <div class="mx-8 pt-4 flex-1">
         <Row>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
@@ -150,59 +142,6 @@ export default function Dashboard() {
 
         <div class="mt-5 bg-white pl-5 py-5">
           <Column {...config} />
-        </div>
-      </div>
-
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%',
-          width: 300,
-          background: 'White',
-        }}
-      >
-        <div
-          style={{
-            // background: 'White',
-            textAlign: 'center',
-            // alignItems: 'center',
-            // position: 'absolute',
-            // right: 0,
-            // top: 0,
-            // bottom: 0,
-          }}
-        >
-          <Avatar
-            // class="mt-4"
-            src={`${BASE_URL}/auth/user/avatar?avatar=${user.avatar}`}
-            style={{
-              width: '150px',
-              height: '150px',
-              marginTop: '100px',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-            }}
-          />
-          <div>
-            <h3>{user?.nickname}</h3>
-          </div>
-          <div style={{ marginTop: '20px' }}>
-            <h3>Recent Task</h3>
-            <Card
-              size="small"
-              extra={null}
-              style={{ height: 100, width: 250, marginLeft: 'auto', marginRight: 'auto' }}
-            >
-              <h4>Task Name</h4>
-              <p>Task Info</p>
-            </Card>
-          </div>
-          <div style={{ marginTop: '20px' }}>
-            <h3>Messages </h3>
-            <MessageCard />
-            <MessageCard />
-          </div>
         </div>
       </div>
     </div>
