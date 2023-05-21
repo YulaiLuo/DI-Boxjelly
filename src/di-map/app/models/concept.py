@@ -29,7 +29,6 @@ class MedcatConceptMap(DIDocument):
     status = StringField(required=True, choices=('fail','success','reviewed'))
 
     # From curating
-    # curated_uil_id = ObjectIdField(required=False)
     curated_uil_name = StringField(required=False,default='')
     curated_uil_group = StringField(required=False,default='')
 
@@ -37,4 +36,6 @@ class MedcatTextMap(DIDocument):
 
     # Raw clinical text
     text = StringField(required=True, index=True, unique=True)
-    map = ReferenceField(MedcatConceptMap, required=False)
+    # map = ReferenceField(MedcatConceptMap, required=False)
+    curated_uil_name = StringField(required=False,default='')
+    curated_uil_group = StringField(required=False,default='')
