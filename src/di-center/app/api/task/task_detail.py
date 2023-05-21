@@ -41,8 +41,7 @@ class MapTaskDetailResource(Resource):
     def get(self):
         
         try:
-            in_schema = GetMapTaskInputSchema()
-            in_schema = in_schema.load(request.args)
+            in_schema = GetMapTaskInputSchema().load(request.args)
         except ValidationError as err:
             error_message = err.messages.get('_schema')[0]
             return make_response(jsonify(code=400, err="INVALID_INPUT", msg=error_message),404)
@@ -56,27 +55,27 @@ class MapTaskDetailResource(Resource):
             # Add filter conditions
             filter_conditions = {"task": task_id}
             if 'min_accuracy' in in_schema and 'max_accuracy' in in_schema:
-               filter_conditions['accuracy__gte'] = in_schema['min_accuracy']
-               filter_conditions['accuracy__lte'] = in_schema['max_accuracy']
+                filter_conditions['accuracy__gte'] = in_schema['min_accuracy']
+                filter_conditions['accuracy__lte'] = in_schema['max_accuracy']
             if 'ontology' in in_schema:
-               filter_conditions['ontology'] = in_schema['ontology']
+                filter_conditions['ontology'] = in_schema['ontology']
             if 'status' in in_schema:
-               filter_conditions['status'] = in_schema['status']
+                filter_conditions['status'] = in_schema['status']
 
             page = in_schema['page']  # min_value 1
             size = in_schema['size']  # min_value 10
-            total_map_items = MapItem.objects(**filter_conditions)
-            map_items = total_map_items.skip((page-1)*size).limit(size)
+            total_map_items = MapItem.objects(**filter_conditions).count()
+            map_items = MapItem.objects(**filter_conditions).skip((page-1)*size).limit(size)
             items = [
                 {'map_item_id': str(item.id),
-                 'text':item.text, 
-                 'accuracy': item.accuracy,
-                 'mapped_concept': item.mapped_concept,
-                 'ontology':item.ontology, 
-                 'status':item.status,
-                 'curate':None if not item.curated_concept else item.curated_concept.name,
-                 'extra':None if not item.extra else item.extra
-                 } for item in map_items ]
+                'text':item.text, 
+                'accuracy': item.accuracy,
+                'mapped_concept': item.mapped_concept,
+                'ontology':item.ontology, 
+                'status':item.status,
+                'curate':None if not item.curated_concept else item.curated_concept.name,
+                'extra':None if not item.extra else item.extra
+                } for item in map_items ]
 
             data = {
                 'id': str(map_task.id),       # task id
@@ -84,8 +83,8 @@ class MapTaskDetailResource(Resource):
                 'items': items,
                 'page': page,
                 'size': size,
-                'page_num': math.ceil(len(total_map_items)/size),
-                'total': len(total_map_items),
+                'page_num': math.ceil(total_map_items/size),
+                'total': total_map_items,
                 'file_name': map_task.file_name,
             }
 
@@ -96,6 +95,3 @@ class MapTaskDetailResource(Resource):
             response = jsonify(code=500, err="INTERNAL_SERVER_ERROR")
             response.status_code = 500
             return response
-
-  
-   
