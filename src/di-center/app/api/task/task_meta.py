@@ -11,58 +11,52 @@ class GetMapTaskMetaSchema(Schema):
 
 class MapTaskMetaResource(Resource):
    def get(self):
-      """Get the meta data of a map task for visualization
+    try:
+        in_schema = GetMapTaskMetaSchema()
+        in_schema = in_schema.load(request.args)
+    except ValidationError as err:
+        return make_response(jsonify(code=400, err="INVALID_INPUT"),404)
 
-      Args:
-          task_id (_type_): _description_
+    try:
+        task_id = in_schema['task_id']
+        map_task = MapTask.objects(id=ObjectId(task_id), deleted=False).first()
+        if not map_task:
+           response = jsonify(code=404, err="MAP_TASK_NOT_FOUND")
+           response.status_code = 404
+           return response
 
-      Returns:
-          _type_: _description_
-      """
-      try:
-         in_schema = GetMapTaskMetaSchema()
-         in_schema = in_schema.load(request.args)
-      except ValidationError as err:
-         return make_response(jsonify(code=400, err="INVALID_INPUT"),404)
+        pipeline = [
+            {"$match": {"task": ObjectId(task_id)}},
+            {"$group": {
+                "_id": "$status",
+                "count": {"$sum": 1},
+                "ontology_count": {"$sum": {"$cond": [{"$eq": ["$ontology", 'SNOMED-CT']}, 1, 0]}}
+            }}
+        ]
+        
+        results = list(MapItem.objects.aggregate(*pipeline))
 
-      try:
-         task_id = in_schema['task_id']
-         # map_task = MapTask.objects(id=task_id, deleted=False).first()
-         # if not map_task:
-         #    response = jsonify(code=404, err="MAP_TASK_NOT_FOUND")
-         #    response.status_code = 404
-         #    return response
-         
-         map_task = MapTask.objects(id=ObjectId(task_id), deleted=False).first()
-         map_items = MapItem.objects(task=ObjectId(task_id)).all()
-         if not map_items:
-            response = jsonify(code=404, err="MAP_ITEM_NOT_FOUND")
-            response.status_code = 404
-            return response
-         
-         # count the status of map items
-         status_ctr = Counter([item.status for item in map_items])
-         ontology_ctr = Counter([item.ontology for item in map_items])
+        status_ctr = {result["_id"]: result["count"] for result in results}
+        ontology_ctr = {result["_id"]: result["ontology_count"] for result in results}
 
-         # Get the task meta
-         data = {
-            'id': task_id,       # task id
-            'num': len(map_items),          # total item number
+        data = {
+            'id': task_id,
+            'num': sum(status_ctr.values()),
             'status': map_task.status,
             'create_at': map_task.create_at,
             'update_at': map_task.update_at,
-            'num_success': status_ctr.get('success', 0),
-            'num_failed': status_ctr.get('fail', 0),
-            'num_reviewed': status_ctr.get('reviewed', 0),
-            'num_uil': ontology_ctr.get('UIL', 0),
-            'num_snomed': ontology_ctr.get('SNOMED-CT', 0),
-         }
+            'num_success': MapItem.objects(task=ObjectId(task_id), status='success').count(),
+            'num_failed': MapItem.objects(task=ObjectId(task_id), status='fail').count(),
+            'num_reviewed': MapItem.objects(task=ObjectId(task_id), status='reviewed').count(),
+            'num_uil': MapItem.objects(task=ObjectId(task_id), ontology='UIL').count(),
+            'num_snomed': MapItem.objects(task=ObjectId(task_id), ontology='SNOMED-CT').count(),
+        }
 
-         return make_response(jsonify(code=200, msg="ok", data=data),200)
-         
-      except Exception as err:
-         print(err)
-         response = jsonify(code=500, err="INTERNAL_SERVER_ERROR")
-         response.status_code = 500
-         return response
+        return make_response(jsonify(code=200, msg="ok", data=data),200)
+
+    except Exception as err:
+        print(err)
+        response = jsonify(code=500, err="INTERNAL_SERVER_ERROR")
+        response.status_code = 500
+        return response
    

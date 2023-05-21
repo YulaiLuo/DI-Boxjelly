@@ -27,14 +27,14 @@ class MapTask(Document):
 
 class MapItem(Document):
     # From creating task
-    task = ReferenceField(MapTask, required=True)                # id of the task
+    task = ReferenceField(MapTask, index=True, required=True)                # id of the task
     text = StringField(required=True, index=True)                   # raw text of the clinical text      
 
     # From mapper
     accuracy = FloatField()                                       # confidence score of the mapping
     mapped_concept = StringField()                   # mapped concept id
-    status = StringField(default='fail', choices=('success', 'fail', 'reviewed'))                                          # success, fail, reviewed
-    ontology = StringField()                         # ontology of the concept
+    status = StringField(default='fail', index=True, choices=('success', 'fail', 'reviewed'))                                          # success, fail, reviewed
+    ontology = StringField(index=True)                         # ontology of the concept
     extra = DictField(default={})
 
     # From curator

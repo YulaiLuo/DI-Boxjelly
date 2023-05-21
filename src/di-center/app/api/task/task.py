@@ -59,59 +59,9 @@ class MapTaskResource(Resource):
             task_board = TaskBoard.objects(id=ObjectId(board_id),deleted=False).first()
             if not task_board:
                return make_response(jsonify(code=404, err="BOARD_NOT_FOUND"), 404)
-            
-            tasks = MapTask.objects(board=ObjectId(board_id),deleted=False).order_by('-create_at').all()
-            print(len(tasks))
 
-            pipeline = [
-               {"$match": {"board": ObjectId(board_id), "deleted": False}},
-               {"$lookup": {
-                  "from": "user",
-                  "localField": "create_by",
-                  "foreignField": "_id",
-                  "as": "creator"
-               }},
-               {"$unwind": "$creator"},
-               {"$lookup": {
-                  "from": "map_item",
-                  "localField": "_id",
-                  "foreignField": "task",
-                  "as": "map_items"
-               }},
-               {"$project": {
-                  "id": "$_id",
-                  "status": 1,
-                  "num": 1,
-                  "create_at": 1,
-                  "update_at": 1,
-                  "file_name": 1,
-                  "creator_id": "$creator._id",
-                  "creator_nickname": "$creator.nickname",
-                  "fail_count": {"$size": {"$filter": {
-                     "input": "$map_items",
-                     "as": "item",
-                     "cond": {"$eq": ["$$item.status", "fail"]}
-                  }}},
-                  "success_count": {"$size": {"$filter": {
-                     "input": "$map_items",
-                     "as": "item",
-                     "cond": {"$eq": ["$$item.status", "success"]}
-                  }}},
-                  "reviewed_count": {"$size": {"$filter": {
-                     "input": "$map_items",
-                     "as": "item",
-                     "cond": {"$eq": ["$$item.status", "reviewed"]}
-                  }}}
-               }},
-               {"$sort": {"create_at": -1}},
-               {"$skip": (page - 1) * size},
-               {"$limit": size}
-            ]
-
-            map_tasks_page = list(MapTask.objects.aggregate(*pipeline))
+            tasks = MapTask.objects(board=ObjectId(board_id),deleted=False).order_by('-create_at').skip((page - 1) * size).limit(size)
             map_task_count = MapTask.objects(board=task_board.id,deleted=False).count()
-
-            print(map_tasks_page,map_task_count)
 
             # Convert the tasks to a list of dictionaries
             data = {
@@ -121,19 +71,16 @@ class MapTaskResource(Resource):
                'board_description':task_board.description,
                'page_num': math.ceil(map_task_count/size),
                'tasks':[{
-                  "id": str(task['_id']),
-                  "status": task['status'],
-                  "num": task['num'],
-                  "create_by": str(task['creator_id']),
-                  "nickname": str(task['creator_nickname']),
-                  "create_at": task['create_at'],
-                  "update_at": task['update_at'],
-                  "file_name": str(task['file_name']),
-                  "fail_count": task['fail_count'],
-                  "success_count": task['success_count'],
-                  "reviewed_count": task['reviewed_count']
+                  "id": str(task.id),
+                  "status": task.status,
+                  "num": task.num,
+                  "create_by": str(task.create_by),
+                  "nickname": 'y',
+                  "create_at": task.create_at,
+                  "update_at": task.update_at,
+                  "file_name": str(task.file_name)
                }
-               for task in map_tasks_page]
+               for task in tasks]
             }
             
             response = jsonify(code=200, msg="ok", data=data)
