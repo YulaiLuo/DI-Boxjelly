@@ -14,18 +14,10 @@ export default function Login() {
   const { loading, run } = useRequest(login, {
     manual: true,
     onSuccess: (res) => {
-      console.log('login', res);
       localStorage.setItem('user', res.data?.user?.id);
       localStorage.setItem('team', res.data?.team?.id);
       localStorage.setItem('userDetail', JSON.stringify(res.data?.user));
       setLoggedIn(true);
-      // const cookies = document.cookie.split(';');
-      // console.log('cookies', cookies);
-      // localStorage.setItem('csrf_access_token', Cookies.get(AUTH.CSRF_ACCESS_TOKEN_COOKIE));
-      // localStorage.setItem('csrf_refresh_token', Cookies.get(AUTH.CSRF_REFRESH_TOKEN_COOKIE));
-      const csrfCookie = Cookies.get('csrf_access_token');
-      console.log('csrf', csrfCookie);
-
       msgApi.success('Login Successfully');
       localStorage.setItem('loggedIn', 'true');
       navigate('/dashboard', { replace: true });

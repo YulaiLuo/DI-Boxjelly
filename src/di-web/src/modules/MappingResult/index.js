@@ -11,11 +11,9 @@ export default function MappingResult() {
 
   const navigate = useNavigate();
   const { state } = useLocation();
-  // TODO: should get mappingRes from backend
   const taskId = state.id;
   const teamId = state.team_id;
   const boardId = state.board_id;
-  console.log(state);
 
   const formRef = useRef();
 
@@ -30,9 +28,7 @@ export default function MappingResult() {
   const mappedItems = data?.data.items ?? [];
   const totalNumber = data?.data.total;
 
-  // TODO: wait for backend response update
   const transformedItems = mappedItems.map((item) => {
-    // const mappedInfo = item.mapped_info[0];
     const mappingStatus = item.status !== 'fail' ? (item.status === 'success' ? 1 : 2) : 0;
     const source = item.ontology;
     const confidence = item.status !== 'fail' ? Number(item.accuracy * 100).toFixed(2) + '%' : null;
@@ -59,7 +55,6 @@ export default function MappingResult() {
       maxConfidence: values.confidence && values.confidence[1] / 100,
     };
 
-    console.log(filter);
     runFilterTaskDetail(taskId, teamId, boardId, 1, pageSize, filter);
   };
 

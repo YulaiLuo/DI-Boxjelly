@@ -154,7 +154,6 @@ export const getMappingTaskDetail = (
     delete params.min_accuracy;
     delete params.max_accuracy;
   }
-  console.log('para', params);
   return http.get(`${MAP_TASK_DETAIL_URL}`, params);
 };
 

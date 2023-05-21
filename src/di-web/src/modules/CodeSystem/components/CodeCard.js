@@ -62,7 +62,6 @@ export default function CodeCard({ data }) {
           editableKeys,
           onSave: async (rowKey, data, row) => {
             // TODO
-            console.log(rowKey, data, row);
             data.mappingStatus = 2;
           },
           onChange: setEditableRowKeys,

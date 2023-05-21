@@ -1,7 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { getUserProfile, updateUserProfile } from './api';
-import { Avatar, Button, Form, Input, Select, Space, Upload, Row, Col, Card, notification  } from 'antd';
-import { UserOutlined, SmileOutlined, MailOutlined, EditOutlined, ManOutlined, WomanOutlined, QuestionOutlined } from '@ant-design/icons';
+import {
+  Avatar,
+  Button,
+  Form,
+  Input,
+  Select,
+  Space,
+  Upload,
+  Row,
+  Col,
+  Card,
+  notification,
+} from 'antd';
+import {
+  UserOutlined,
+  SmileOutlined,
+  MailOutlined,
+  EditOutlined,
+  ManOutlined,
+  WomanOutlined,
+  QuestionOutlined,
+} from '@ant-design/icons';
 import { UploadOutlined } from '@ant-design/icons';
 import { BASE_URL } from '../../utils/constant/url';
 import { getCSRFTokenHeader } from '../../utils/auth';
@@ -68,7 +88,6 @@ const UserProfile = () => {
           duration: 3,
         });
       } else {
-        console.log(response.msg);
         notification.error({
           message: 'Error',
           description: response.msg,
@@ -76,7 +95,6 @@ const UserProfile = () => {
         });
       }
     } catch (error) {
-      console.log(error);
       notification.error({
         message: 'Error',
         description: 'There was a problem updating your profile',
@@ -93,70 +111,86 @@ const UserProfile = () => {
             <Space direction="vertical" size="large" style={{ width: '100%' }}>
               {editMode ? (
                 <Form form={form} layout="vertical">
-                  <Avatar size={128} src={`${BASE_URL}/auth/user/avatar?avatar=${userData.avatar}`} />
-                <Form.Item>
-                  <Upload
-                    action={`${BASE_URL}/auth/user/avatar`}
-                    headers={getCSRFTokenHeader()}
-                    withCredentials={true}
-                  >
-                    <Button icon={<UploadOutlined />}>Change Avatar</Button>
-                  </Upload>
-                </Form.Item>
-                <Form.Item label="First name">
-                  <Input
-                    value={userData.first_name}
-                    onChange={(e) => setUserData({ ...userData, first_name: e.target.value })}
+                  <Avatar
+                    size={128}
+                    src={`${BASE_URL}/auth/user/avatar?avatar=${userData.avatar}`}
                   />
-                </Form.Item>
-                <Form.Item label="Last name">
-                  <Input
-                    value={userData.last_name}
-                    onChange={(e) => setUserData({ ...userData, last_name: e.target.value })}
-                  />
-                </Form.Item>
-                <Form.Item label="Nickname">
-                  <Input
-                    value={userData.nickname}
-                    onChange={(e) => setUserData({ ...userData, nickname: e.target.value })}
-                  />
-                </Form.Item>
-                <Form.Item label="Email">
-                  <Input value={userData.email} readOnly />
-                </Form.Item>
-                <Form.Item label="Gender">
-                  <Select
-                    value={userData.gender}
-                    onChange={(value) => setUserData({ ...userData, gender: value })}
-                  >
-                    <Option value="Male">Male</Option>
-                    <Option value="Female">Female</Option>
-                    <Option value="Other">Other</Option>
-                  </Select>
-                </Form.Item>
-                <Form.Item>
-                  <Button type="primary" onClick={handleSaveChanges}>
-                    Save Changes
-                  </Button>
-                </Form.Item>
-              </Form>
+                  <Form.Item>
+                    <Upload
+                      action={`${BASE_URL}/auth/user/avatar`}
+                      headers={getCSRFTokenHeader()}
+                      withCredentials={true}
+                    >
+                      <Button icon={<UploadOutlined />}>Change Avatar</Button>
+                    </Upload>
+                  </Form.Item>
+                  <Form.Item label="First name">
+                    <Input
+                      value={userData.first_name}
+                      onChange={(e) => setUserData({ ...userData, first_name: e.target.value })}
+                    />
+                  </Form.Item>
+                  <Form.Item label="Last name">
+                    <Input
+                      value={userData.last_name}
+                      onChange={(e) => setUserData({ ...userData, last_name: e.target.value })}
+                    />
+                  </Form.Item>
+                  <Form.Item label="Nickname">
+                    <Input
+                      value={userData.nickname}
+                      onChange={(e) => setUserData({ ...userData, nickname: e.target.value })}
+                    />
+                  </Form.Item>
+                  <Form.Item label="Email">
+                    <Input value={userData.email} readOnly />
+                  </Form.Item>
+                  <Form.Item label="Gender">
+                    <Select
+                      value={userData.gender}
+                      onChange={(value) => setUserData({ ...userData, gender: value })}
+                    >
+                      <Option value="Male">Male</Option>
+                      <Option value="Female">Female</Option>
+                      <Option value="Other">Other</Option>
+                    </Select>
+                  </Form.Item>
+                  <Form.Item>
+                    <Button type="primary" onClick={handleSaveChanges}>
+                      Save Changes
+                    </Button>
+                  </Form.Item>
+                </Form>
               ) : (
-              <div>
-                <Avatar size={128} src={`${BASE_URL}/auth/user/avatar?avatar=${userData.avatar}`} />
-                <p><UserOutlined /> <strong>Name:</strong> {`${userData.first_name} ${userData.last_name}`}</p>
-                <p><SmileOutlined /> <strong>Nickname:</strong> {userData.nickname}</p>
-                <p><MailOutlined /> <strong>Email:</strong> {userData.email}</p>
-                <p>
-                  {userData.gender === 'Male' ? <ManOutlined /> : userData.gender === 'Female' ? <WomanOutlined /> : <QuestionOutlined />} <strong>Gender:</strong> {userData.gender} 
-                </p>
-                <Button 
-                  type="primary" 
-                  icon={<EditOutlined />}
-                  onClick={() => setEditMode(true)}
-                >
-                  Edit Profile
-                </Button>
-              </div>
+                <div>
+                  <Avatar
+                    size={128}
+                    src={`${BASE_URL}/auth/user/avatar?avatar=${userData.avatar}`}
+                  />
+                  <p>
+                    <UserOutlined /> <strong>Name:</strong>{' '}
+                    {`${userData.first_name} ${userData.last_name}`}
+                  </p>
+                  <p>
+                    <SmileOutlined /> <strong>Nickname:</strong> {userData.nickname}
+                  </p>
+                  <p>
+                    <MailOutlined /> <strong>Email:</strong> {userData.email}
+                  </p>
+                  <p>
+                    {userData.gender === 'Male' ? (
+                      <ManOutlined />
+                    ) : userData.gender === 'Female' ? (
+                      <WomanOutlined />
+                    ) : (
+                      <QuestionOutlined />
+                    )}{' '}
+                    <strong>Gender:</strong> {userData.gender}
+                  </p>
+                  <Button type="primary" icon={<EditOutlined />} onClick={() => setEditMode(true)}>
+                    Edit Profile
+                  </Button>
+                </div>
               )}
             </Space>
           </Card>

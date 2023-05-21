@@ -38,8 +38,6 @@ const TrainingMode = forwardRef((props, ref) => {
     manual: true,
   });
 
-  console.log('item', codeSystemList);
-
   const mappedCodeSystemList = codeSystemList?.data?.groups?.map((item) => {
     return {
       // value: [item.group, item.group_id],
@@ -155,7 +153,6 @@ const TrainingMode = forwardRef((props, ref) => {
           editableKeys,
           onSave: async (rowKey, data, row) => {
             data.mappingStatus = 2;
-            console.log(data);
             runCurateMapping(data.mappedItemId, data.curate[1], codeSystemList?.data?.version);
           },
           onChange: setEditableRowKeys,

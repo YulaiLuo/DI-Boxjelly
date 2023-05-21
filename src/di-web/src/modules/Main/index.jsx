@@ -97,7 +97,6 @@ export default function Main() {
   };
 
   const onBoardEditClick = (board) => {
-    console.log('edit', board);
     editBoardForm.setFieldsValue({
       name: board.name,
       description: board.description,
@@ -167,7 +166,6 @@ export default function Main() {
   ];
 
   const onProfileClick = () => {
-    console.log('go to profile page');
     navigate('/profile');
   };
 
