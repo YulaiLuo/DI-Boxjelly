@@ -54,11 +54,9 @@ class GatewayResource(Resource):
             allow_redirects=False
         )
 
-        EXCLUDE_HEADERS = ['Content-Length', 'Transfer-Encoding']
-
         return Response(response=response.content,
                         status=response.status_code,
-                        headers={key: value for (key, value) in response.headers.items() if key not in EXCLUDE_HEADERS})
+                        headers={key: value for (key, value) in response.headers.items()})
 
     def get(self, path):
         """

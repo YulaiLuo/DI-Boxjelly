@@ -162,14 +162,14 @@ export default function CodeSystem() {
           <Button type="primary" onClick={() => setIsModalOpen(true)} icon={<PlusOutlined />}>
             Code System
           </Button>
-          <Button
+          {/* <Button
             type="primary"
             loading={exportCodeSystemLoading}
             onClick={() => runExportCodeSystem(codeSystemList?.data?.version)}
             icon={<DownloadOutlined />}
           >
             Export
-          </Button>
+          </Button> */}
           <Popconfirm
             title="Delete the code system"
             description="Are you sure to delete this code system?"
