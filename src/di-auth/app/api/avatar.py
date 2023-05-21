@@ -70,8 +70,11 @@ class AvatarResource(Resource):
 
             # Save the new avatar, remove old avatar, and update user avatar field
             try:
-                os.remove(os.path.join(
-                    app.config['AVATAR_FOLDER'], f"{old_avatar}.jpg"))
+                if old_avatar == "fae8532f1684325376":
+                    pass
+                else:
+                    os.remove(os.path.join(
+                        app.config['AVATAR_FOLDER'], f"{old_avatar}.jpg"))
             except FileNotFoundError as err:
                 pass
 

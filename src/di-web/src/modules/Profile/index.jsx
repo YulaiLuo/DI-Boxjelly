@@ -86,100 +86,82 @@ const UserProfile = () => {
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '90vh',
-        padding: '1rem',
-      }}
-    >
-      <div style={{ maxWidth: '400px', width: '100%', textAlign: 'center' }}>
-        <Space direction="vertical" size="large" style={{ width: '100%' }}>
-          {editMode ? (
-            <Form form={form} layout="vertical">
-              <Avatar size={128} src={`${BASE_URL}/auth/user/avatar?avatar=${userData.avatar}`} />
-              <Form.Item>
-                <Upload
-                  action={`${BASE_URL}/auth/user/avatar`}
-                  headers={getCSRFTokenHeader()}
-                  withCredentials={true}
-                >
-                  <Button icon={<UploadOutlined />}>Change Avatar</Button>
-                </Upload>
-              </Form.Item>
-              <Form.Item label="First name">
-                <Input
-                  value={userData.first_name}
-                  onChange={(e) => setUserData({ ...userData, first_name: e.target.value })}
-                />
-              </Form.Item>
-              <Form.Item label="Last name">
-                <Input
-                  value={userData.last_name}
-                  onChange={(e) => setUserData({ ...userData, last_name: e.target.value })}
-                />
-              </Form.Item>
-              <Form.Item label="Nickname">
-                <Input
-                  value={userData.nickname}
-                  onChange={(e) => setUserData({ ...userData, nickname: e.target.value })}
-                />
-              </Form.Item>
-              <Form.Item label="Email">
-                <Input value={userData.email} readOnly />
-              </Form.Item>
-              <Form.Item label="Gender">
-                <Select
-                  value={userData.gender}
-                  onChange={(value) => setUserData({ ...userData, gender: value })}
-                >
-                  <Option value="Male">Male</Option>
-                  <Option value="Female">Female</Option>
-                  <Option value="Other">Other</Option>
-                </Select>
-              </Form.Item>
-              <Form.Item>
-                <Button type="primary" onClick={handleSaveChanges}>
-                  Save Changes
-                </Button>
-              </Form.Item>
-            </Form>
-          ) : (
-            <Row justify="center">
-              <Card
-                bordered={false}
-                style={{ width: 300 }}
-              >
-                <Row justify="center">
+    <div style={{ padding: '1rem' }}>
+      <Row justify="center" align="middle" style={{ minHeight: '90vh' }}>
+        <Col xs={24} sm={22} md={20} lg={12} xl={8}>
+          <Card style={{ width: '100%', textAlign: 'center' }}>
+            <Space direction="vertical" size="large" style={{ width: '100%' }}>
+              {editMode ? (
+                <Form form={form} layout="vertical">
                   <Avatar size={128} src={`${BASE_URL}/auth/user/avatar?avatar=${userData.avatar}`} />
-                </Row>
-                <Row justify="start">
-                  <Col span={24} align="left">
-                    <p><UserOutlined /> <strong>Name:</strong> {`${userData.first_name} ${userData.last_name}`}</p>
-                    <p><SmileOutlined /> <strong>Nickname:</strong> {userData.nickname}</p>
-                    <p><MailOutlined /> <strong>Email:</strong> {userData.email}</p>
-                    <p>
-                      {userData.gender === 'Male' ? <ManOutlined /> : userData.gender === 'Female' ? <WomanOutlined /> : <QuestionOutlined />} <strong>Gender:</strong> {userData.gender} 
-                    </p>
-                  </Col>
-                </Row>
-                <Row justify="center">
-                  <Button 
-                    type="primary" 
-                    icon={<EditOutlined />}
-                    onClick={() => setEditMode(true)}
+                <Form.Item>
+                  <Upload
+                    action={`${BASE_URL}/auth/user/avatar`}
+                    headers={getCSRFTokenHeader()}
+                    withCredentials={true}
                   >
-                    Edit Profile
+                    <Button icon={<UploadOutlined />}>Change Avatar</Button>
+                  </Upload>
+                </Form.Item>
+                <Form.Item label="First name">
+                  <Input
+                    value={userData.first_name}
+                    onChange={(e) => setUserData({ ...userData, first_name: e.target.value })}
+                  />
+                </Form.Item>
+                <Form.Item label="Last name">
+                  <Input
+                    value={userData.last_name}
+                    onChange={(e) => setUserData({ ...userData, last_name: e.target.value })}
+                  />
+                </Form.Item>
+                <Form.Item label="Nickname">
+                  <Input
+                    value={userData.nickname}
+                    onChange={(e) => setUserData({ ...userData, nickname: e.target.value })}
+                  />
+                </Form.Item>
+                <Form.Item label="Email">
+                  <Input value={userData.email} readOnly />
+                </Form.Item>
+                <Form.Item label="Gender">
+                  <Select
+                    value={userData.gender}
+                    onChange={(value) => setUserData({ ...userData, gender: value })}
+                  >
+                    <Option value="Male">Male</Option>
+                    <Option value="Female">Female</Option>
+                    <Option value="Other">Other</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item>
+                  <Button type="primary" onClick={handleSaveChanges}>
+                    Save Changes
                   </Button>
-                </Row>
-              </Card>
-            </Row>
-          )}
-        </Space>
-      </div>
+                </Form.Item>
+              </Form>
+              ) : (
+              <div>
+                <Avatar size={128} src={`${BASE_URL}/auth/user/avatar?avatar=${userData.avatar}`} />
+                <p><UserOutlined /> <strong>Name:</strong> {`${userData.first_name} ${userData.last_name}`}</p>
+                <p><SmileOutlined /> <strong>Nickname:</strong> {userData.nickname}</p>
+                <p><MailOutlined /> <strong>Email:</strong> {userData.email}</p>
+                <p>
+                  {userData.gender === 'Male' ? <ManOutlined /> : userData.gender === 'Female' ? <WomanOutlined /> : <QuestionOutlined />} <strong>Gender:</strong> {userData.gender} 
+                </p>
+                <Button 
+                  type="primary" 
+                  icon={<EditOutlined />}
+                  onClick={() => setEditMode(true)}
+                >
+                  Edit Profile
+                </Button>
+              </div>
+              )}
+            </Space>
+          </Card>
+        </Col>
+      </Row>
     </div>
   );
 };

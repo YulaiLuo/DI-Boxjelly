@@ -11,14 +11,14 @@ export default function VisualizationDrawer({ onClose, open, metaData }) {
   const num_snomed = metaData?.data.num_snomed;
 
   const data1 = [
-    { name: 'Success', value: 100 },
-    { name: 'Failed', value: 230 },
-    { name: 'Reviewed', value: 90 },
+    { name: 'Success', value: num_success },
+    { name: 'Failed', value: num_failed },
+    { name: 'Reviewed', value: num_reviewed },
   ];
   
   const data2 = [
-    { name: 'UIL', value: 120 },
-    { name: 'SNOMED CT', value: 180 },
+    { name: 'UIL', value: num_uil },
+    { name: 'SNOMED CT', value: num_snomed },
   ];
 
   const COLORS1 = ['#82ca9d', '#f44336', '#ffa500']; // Green, Red, Orange

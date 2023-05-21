@@ -22,8 +22,11 @@ export default function Dashboard() {
   const { loading: singleMapLoading, run: handleMapSingleText } = useRequest(mapSingleText, {
     manual: true,
     onSuccess: (res) => {
-      if (res.data['0'] && res.data['0'].length > 0) {
-        setSingleMappingResult(res.data['0'][0].sct_term);
+      if (res.data.result['0'] && res.data.result['0'] != null) {
+        const term = res.data.result['0']['name'];
+        const ontology = res.data.result['0']['ontology'];
+        const singleResult = term + ' - ' + ontology;
+        setSingleMappingResult(singleResult);
       } else {
         setSingleMappingResult('No mapping result');
       }

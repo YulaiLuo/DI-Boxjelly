@@ -23,7 +23,7 @@ export const MAP_TASK_DOWNLOAD_URL = '/center/boards/task/download';
 export const MAP_TASK_CURATE_URL = 'center/boards/task/curate';
 
 // MedCAT mapping
-export const MAP_URL = '/map/translate';
+export const MAP_URL = '/center/dashboard/predict';
 
 export const UIL_URL = '/center';
 export const UIL_BY_GROUP = '/center/groups';
@@ -43,3 +43,6 @@ export const CODE_SYSTEM_URL = '/center/codesystem';
 export const CODE_SYSTEM_VERSION_URL = '/center/codesystem/versions';
 export const CODE_SYSTEM_GROUP_URL = '/center/codesystem/groups';
 export const CODE_SYSTEM_DOWNLOAD = '/center/codesystem/download';
+
+// Register module
+export const REGISTER_URL = '/auth/team/accept';
