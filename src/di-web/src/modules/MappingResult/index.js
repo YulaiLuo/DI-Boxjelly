@@ -5,7 +5,7 @@ import TrainingMode from './TrainingMode';
 import { getMappingTaskDetail } from '../Mapping/api';
 
 export default function MappingResult() {
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 20;
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZE);
 
