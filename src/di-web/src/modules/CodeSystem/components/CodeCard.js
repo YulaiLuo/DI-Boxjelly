@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Tag } from 'antd';
 import { EditableProTable } from '@ant-design/pro-components';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 export default function CodeCard({ data }) {
   const [editableKeys, setEditableRowKeys] = useState([]);

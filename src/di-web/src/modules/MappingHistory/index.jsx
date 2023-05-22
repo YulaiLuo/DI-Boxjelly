@@ -28,13 +28,12 @@ export default function MappingHistory() {
     navigate('/mapping-result', { state: { id, team_id, board_id } });
   };
 
-  const {
-    data,
-    loading,
-    refresh: refreshAllMappingTasks,
-  } = useRequest(() => getAllMappingTasks(team_id, board_id, currentPage, PAGE_SIZE), {
-    refreshDeps: [currentPage, board_id, team_id],
-  });
+  const { data, loading } = useRequest(
+    () => getAllMappingTasks(team_id, board_id, currentPage, PAGE_SIZE),
+    {
+      refreshDeps: [currentPage, board_id, team_id],
+    }
+  );
 
   const { run: onVisualizationClick } = useRequest(getMappingTaskMetaDetail, {
     manual: true,

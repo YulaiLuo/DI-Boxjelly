@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { ToolOutlined } from '@ant-design/icons';
-import { UNIVERSAL_INDICATION_LIST } from '../../../utils/constant/indicationList';
 
 /**
  * @see {@link https://procomponents.ant.design/en-US/components/table#columns-column-definition}

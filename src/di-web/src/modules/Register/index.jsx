@@ -30,7 +30,7 @@ const RegisterPage = () => {
       for (const key in values) {
         formData.append(key, values[key]);
       }
-      const response = await registerUser(formData);
+      await registerUser(formData);
       setLoading(false);
 
       // show success message
