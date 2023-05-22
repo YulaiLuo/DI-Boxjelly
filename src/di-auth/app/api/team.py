@@ -22,6 +22,10 @@ class DeleteTeamInputSchema(Schema):
     team_id = fields.String(required=True)
     user_id = fields.String(required=True)
 
+class PostTransferOwnerInputSchema(Schema):
+    team_id = fields.String(required=True)
+    new_owner_id = fields.String(required=True)
+
 def convert_objectid_to_str(data):
     for key, value in data.items():
         if isinstance(value, ObjectId):
@@ -147,6 +151,12 @@ class TeamMemberResource(Resource):
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
         
         try:
+            user_id = request.headers.get('User-ID')
+            requester = UserTeam.objects(id=ObjectId(user_id)).first()
+            if requester.role!="owner":
+                return make_response(jsonify(code=403, err="FORBIDDEN"), 403)
+            
+
             team = Team.objects(id=ObjectId(in_schema['team_id'])).first()
             if not team:
                 return make_response(jsonify(code=404, err="TEAM_NOT_FOUND"), 404)
@@ -166,3 +176,38 @@ class TeamMemberResource(Resource):
         except Exception as err:
             print(err)
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
+
+class TransferOwnerResource(Resource):
+
+    def post(self):
+        try:
+            in_schema = PostTransferOwnerInputSchema().load(request.get_json())
+        except ValidationError as err:
+            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+        
+        try:
+            user_id = request.headers.get('User-ID')
+            requester = UserTeam.objects(id=ObjectId(user_id)).first()
+            if requester.role!="owner":
+                return make_response(jsonify(code=403, err="FORBIDDEN"), 403)
+            
+            new_owner = UserTeam.objects(user_id=ObjectId(in_schema['new_owner_id']), 
+                                         team_id=ObjectId(in_schema['team_id'])).first()
+            
+            if not new_owner:
+                return make_response(jsonify(code=404, err="USER_NOT_FOUND"), 404)
+            
+            # set up roles
+            requester.role = "member"
+            requester.save()
+            new_owner.role = "owner"
+            new_owner.save()
+            
+        except Exception as err:
+            # rollback
+            requester.role = "owner"
+            requester.save()
+            new_owner.role = "member"
+            new_owner.save()
+
+
