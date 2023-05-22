@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { List, Avatar, Layout, Modal, Button, notification, message } from 'antd';
+import React, { useState } from 'react';
+import { List, Avatar, Layout, Button, notification, message } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import { getTeamInfo, getInvitationLink } from './api';
-import { BASE_URL } from '../../utils/constant/url';
+import { BASE_URL, DOMAIN_URL } from '../../utils/constant/url';
 import copy from 'copy-to-clipboard';
 
 const { Sider, Content } = Layout;
@@ -36,7 +36,8 @@ export default function TeamProfile() {
     setIsLoading(true);
     const result = await getInvitationLink(teamId);
     setInvitationToken(result.data);
-    const isCopySuccess = copy(result.data);
+    const link = DOMAIN_URL + '/register?invite_token=' + result.data;
+    const isCopySuccess = copy(link);
     if (isCopySuccess) {
       openNotification();
     } else {
