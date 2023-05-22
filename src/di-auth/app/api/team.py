@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from marshmallow import Schema, fields, ValidationError
-from app.models import Team, UserTeam
+from app.models import Team, UserTeam, User
 from bson import ObjectId
 from flask import request, make_response, jsonify
 
@@ -17,6 +17,10 @@ class GetTeamInputSchema(Schema):
 class PutTeamInputSchema(Schema):
     team_id = fields.String(required=True)
     new_name = fields.String(required=True)
+
+class DeleteTeamInputSchema(Schema):
+    team_id = fields.String(required=True)
+    user_id = fields.String(required=True)
 
 def convert_objectid_to_str(data):
     for key, value in data.items():
@@ -131,3 +135,34 @@ class TeamResource(Resource):
             return make_response(jsonify(code=200, msg="ok", data=data), 200)
         except ValidationError as err:
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+
+class TeamMemberResource(Resource):
+
+    def delete(self):
+        """Delete a team member
+        """
+        try:
+            in_schema = DeleteTeamInputSchema().load(request.args)
+        except ValidationError as err:
+            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+        
+        try:
+            team = Team.objects(id=ObjectId(in_schema['team_id'])).first()
+            if not team:
+                return make_response(jsonify(code=404, err="TEAM_NOT_FOUND"), 404)
+            
+            user_team = UserTeam.objects(user_id=ObjectId(in_schema['user_id']), team_id=ObjectId(in_schema['team_id'])).first()
+            if not user_team:
+                return make_response(jsonify(code=404, err="USER_NOT_FOUND"), 404)
+            
+            user = User.objects(id=ObjectId(in_schema['user_id'])).first()
+            if not user:
+                return make_response(jsonify(code=404, err="USER_NOT_FOUND"), 404)
+            
+            user.delete()
+            user_team.delete()
+            
+            return make_response(jsonify(code=200, msg="ok"), 200)
+        except Exception as err:
+            print(err)
+            return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
