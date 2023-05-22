@@ -72,7 +72,14 @@ export default function MappingResult() {
   const handlePageChange = (page, curPageSize) => {
     setCurrentPage(page);
     setPageSize(curPageSize);
-    runFilterTaskDetail(taskId, teamId, boardId, page, curPageSize);
+    const filterForm = formRef.current?.form;
+    const values = filterForm.getFieldsValue();
+    const filter = {
+      ...values,
+      minConfidence: values.confidence && values.confidence[0] / 100,
+      maxConfidence: values.confidence && values.confidence[1] / 100,
+    };
+    runFilterTaskDetail(taskId, teamId, boardId, page, curPageSize, filter);
   };
 
   useEffect(() => {
