@@ -2,7 +2,7 @@ import Cookies from 'js-cookie';
 import {
   // ONTOSERVER_BASE_URL,
   MAP_URL,
-  MAP_TASK_URL,
+  // MAP_TASK_URL,
   MAP_BOARDS_URL,
   MAP_TASK_META_URL,
   MAP_TASK_DETAIL_URL,
