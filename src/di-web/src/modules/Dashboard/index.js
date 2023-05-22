@@ -21,7 +21,7 @@ export default function Dashboard() {
       if (res.data.result['0'] && res.data.result['0'] != null) {
         const term = res.data.result['0']['name'];
         const ontology = res.data.result['0']['ontology'];
-        const singleResult = term + ' - ' + ontology;
+        const singleResult = [ontology, term];
         setSingleMappingResult(singleResult);
       } else {
         setSingleMappingResult('No mapping result');
@@ -103,7 +103,6 @@ export default function Dashboard() {
                 placeholder="Input a single text"
                 allowClear
                 onSearch={onSingleTextSearch}
-                //onSearch = {showModal}
                 ref={inputRef}
                 onChange={onSingleTextChange}
               />
@@ -117,7 +116,8 @@ export default function Dashboard() {
                   <Spin />
                 ) : (
                   <div class="text-center">
-                    <div class="text-2xl">{singleMappingResult}</div>
+                    <div class="text-xl">{singleMappingResult[0]}</div>
+                    <div class="text-xl">{singleMappingResult[1]}</div>
                   </div>
                 )}
               </div>
