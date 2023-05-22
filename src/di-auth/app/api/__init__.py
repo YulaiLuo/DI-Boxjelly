@@ -35,12 +35,13 @@ def init_api(app):
     api.add_resource(InviteResource, '/auth/team/invite')
     api.add_resource(AcceptInviteResource, '/auth/team/accept',
                      resource_class_args=(bcrypt,))
-    api.add_resource(TeamMemberResource, 'auth/team/member')
-    api.add_resource(TransferOwnerResource, 'auth/team/transfer',)
+    api.add_resource(TeamMemberResource, '/auth/team/member')
+    api.add_resource(TransferOwnerResource, '/auth/team/transfer',)
 
     api.add_resource(EmailLogin, '/auth/login/email',
                      resource_class_args=(mongo, bcrypt,))
     api.add_resource(Logout, '/auth/logout')
     api.add_resource(CheckBlackListResource, '/auth/check-blacklist')
+    
     # Initialize the API
     api.init_app(app)
