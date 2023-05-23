@@ -40,7 +40,11 @@ const RegisterPage = () => {
       console.error(error);
       setLoading(false);
       // show error message
-      message.error('An error occurred during registration. Please try again.');
+      if (error.response && error.response.data && error.response.data.message) {
+        message.error(error.response.data.message);
+      } else {
+        message.error('An error occurred during registration. Please try again.');
+      }
     }
   };
 
