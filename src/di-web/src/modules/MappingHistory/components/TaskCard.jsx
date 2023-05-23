@@ -17,7 +17,10 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
     <div class="flex justify-between">
       {/* <span class="w-3/5 overflow-hidden text-ellipsis">{createBy}</span> */}
       <span class="w-3/5 overflow-hidden text-ellipsis">{nickname}</span>
-      <Badge status={badgeStatus[status]} text={status}></Badge>
+      <Badge
+        status={badgeStatus[status]}
+        text={status.charAt(0).toUpperCase() + status.slice(1)}
+      ></Badge>
     </div>
   );
 
