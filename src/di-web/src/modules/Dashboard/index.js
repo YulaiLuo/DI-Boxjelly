@@ -39,6 +39,13 @@ export default function Dashboard() {
 
   const dashboardInfo = dashboardInfoResponse?.map((res) => res?.data);
 
+  const toTitleCase = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
+  const dashboardBarChartResponseTitled = dashboardBarChartResponse?.data.map((item) => ({
+    ...item,
+    type: toTitleCase(item.type),
+  }));
+
   const onSingleTextSearch = (value) => {
     if (value.trim() !== '') {
       setIsModalOpen(true);
@@ -56,14 +63,13 @@ export default function Dashboard() {
   };
 
   const config = {
-    data: dashboardBarChartResponse?.data ?? [],
+    data: dashboardBarChartResponseTitled ?? [],
     isStack: true,
     xField: 'year',
     yField: 'value',
     seriesField: 'type',
     label: {
       position: 'middle',
-
       layout: [
         {
           type: 'interval-adjust-position',
