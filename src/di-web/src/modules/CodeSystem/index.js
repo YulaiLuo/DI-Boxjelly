@@ -66,6 +66,10 @@ export default function CodeSystem() {
         msgApi.success('Deleted successfully!');
         runGetCodeSystemList();
         runGetAllCodeSystemVersion();
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       },
     }
   );
