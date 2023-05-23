@@ -67,7 +67,7 @@ const RegisterPage = () => {
             label="Invite Token"
             rules={[{ required: true, message: 'Please input your invite token!' }]}
           >
-            <Input placeholder="Invite Token" />
+            <Input placeholder="Invite Token" disabled={true} />
           </Form.Item>
 
           <Form.Item

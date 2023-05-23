@@ -5,7 +5,7 @@ import TrainingMode from './TrainingMode';
 import { getMappingTaskDetail } from '../Mapping/api';
 
 export default function MappingResult() {
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 20;
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZE);
 
@@ -72,7 +72,14 @@ export default function MappingResult() {
   const handlePageChange = (page, curPageSize) => {
     setCurrentPage(page);
     setPageSize(curPageSize);
-    runFilterTaskDetail(taskId, teamId, boardId, page, curPageSize);
+    const filterForm = formRef.current?.form;
+    const values = filterForm.getFieldsValue();
+    const filter = {
+      ...values,
+      minConfidence: values.confidence && values.confidence[0] / 100,
+      maxConfidence: values.confidence && values.confidence[1] / 100,
+    };
+    runFilterTaskDetail(taskId, teamId, boardId, page, curPageSize, filter);
   };
 
   useEffect(() => {

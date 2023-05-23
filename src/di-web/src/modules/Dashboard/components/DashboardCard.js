@@ -9,7 +9,12 @@ export default function DashboardCard({ title, percent, totalNumber, delta }) {
           <h1>{totalNumber}</h1>
           <span>{delta}</span>
         </div>
-        <Progress type="circle" percent={300} strokeColor="green" format={() => `${percent} %`} />
+        <Progress
+          type="circle"
+          percent={300}
+          strokeColor="green"
+          format={() => `${Number(percent).toFixed(2)} %`}
+        />
       </div>
     </Card>
   );

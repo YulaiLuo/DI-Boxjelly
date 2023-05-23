@@ -1,20 +1,33 @@
 import React, { useState } from 'react';
-import { List, Avatar, Layout, Button, notification, message } from 'antd';
+import copy from 'copy-to-clipboard';
+import { List, Avatar, Layout, Button, notification, message, Tag } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
-import { getTeamInfo, getInvitationLink } from './api';
+import { getTeamInfo, getInvitationLink, deleteTeamMember } from './api';
 import { BASE_URL, DOMAIN_URL } from '../../utils/constant/url';
-import copy from 'copy-to-clipboard';
+import { useMessageStore } from '../../store';
 
-const { Sider, Content } = Layout;
+const { Content } = Layout;
 
 export default function TeamProfile() {
   const teamId = localStorage.getItem('team');
   const userId = localStorage.getItem('user');
-  const { data: teamInfo } = useRequest(() => getTeamInfo(teamId));
-  const data = teamInfo?.data;
+  const msgApi = useMessageStore((state) => state.msgApi);
 
-  const [invitationToken, setInvitationToken] = useState(null);
+  const { data: teamInfo, refresh: refreshGetTeamInfo } = useRequest(() => getTeamInfo(teamId));
+  const data = teamInfo?.data;
+  const members = teamInfo?.data?.members ?? [];
+  const owner = members.filter((member) => member?.role === 'owner')[0];
+  const isOwner = userId === owner?.user_id;
+
+  const { run: runDeleteTeamMember } = useRequest(deleteTeamMember, {
+    manual: true,
+    onSuccess: () => {
+      msgApi.success('Remove user successfully!');
+      refreshGetTeamInfo();
+    },
+  });
+
   const [isLoading, setIsLoading] = useState(false);
 
   const [api, contextHolder] = notification.useNotification();
@@ -35,7 +48,6 @@ export default function TeamProfile() {
   const copyInvitationToken = async () => {
     setIsLoading(true);
     const result = await getInvitationLink(teamId);
-    setInvitationToken(result.data);
     const link = DOMAIN_URL + '/register?invite_token=' + result.data;
     const isCopySuccess = copy(link);
     if (isCopySuccess) {
@@ -62,7 +74,20 @@ export default function TeamProfile() {
               itemLayout="horizontal"
               dataSource={data?.members}
               renderItem={(item, index) => (
-                <List.Item actions={[<a key="remove">Remove</a>, <a key="leave">Leave</a>]}>
+                <List.Item
+                  actions={
+                    isOwner &&
+                    item.user_id !== userId && [
+                      <Button
+                        key="remove"
+                        type="link"
+                        onClick={() => runDeleteTeamMember(teamId, item.user_id)}
+                      >
+                        Remove
+                      </Button>,
+                    ]
+                  }
+                >
                   <List.Item.Meta
                     style={{ display: 'flex', alignItems: 'center' }}
                     avatar={
@@ -72,7 +97,12 @@ export default function TeamProfile() {
                       />
                       // <Avatar class="mt-4" src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`} />
                     }
-                    title={item.nickname}
+                    title={
+                      <>
+                        <span class="mr-2">{item.nickname}</span>
+                        <Tag color={item.role === 'owner' ? 'volcano' : 'blue'}>{item.role}</Tag>
+                      </>
+                    }
                     description={item.email}
                   />
                 </List.Item>
