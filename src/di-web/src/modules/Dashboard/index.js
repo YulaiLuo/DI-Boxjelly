@@ -18,7 +18,11 @@ export default function Dashboard() {
   const { loading: singleMapLoading, run: handleMapSingleText } = useRequest(mapSingleText, {
     manual: true,
     onSuccess: (res) => {
-      if (res.data.result['0'] && res.data.result['0'] != null) {
+      if (
+        res.data.result['0'] &&
+        res.data.result['0'] !== null &&
+        res.data.result['0'] !== undefined
+      ) {
         const term = res.data.result['0']['name'];
         const ontology = res.data.result['0']['ontology'];
         const singleResult = [ontology, term];
@@ -116,8 +120,14 @@ export default function Dashboard() {
                   <Spin />
                 ) : (
                   <div class="text-center">
-                    <div class="text-xl">{singleMappingResult[0]}</div>
-                    <div class="text-xl">{singleMappingResult[1]}</div>
+                    {Array.isArray(singleMappingResult) && singleMappingResult.length === 2 ? (
+                      <>
+                        <div class="text-xl">{singleMappingResult[0]}</div>
+                        <div class="text-xl">{singleMappingResult[1]}</div>
+                      </>
+                    ) : (
+                      <div class="text-xl">{singleMappingResult}</div>
+                    )}
                   </div>
                 )}
               </div>
