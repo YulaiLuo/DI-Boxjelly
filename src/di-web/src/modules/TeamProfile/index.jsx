@@ -100,7 +100,9 @@ export default function TeamProfile() {
                     title={
                       <>
                         <span class="mr-2">{item.nickname}</span>
-                        <Tag color={item.role === 'owner' ? 'volcano' : 'blue'}>{item.role}</Tag>
+                        <Tag color={item.role === 'owner' ? 'volcano' : 'blue'}>
+                          {item.role.charAt(0).toUpperCase() + item.role.slice(1)}
+                        </Tag>
                       </>
                     }
                     description={item.email}
