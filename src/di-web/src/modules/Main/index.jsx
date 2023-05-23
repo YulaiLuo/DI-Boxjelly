@@ -52,17 +52,20 @@ export default function Main() {
   const { run: runEditBoard, loading: editBoardLoading } = useRequest(editBoard, {
     manual: true,
     onSuccess: () => {
-      msgApi.success('board updated successfully');
+      msgApi.success('The board is updated successfully');
       setIsEditModalOpen(false);
       editBoardForm.resetFields();
       refreshBoardList(teamId);
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     },
   });
 
   const { run: runDeleteBoard } = useRequest(deleteBoard, {
     manual: true,
     onSuccess: () => {
-      msgApi.success('board deleted successfully');
+      msgApi.success('The board is deleted successfully');
       navigate('/dashboard', { replace: true });
       refreshBoardList(teamId);
     },
