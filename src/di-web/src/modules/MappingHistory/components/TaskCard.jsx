@@ -24,6 +24,8 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
   const CreatTime = new Date(createAt);
   const UpdateTime = new Date(updateAt);
 
+  const updateAndCreateTimeDifference = Math.floor((CreatTime - UpdateTime) / 1000);
+
   const formattedCreateAt = formatTime(CreatTime);
   const formattedUpdateAt = updateAt ? formatTime(new Date(updateAt)) : null;
 
@@ -72,8 +74,9 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
           <span class="ml-4 text-lg">{num}</span>
         </div>
         <div>File name: {fileName}</div>
-        <div>Created at: {formattedTimeDifference}</div>
-        <div>{formattedCreateAt}</div>
+        <div>Created at: {formattedCreateAt}</div>
+        {updateAndCreateTimeDifference > 1 && <div>Curated at: {formattedTimeDifference}</div>}
+        {/* <div>{formattedCreateAt}</div> */}
         {/* <div>Last curated time: {formattedTimeDifference}</div> */}
         {/* {createAt !== updateAt && <div></div>} */}
       </div>
