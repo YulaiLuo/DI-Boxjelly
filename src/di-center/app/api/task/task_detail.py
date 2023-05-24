@@ -16,7 +16,7 @@ class GetMapTaskInputSchema(Schema):
     page = fields.Integer(required=False,default=1, min_value=1)
     size = fields.Integer(required=False,default=20, min_value=10)
     min_accuracy = fields.Float(required=False, min_value=0.0, max_value=1.0)
-    max_accuracy = fields.Float(required=False, min_value=0.0, max_value=1)
+    max_accuracy = fields.Float(required=False, min_value=0.0, max_value=1.0)
     ontology = fields.String(required=False)
     status = fields.String(required=False, validate=validate.OneOf(['all','reviewed', 'success', 'fail']))
     
