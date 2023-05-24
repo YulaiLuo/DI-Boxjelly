@@ -20,11 +20,17 @@ export default function TeamProfile() {
   const owner = members.filter((member) => member?.role === 'owner')[0];
   const isOwner = userId === owner?.user_id;
 
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+
   const { run: runDeleteTeamMember } = useRequest(deleteTeamMember, {
     manual: true,
     onSuccess: () => {
       msgApi.success('Remove user successfully!');
       refreshGetTeamInfo();
+      setIsDeleteLoading(false);
+    },
+    onError: () => {
+      setIsDeleteLoading(false);
     },
   });
 
@@ -81,7 +87,11 @@ export default function TeamProfile() {
                       <Button
                         key="remove"
                         type="link"
-                        onClick={() => runDeleteTeamMember(teamId, item.user_id)}
+                        onClick={() => {
+                          setIsDeleteLoading(true);
+                          runDeleteTeamMember(teamId, item.user_id);
+                        }}
+                        disabled={isDeleteLoading}
                       >
                         Remove
                       </Button>,
@@ -100,7 +110,9 @@ export default function TeamProfile() {
                     title={
                       <>
                         <span class="mr-2">{item.nickname}</span>
-                        <Tag color={item.role === 'owner' ? 'volcano' : 'blue'}>{item.role}</Tag>
+                        <Tag color={item.role === 'owner' ? 'volcano' : 'blue'}>
+                          {item.role.charAt(0).toUpperCase() + item.role.slice(1)}
+                        </Tag>
                       </>
                     }
                     description={item.email}

@@ -15,3 +15,4 @@ mongoengine
 python-dateutil
 pandas
 xlsxwriter
+openpyxl

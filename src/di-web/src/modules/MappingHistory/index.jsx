@@ -119,32 +119,35 @@ export default function MappingHistory() {
               <FileUploader files={files} onFileUpdate={onFileUpdate} />
             </Modal>
           </div>
-          <List
-            grid={{
-              gutter: 25,
-              xs: 1,
-              sm: 2,
-              md: 3,
-              lg: 3,
-              xl: 4,
-              xxl: 5,
-            }}
-            dataSource={mappedTasks}
-            renderItem={(item) => (
-              <List.Item>
-                <TaskCard
-                  item={item}
-                  onEditClick={() => onGetTaskDetailSuccess(item.id, team_id, board_id)}
-                  onDownloadClick={() => exportFile(team_id, item.id)}
-                  onVisualizeClick={() => {
-                    setDrawerOpen(true);
-                    onVisualizationClick(item.id);
-                  }}
-                  onDeleteClick={() => onTaskDeleteClick(item.id, team_id, board_id)}
-                />
-              </List.Item>
-            )}
-          />
+          <div class="overflow-auto h-[calc(100vh-240px)]">
+            <List
+              grid={{
+                gutter: 25,
+                xs: 1,
+                sm: 2,
+                md: 3,
+                lg: 3,
+                xl: 4,
+                xxl: 5,
+              }}
+              dataSource={mappedTasks}
+              renderItem={(item) => (
+                <List.Item>
+                  <TaskCard
+                    item={item}
+                    onEditClick={() => onGetTaskDetailSuccess(item.id, team_id, board_id)}
+                    onDownloadClick={() => exportFile(team_id, item.id)}
+                    onVisualizeClick={() => {
+                      setDrawerOpen(true);
+                      onVisualizationClick(item.id);
+                    }}
+                    onDeleteClick={() => onTaskDeleteClick(item.id, team_id, board_id)}
+                  />
+                </List.Item>
+              )}
+            />
+          </div>
+
           {tasks.length !== 0 && (
             <div class="absolute bottom-2 right-0">
               <Pagination

@@ -68,7 +68,6 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
-        print(request.headers)
         return self._gateway(path=path)
 
     def post(self, path):
@@ -81,7 +80,6 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
-        print(request.headers)
         return self._gateway(path=path)
 
     def put(self, path):
@@ -94,7 +92,6 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
-        print(request.headers)
         return self._gateway(path=path)
 
     def delete(self, path):
@@ -107,5 +104,4 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
-        print(request.headers)
         return self._gateway(path=path)
