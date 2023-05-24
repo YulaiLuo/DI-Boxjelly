@@ -18,9 +18,11 @@ class Config:
     NEW_UIL_ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
 
     # Map Service URL
-    # MAP_SERVICE_URL = os.environ.get('MAP_SERVICE_URL') or 'http://localhost:8003'
-    MAP_SERVICE_URL = 'http://di-map:8003'
-    
+    # MAP_SERVICE_URL = os.environ.get('MAP_SERVICE_URL') or 'http://localhost:8003/map'
+    # AUTH_SERVICE_URL = os.environ.get('MAP_SERVICE_URL') or 'http://localhost:8001/auth'
+    MAP_SERVICE_URL = 'http://di-map:8003/map'
+    AUTH_SERVICE_URL = 'http://di-auth:8001/auth'
+
     # MongoDB
     MONGO_URI = os.environ.get('MONGO_URI') or 'mongodb://boxjelly:di_boxjelly90082@101.43.110.249:27017/di?authSource=admin'
 
