@@ -12,15 +12,16 @@ import { AUTH } from './constant/constants';
 // };
 
 // export const removeTokens = () => {
-//   Cookies.remove(AUTH.ACCESS_TOKEN_COOKIE);
-//   Cookies.remove(AUTH.REFRESH_TOKEN_COOKIE);
-// }
+//   Cookies.remove(AUTH.CSRF_ACCESS_TOKEN_COOKIE);
+//   Cookies.remove(AUTH.CSRF_REFRESH_TOKEN_COOKIE);
+// };
 
 export const checkAuthentication = () => {
   const hasCsrfAccessCookie = !!Cookies.get(AUTH.CSRF_ACCESS_TOKEN_COOKIE);
   const hasCsrfRefreshCookie = !!Cookies.get(AUTH.CSRF_REFRESH_TOKEN_COOKIE);
-  localStorage.setItem('csrf_access_token', Cookies.get(AUTH.CSRF_ACCESS_TOKEN_COOKIE));
-  localStorage.setItem('csrf_refresh_token', Cookies.get(AUTH.CSRF_REFRESH_TOKEN_COOKIE));
+
+  // localStorage.setItem('csrf_access_token', Cookies.get(AUTH.CSRF_ACCESS_TOKEN_COOKIE));
+  // localStorage.setItem('csrf_refresh_token', Cookies.get(AUTH.CSRF_REFRESH_TOKEN_COOKIE));
   return hasCsrfAccessCookie || hasCsrfRefreshCookie;
 };
 

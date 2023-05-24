@@ -8,7 +8,7 @@ WORKDIR /src/di-map
 
 # duplicate the required library into the base image
 COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r requirements.txt -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
 
 # copy all file into the image
 COPY . .
@@ -21,4 +21,4 @@ CMD ["gunicorn" , "main:app", "-c", "gunicorn_config.py"]
 # sudo docker image build -t di-map .
 
 # Run the container:
-# sudo docker run -d --name di-map --network di -p 0.0.0.0:8003:8003 di-map:latest
+# sudo docker run -d --name di-map -v /home/ubuntu/etc/medcat_model:/src/di-map/app/controllers/medcat_model --network di di-map:latest

@@ -1,25 +1,32 @@
-from mongoengine import Document, StringField, IntField, ReferenceField, EmbeddedDocument, EmbeddedDocumentField, DateTimeField, FloatField, ListField, ObjectIdField
+from mongoengine import Document, StringField, IntField, ReferenceField, EmbeddedDocument, EmbeddedDocumentField, DateTimeField, FloatField, ListField, ObjectIdField, BooleanField
 from .document import DIDocument as Document
 
 class CodeSystem(Document):
-    team_id = ObjectIdField(required=True)
-    name = StringField(required=True)                               # name of the version
-    description = StringField(required=False)                       # description of the version
-    create_by = ObjectIdField(required=True)  # creator id
-
-class ConceptGroup(Document):
-    name = StringField(required=True)                               # group name
-    code_system = ReferenceField(CodeSystem, required=True)         # id of the UIL list
-    create_by = ObjectIdField(required=False)                       # creator id
+    name = StringField(required=True)
+    description = StringField(required=False, default='')
+    create_by = ObjectIdField(required=True)
+    version = StringField(unique=True,required=True)
+    deleted = BooleanField(default=False)
 
 class Concept(Document):
-    code_system = ReferenceField(CodeSystem, required=True)         # id of the UIL list
-    group = ReferenceField(ConceptGroup, required=True)             # id of the UIL list
-    
-    parent_concept = ReferenceField('self', required=False)          # id of the UIL list
-    child_concept = ReferenceField('self', required=False)           # id of the UIL list
+    name = StringField(unique=True, required=True)
 
-    name = StringField(unique=True, required=True)                  # the indication name in this version
-    description = StringField(required=False, default='')           # user alias of the category in this version
-    
-    create_by = ObjectIdField(required=True)                        # creator id
+class Tag(Document):
+    name = StringField(unique=True,required=True)
+    source = StringField(required=True, choice=('official', 'user'))
+
+    meta = {
+        'indexes': [
+            {'fields': ['name', 'source'], 'unique': True}
+        ]
+    }
+
+class ConceptGroup(Document):
+    name = StringField(unique=True,required=True)
+
+class ConceptVersion(Document):
+    code_system = ReferenceField(CodeSystem, required=True)
+    concept = ReferenceField(Concept, required=True)
+    alias = StringField(required=False, default='')         # latest user alias of the category
+    tags = ListField(ReferenceField(Tag), required=False)
+    group = ReferenceField(ConceptGroup, required=True)

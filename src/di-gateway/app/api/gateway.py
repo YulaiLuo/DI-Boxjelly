@@ -1,9 +1,8 @@
 from flask import request, jsonify, request, Response, make_response
 from flask import current_app as app
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 import requests
-
 
 class GatewayResource(Resource):
     """
@@ -32,7 +31,7 @@ class GatewayResource(Resource):
 
         # Check if service is supported
         if service not in self.service_map:
-            return make_response(jsonify(code=404, err="SERVICE_NOT_FOUND"), 404)
+            return make_response(jsonify(code=404, err="SERVICE_NOT_FOUND", msg="Service not found on end points, Please check your route"), 404)
 
         # Create target url
         target_url = self.service_map[service] + \
@@ -42,7 +41,7 @@ class GatewayResource(Resource):
         # Create headers with user id from token
         headers = {
             "Content-Type": request.content_type,
-            "User-ID": str(user_id)
+            "User-ID": str(user_id),
         }
 
         # Forward request to target service
@@ -52,8 +51,7 @@ class GatewayResource(Resource):
             headers=headers,
             data=request.get_data(),
             params=request.args,
-            allow_redirects=False,
-            timeout=20
+            allow_redirects=False
         )
 
         return Response(response=response.content,
@@ -70,7 +68,6 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
-        print(request.headers)
         return self._gateway(path=path)
 
     def post(self, path):
@@ -83,7 +80,6 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
-        print(request.headers)
         return self._gateway(path=path)
 
     def put(self, path):
@@ -96,7 +92,6 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
-        print(request.headers)
         return self._gateway(path=path)
 
     def delete(self, path):
@@ -109,5 +104,4 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
-        print(request.headers)
         return self._gateway(path=path)

@@ -15,7 +15,7 @@ class GetAvatarInputSchema(Schema):
 
 
 class PostAvatarInputSchema(Schema):
-    new_avatar = fields.Field(required=True)
+    file = fields.Field(required=True)
 
 
 class AvatarResource(Resource):
@@ -30,7 +30,7 @@ class AvatarResource(Resource):
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
 
         # Check if the image exits in request
-        file = in_schema['new_avatar']
+        file = in_schema['file']
         if file.filename == '':
             return make_response(jsonify(code=400, err="NO_SELECTED_FILE"), 400)
 
@@ -70,8 +70,11 @@ class AvatarResource(Resource):
 
             # Save the new avatar, remove old avatar, and update user avatar field
             try:
-                os.remove(os.path.join(
-                    app.config['AVATAR_FOLDER'], f"{old_avatar}.jpg"))
+                if old_avatar == "fae8532f1684325376":
+                    pass
+                else:
+                    os.remove(os.path.join(
+                        app.config['AVATAR_FOLDER'], f"{old_avatar}.jpg"))
             except FileNotFoundError as err:
                 pass
 

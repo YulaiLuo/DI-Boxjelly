@@ -46,4 +46,4 @@ jobs:
           sudo docker image rm di-map || true
 
           sudo docker load -i ./etc/di-map.tar
-          sudo docker run --network di -v ./etc/medcat_model:/app/controllers/medcat_model  --name di-map -d di-map:latest
+          sudo docker run --network di -v /home/ubuntu/etc/medcat_model:/src/di-map/app/controllers/medcat_model  --name di-map -d di-map:latest

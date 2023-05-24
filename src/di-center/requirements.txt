@@ -12,3 +12,7 @@ requests
 Flask-Pymongo
 marshmallow
 mongoengine
+python-dateutil
+pandas
+xlsxwriter
+openpyxl

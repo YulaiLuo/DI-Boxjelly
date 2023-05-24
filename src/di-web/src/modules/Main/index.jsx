@@ -11,8 +11,9 @@ import {
 import { Layout, Menu, Avatar, Space, Dropdown, Tooltip, Modal, Input, Form } from 'antd';
 import { useRequest } from 'ahooks';
 import { useUserStore, useMessageStore } from '../../store';
-import { getBoardList, editBoard, createBoard, deleteBoard } from './api';
+import { getBoardList, editBoard, createBoard, deleteBoard, logout } from './api';
 import { BASE_URL } from '../../utils/constant/url';
+// import { removeTokens } from '../../utils/auth';
 
 const { Sider, Header, Content } = Layout;
 const { PUBLIC_URL } = process.env;
@@ -22,7 +23,7 @@ export default function Main() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [boardId, setBoardId] = useState(null);
-  const setLoggedIn = useUserStore((state) => state.setLoggedIn);
+  const user = useUserStore((state) => state.user);
   const msgApi = useMessageStore((state) => state.msgApi);
 
   const [createBoardForm] = Form.useForm();
@@ -31,7 +32,7 @@ export default function Main() {
   const navigate = useNavigate();
   const location = useLocation();
   const teamId = localStorage.getItem('team');
-  const user = JSON.parse(localStorage.getItem('userDetail'));
+  // const user = JSON.parse(localStorage.getItem('userDetail'));
   let selectedPath = location.pathname;
   if (selectedPath === '') selectedPath = 'dashboard';
 
@@ -51,10 +52,30 @@ export default function Main() {
   const { run: runEditBoard, loading: editBoardLoading } = useRequest(editBoard, {
     manual: true,
     onSuccess: () => {
-      msgApi.success('A new board created successfully');
+      msgApi.success('The board is updated successfully');
       setIsEditModalOpen(false);
       editBoardForm.resetFields();
       refreshBoardList(teamId);
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    },
+  });
+
+  const { run: runDeleteBoard } = useRequest(deleteBoard, {
+    manual: true,
+    onSuccess: () => {
+      msgApi.success('The board is deleted successfully');
+      navigate('/dashboard', { replace: true });
+      refreshBoardList(teamId);
+    },
+  });
+
+  const { run: runLogout } = useRequest(logout, {
+    manual: true,
+    onSuccess: () => {
+      // removeTokens();
+      navigate('/login', { replace: true });
     },
   });
 
@@ -79,7 +100,6 @@ export default function Main() {
   };
 
   const onBoardEditClick = (board) => {
-    console.log('edit', board);
     editBoardForm.setFieldsValue({
       name: board.name,
       description: board.description,
@@ -88,7 +108,7 @@ export default function Main() {
   };
 
   const onBoardDeleteClick = (board) => {
-    console.log('delete', board);
+    runDeleteBoard(board.id, teamId);
   };
 
   const taskBoardItems = taskBoards.map((board) => {
@@ -101,8 +121,8 @@ export default function Main() {
         <Dropdown
           menu={{
             items: [
-              { key: 'edit', label: 'edit' },
-              { key: 'delete', label: 'delete' },
+              { key: 'edit', label: 'Edit' },
+              { key: 'delete', label: 'Delete' },
             ],
             onClick: (e) => {
               if (e.key === 'edit') {
@@ -148,19 +168,13 @@ export default function Main() {
     },
   ];
 
-  const onSignOutClick = () => {
-    setLoggedIn(false);
-    navigate('/login', { replace: true });
-  };
-
   const onProfileClick = () => {
-    console.log('go to profile page');
     navigate('/profile');
   };
 
   const onDropdownItemClick = (e) => {
     if (e.key === 'profile') onProfileClick();
-    else if (e.key === 'signOut') onSignOutClick();
+    else if (e.key === 'signOut') runLogout();
   };
 
   const handleCreateBoardModalOk = () => {
@@ -187,7 +201,7 @@ export default function Main() {
           collapsed={collapsed}
           onCollapse={(value) => setCollapsed(value)}
           breakpoint="md"
-          style={{ position: 'fixed' }}
+          style={{ position: 'fixed', height: '100vh', overflow: 'auto' }}
           theme="light"
         >
           <div class="m-4 flex items-center justify-center">
@@ -195,7 +209,7 @@ export default function Main() {
             {!collapsed && <span class="font-bold text-primary ml-2 text-xl">Mapping</span>}
           </div>
           <Menu
-            style={{ height: '100vh' }}
+            // style={{ height: '100vh', overflowY: 'scroll' }}
             onClick={onMenuItemClick}
             defaultSelectedKeys={[selectedPath]}
             selectedKeys={[selectedPath]}
@@ -204,6 +218,7 @@ export default function Main() {
             theme="light"
           />
         </Sider>
+
         <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
           <Header class="bg-white px-8 py-3 flex sticky top-0 z-10 w-full">
             {/* <span class="self-center">Header</span> */}

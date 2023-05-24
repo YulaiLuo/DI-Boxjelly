@@ -1,6 +1,8 @@
 from flask_restful import Resource
-from flask import jsonify
-from flask_jwt_extended import unset_jwt_cookies
+from flask import jsonify, request, make_response
+from flask_jwt_extended import get_jwt, jwt_required
+from app.models import BlackList
+from marshmallow import Schema, fields, ValidationError, post_load, validate, validates, validates_schema
 
 class Logout(Resource):
     """
@@ -11,13 +13,10 @@ class Logout(Resource):
 
     Example:
         >>> api = Api(app)
-        >>> api.add_resource(Logout, '/di-auth/logout', resource_class_args=(mongo,))
+        >>> api.add_resource(Logout, '/auth/logout')
     """
 
-    def __init__(self, mongo, jwt):
-        self.mongo = mongo
-        self.jwt = jwt
-
+    @jwt_required()
     def post(self):
         """
          User can log out of the system by calling this endpoint.
@@ -31,14 +30,9 @@ class Logout(Resource):
             >>> requests.post(url, headers=headers)
             {'code': 200, 'msg': 'success'} with status code 200, and remove the access token and refresh token from the cookies
         """
-        # TODO: check if the header has the cookie
-        # TODO: add the tokens to the blacklist on the server side
-
-        # Generate the success logout response
-        response = jsonify(code=200,msg="success")
-        response.status_code = 200
-
-        # This step remove the access token and refresh token from the cookies on the client side
-        unset_jwt_cookies(response)
-
-        return response
+        jti = get_jwt()['jti']
+        
+        # Save the jti to the blacklist
+        BlackList(jti=jti).save()
+                
+        return make_response(jsonify(code=200,msg="success"),200)

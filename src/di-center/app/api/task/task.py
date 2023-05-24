@@ -1,3 +1,4 @@
+import re
 from flask_restful import Resource
 from flask import jsonify, request, make_response
 from app.models import MapTask, MapItem, TaskBoard
@@ -47,9 +48,7 @@ class MapTaskResource(Resource):
       in_schema = GetMapTaskInputSchema()
       
       try:
-            # TODO: check the permission
-            # user_id = request.headers.get('user_id')
-            # team_id = team_id
+            user_id = request.headers.get('User-ID')
 
             in_schema = in_schema.load(request.args)
 
@@ -57,33 +56,42 @@ class MapTaskResource(Resource):
             size = in_schema['size']
             board_id = in_schema['board_id']
             
-            task_board = TaskBoard.objects(id=board_id,deleted=False).first()
+            task_board = TaskBoard.objects(id=ObjectId(board_id),deleted=False).first()
             if not task_board:
                return make_response(jsonify(code=404, err="BOARD_NOT_FOUND"), 404)
-            
-            all_map_tasks = MapTask.objects(board=task_board,deleted=False).order_by('-id').all()
 
-            # Paginate the tasks
-            map_tasks_page = all_map_tasks.skip((page-1)*size).limit(size)
-            
+            tasks = MapTask.objects(board=ObjectId(board_id),deleted=False).order_by('-create_at').skip((page - 1) * size).limit(size)
+            map_task_count = MapTask.objects(board=task_board.id,deleted=False).count()
+
+            # Retrieve the task creater's information
+            task_creaters = {}
+            auth_url = app.config['AUTH_SERVICE_URL']
+            for task in tasks:
+               task.create_by = str(task.create_by)
+               if task.create_by not in task_creaters:
+                  res = requests.get(auth_url+'/user', params={'user_id': task.create_by})
+                  
+                  task_creaters[task.create_by] = res.json()['data'] if res.status_code == 200 else {}
+                  task.nickname = res.json()['data']['nickname'] if res.status_code == 200 else 'USER NOT FOUND'
+
             # Convert the tasks to a list of dictionaries
-            # TODO: search pipeline
             data = {
                'page': page,
                'size': size,
                'board_name':task_board.name,
                'board_description':task_board.description,
-               'page_num': math.ceil(len(all_map_tasks)/size),
+               'page_num': math.ceil(map_task_count/size),
                'tasks':[{
                   "id": str(task.id),
                   "status": task.status,
                   "num": task.num,
-                  "create_by": str(task.create_by),
+                  "create_by": task_creaters[task.create_by],
+                  "nickname": task_creaters[task.create_by]['nickname'],
                   "create_at": task.create_at,
                   "update_at": task.update_at,
                   "file_name": str(task.file_name)
                }
-               for task in map_tasks_page]
+               for task in tasks]
             }
             
             response = jsonify(code=200, msg="ok", data=data)
@@ -108,7 +116,7 @@ class MapTaskResource(Resource):
       # TODO: Websocket
 
       # Invoke the map api to convert the raw text to snomed ct
-      res = requests.post(f'{map_url}/map/predict', json={'texts': texts})
+      res = requests.post(f'{map_url}', json={'texts': texts})
       
       if res.status_code != 200:
          new_map_task.status = 'fail'
@@ -159,8 +167,10 @@ class MapTaskResource(Resource):
          texts = []
 
          if file_ext == 'txt':
-            texts = file.readlines()
-            texts = [text.decode('utf-8').strip() for text in texts]
+            #texts = file.readlines()
+            file_content = file.read().decode('utf-8')
+            texts = re.findall(r'\d+\s+(.+)', file_content)
+            #texts = [text.decode('utf-8').strip() for text in texts]
             if texts and codecs.BOM_UTF8.decode('utf-8') in texts[0]:
                texts[0] = texts[0].replace(codecs.BOM_UTF8.decode('utf-8'), '')
 
@@ -178,6 +188,7 @@ class MapTaskResource(Resource):
             return make_response(jsonify(code=400, err="INVALID_FILE_FORMAT"), 400)
 
          user_id = request.headers.get('User-ID')
+         print("User-ID", user_id)
          new_map_task = MapTask(
                num = len(texts),
                create_by = ObjectId(user_id),
@@ -192,7 +203,7 @@ class MapTaskResource(Resource):
          new_map_task.save()
 
          # Create a new thread to process the mapping task
-         map_url = app.config['MAP_SERVICE_URL']
+         map_url = app.config['MAP_SERVICE_URL']+'/predict'
          thread = threading.Thread(target=self.map_items, args=(map_url,new_map_task, texts))
          thread.start()
 
@@ -225,10 +236,9 @@ class MapTaskResource(Resource):
       try:
          # TODO: Check if the task is permitted to be deleted by this user
 
-         # TODO: Check if the task is deleted
-
          # Change the deleted field as deleted
          MapTask.objects(id=ObjectId(in_schema['task_id'])).update_one(deleted=True)
+         MapItem.objects(task=ObjectId(in_schema['task_id'])).update(deleted=True)
 
          response = jsonify(code=200, msg="ok")
          response.status_code = 200

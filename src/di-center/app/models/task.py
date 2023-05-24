@@ -1,19 +1,19 @@
 from datetime import datetime
 from mongoengine import EmbeddedDocument, EmbeddedDocumentField, DictField, FloatField, ReferenceField, StringField, IntField, ListField, ObjectIdField, BooleanField
-from .document import DIDocument
-from .code import CodeSystem, Concept, ConceptGroup
+from .document import DIDocument as Document
+from .code import CodeSystem, Concept, ConceptGroup, ConceptVersion
 
-class Mapper(DIDocument):
+class Mapper(Document):
     name = StringField(required=True, unique=True)
     description = StringField(required=True)
 
-class TaskBoard(DIDocument):
+class TaskBoard(Document):
     team_id =  ObjectIdField(required=True)                         # id of the team
     name = StringField(required=True)                               # name of the version
     description = StringField(required=False)                       # description of the version
     deleted = BooleanField(default=False)                           # soft delete
 
-class MapTask(DIDocument):
+class MapTask(Document):
     team_id = ObjectIdField(required=True)
     board = ReferenceField(TaskBoard,required=True)                              # id of the board
     mapper_name = ReferenceField(Mapper, required=True)                   # id of the mapper
@@ -25,18 +25,18 @@ class MapTask(DIDocument):
     create_by = ObjectIdField(required=True)
     deleted = BooleanField(default=False)
 
-class MapItem(DIDocument):
+class MapItem(Document):
     # From creating task
-    task = ReferenceField(MapTask, required=True)                # id of the task
+    task = ReferenceField(MapTask, index=True, required=True)                # id of the task
     text = StringField(required=True, index=True)                   # raw text of the clinical text      
 
     # From mapper
     accuracy = FloatField()                                       # confidence score of the mapping
     mapped_concept = StringField()                   # mapped concept id
-    status = StringField(default='fail', choices=('success', 'fail', 'reviewed'))                                          # success, fail, reviewed
-    ontology = StringField()                         # ontology of the concept
+    status = StringField(default='fail', index=True, choices=('success', 'fail', 'reviewed'))                                          # success, fail, reviewed
+    ontology = StringField(index=True)                         # ontology of the concept
     extra = DictField(default={})
 
     # From curator
-    curated_concept = ReferenceField(Concept, required=False)       # curated concept id
-
+    curated_concept = ReferenceField(ConceptVersion, required=False)       # curated concept id
+    deleted = BooleanField(default=False)                           # soft delete

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Tag } from 'antd';
 import { EditableProTable } from '@ant-design/pro-components';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 
 export default function CodeCard({ data }) {
   const [editableKeys, setEditableRowKeys] = useState([]);
@@ -21,8 +21,8 @@ export default function CodeCard({ data }) {
   const columns = [
     {
       title: 'Indication',
-      key: 'name',
-      dataIndex: 'name',
+      key: 'concept_name',
+      dataIndex: 'concept_name',
       valueType: 'text',
       formItemProps: () => {
         return {
@@ -31,10 +31,21 @@ export default function CodeCard({ data }) {
       },
     },
     {
+      title: 'User Alias',
+      key: 'alias',
+      dataIndex: 'alias',
+    },
+    {
       title: 'Tags',
-      key: 'description',
-      dataIndex: 'description',
-      valueType: 'text',
+      key: 'tags',
+      dataIndex: 'tags',
+      render: (_, { tags }) => (
+        <>
+          {tags?.map((tag) => {
+            return <Tag key={tag}>{tag}</Tag>;
+          })}
+        </>
+      ),
     },
   ];
 
@@ -50,7 +61,6 @@ export default function CodeCard({ data }) {
           editableKeys,
           onSave: async (rowKey, data, row) => {
             // TODO
-            console.log(rowKey, data, row);
             data.mappingStatus = 2;
           },
           onChange: setEditableRowKeys,

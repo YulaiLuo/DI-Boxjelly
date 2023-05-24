@@ -6,9 +6,10 @@ from .task.task_board import *
 from .task.task_meta import *
 from .task.task_detail import *
 
-from .code.system import *
-from .code.concept import *
-from .code.group import *
+from .codesystem.system import *
+from .codesystem.download import *
+from .codesystem.group import *
+from .codesystem.version import *
 
 from .dashboard.dashboard import *
 
@@ -23,10 +24,10 @@ def init_api(app):
     # Create the API instance
     api = Api()
 
-    api.add_resource(CodeSystemResource, '/center')
-    api.add_resource(ConceptGroupResource, '/center/groups')
-    api.add_resource(ConceptResource, '/center/concepts')
-    api.add_resource(AllConceptResource, '/center/concepts/all')
+    api.add_resource(CodeSystemResource, '/center/codesystem')
+    api.add_resource(CodeSystemVersionResource, '/center/codesystem/versions')
+    api.add_resource(ConceptGroupResource, '/center/codesystem/groups')
+    api.add_resource(DownloadCodeSystemResource, '/center/codesystem/download/<version>')
 
     api.add_resource(MapTaskBoardsResource, '/center/boards')
     api.add_resource(MapTaskResource, '/center/boards/tasks')
@@ -39,6 +40,9 @@ def init_api(app):
     api.add_resource(TopLeftResource, '/center/dashboard/top-left')
     api.add_resource(TopMiddleResource, '/center/dashboard/top-middle')
     api.add_resource(TopRightResource, '/center/dashboard/top-right')
+    api.add_resource(HelloResource, '/center/dashboard/hello')
+    api.add_resource(MapItemStatusRatioResource, '/center/dashboard/item-status-ratio')
+    api.add_resource(PredictSingleResource, '/center/dashboard/predict')
 
     # Initialize the API
     api.init_app(app)

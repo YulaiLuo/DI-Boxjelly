@@ -12,8 +12,10 @@ import {
   Dashboard,
   CodeSystem,
   Profile,
+  Register
 } from './modules';
 import { checkAuthentication } from './utils/auth';
+import history from './utils/router';
 
 function App() {
   // global message display
@@ -27,8 +29,9 @@ function App() {
   return (
     <>
       {contextHolder}
-      <Router>
+      <Router history={history}>
         <Routes>
+          <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route element={loggedIn ? <Main /> : <Navigate to="/login" replace />}>
             <Route

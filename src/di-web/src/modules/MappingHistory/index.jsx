@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { List, Pagination, Button, Modal } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import { getAllMappingTasks, deleteMappingTask } from './api';
 import TaskCard from './components/TaskCard';
@@ -27,13 +28,12 @@ export default function MappingHistory() {
     navigate('/mapping-result', { state: { id, team_id, board_id } });
   };
 
-  const {
-    data,
-    loading,
-    refresh: refreshAllMappingTasks,
-  } = useRequest(() => getAllMappingTasks(team_id, board_id, currentPage, PAGE_SIZE), {
-    refreshDeps: [currentPage, board_id, team_id],
-  });
+  const { data, loading } = useRequest(
+    () => getAllMappingTasks(team_id, board_id, currentPage, PAGE_SIZE),
+    {
+      refreshDeps: [currentPage, board_id, team_id],
+    }
+  );
 
   const { run: onVisualizationClick } = useRequest(getMappingTaskMetaDetail, {
     manual: true,
@@ -91,11 +91,11 @@ export default function MappingHistory() {
   };
 
   return (
-    <div class="p-4 h-full">
+    <div class="p-4 ">
       {loading ? (
         <Spin />
       ) : (
-        <div>
+        <div class="h-[calc(100vh-95px)] relative">
           <VisualizationDrawer
             onClose={() => setDrawerOpen(false)}
             open={drawerOpen}
@@ -106,7 +106,7 @@ export default function MappingHistory() {
               <div class="text-xl mb-2">{boardName}</div>
               <span class="text-gray-500">{boardDescription}</span>
             </div>
-            <Button type="primary" onClick={showModal}>
+            <Button type="primary" onClick={showModal} icon={<PlusOutlined />}>
               Create Task
             </Button>
             <Modal
@@ -119,34 +119,37 @@ export default function MappingHistory() {
               <FileUploader files={files} onFileUpdate={onFileUpdate} />
             </Modal>
           </div>
-          <List
-            grid={{
-              gutter: 25,
-              xs: 1,
-              sm: 2,
-              md: 3,
-              lg: 3,
-              xl: 4,
-              xxl: 5,
-            }}
-            dataSource={mappedTasks}
-            renderItem={(item) => (
-              <List.Item>
-                <TaskCard
-                  item={item}
-                  onEditClick={() => onGetTaskDetailSuccess(item.id, team_id, board_id)}
-                  onDownloadClick={() => exportFile(team_id, item.id)}
-                  onVisualizeClick={() => {
-                    setDrawerOpen(true);
-                    onVisualizationClick(item.id);
-                  }}
-                  onDeleteClick={() => onTaskDeleteClick(item.id, team_id, board_id)}
-                />
-              </List.Item>
-            )}
-          />
+          <div class="overflow-auto h-[calc(100vh-240px)]">
+            <List
+              grid={{
+                gutter: 25,
+                xs: 1,
+                sm: 2,
+                md: 3,
+                lg: 3,
+                xl: 4,
+                xxl: 5,
+              }}
+              dataSource={mappedTasks}
+              renderItem={(item) => (
+                <List.Item>
+                  <TaskCard
+                    item={item}
+                    onEditClick={() => onGetTaskDetailSuccess(item.id, team_id, board_id)}
+                    onDownloadClick={() => exportFile(team_id, item.id)}
+                    onVisualizeClick={() => {
+                      setDrawerOpen(true);
+                      onVisualizationClick(item.id);
+                    }}
+                    onDeleteClick={() => onTaskDeleteClick(item.id, team_id, board_id)}
+                  />
+                </List.Item>
+              )}
+            />
+          </div>
+
           {tasks.length !== 0 && (
-            <div class="flex flex-row-reverse">
+            <div class="absolute bottom-2 right-0">
               <Pagination
                 showQuickJumper
                 current={currentPage}

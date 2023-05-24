@@ -7,6 +7,7 @@ import csv
 import io
 from bson import ObjectId
 from marshmallow import Schema, fields, ValidationError, validates
+import traceback
 
 
 class GetDownloadMapTaskInputSchema(Schema):
@@ -45,28 +46,29 @@ class DownloadMapTaskResource(Resource):
         csv_writer.writerow(['Text', 'Output', 'Confidence',
                             'Source', 'Curated UIL', 'Status'])
         for item in map_items:
-            csv_writer.writerow([item.text,
-                            '-' if not item.mapped_concept else item.mapped_concept,
-                          '-' if not item.accuracy else item.accuracy,
-                          '-' if not item.ontology else item.ontology,
-                          '-' if not item.curated_concept else item.curated_concept.name,
-                          item.status])
-            
-            # map_info = item['mapped_info']
-            # if map_info:
-            #     csv_writer.writerow([item['text'],
-            #                          item['mapped_concept'],
-            #                          item['confidence'],
-            #                          item['ontology'],
-            #                          item['curat,
-            #                          item['status']])
-            # else:
-            #     csv_writer.writerow([item['text'],
-            #                          '-',
-            #                          '-',
-            #                          '-',
-            #                          '-',
-            #                          item['status']])
+            status = item['status']
+
+            if status == 'success':
+                csv_writer.writerow([item['text'],
+                                    item['mapped_concept'],
+                                    item['accuracy'] if item['ontology'] != 'UIL' else '-',
+                                    item['ontology'],
+                                    '-' if item['curated_concept'] == None else item['curated_concept']['concept']['name'],
+                                     status])
+            elif status == 'reviewed':
+                csv_writer.writerow([item['text'],
+                                     item['mapped_concept'],
+                                     item['accuracy'] if item['ontology'] != 'UIL' else '-',
+                                     item['ontology'],
+                                     '-' if item['curated_concept'] == None else item['curated_concept']['concept']['name'],
+                                     status])
+            else:
+                csv_writer.writerow([item['text'],
+                                     '-',
+                                     '-',
+                                     '-',
+                                     '-',
+                                     item['status']])
 
         return csv_data.getvalue().encode('utf-8')
 
@@ -99,4 +101,5 @@ class DownloadMapTaskResource(Resource):
 
         except Exception as err:
             print(err)
+            print(traceback.print_exc())
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)

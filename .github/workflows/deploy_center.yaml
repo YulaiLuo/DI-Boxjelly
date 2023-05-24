@@ -22,7 +22,7 @@ jobs:
     
     - name: Save center Docker image as a file
       run: |
-        sudo docker save di-center -o di-center.tar
+        sudo docker save di-uil -o di-center.tar
 
     - name: Copy center Docker image to instance
       uses: appleboy/scp-action@v0.1.4
