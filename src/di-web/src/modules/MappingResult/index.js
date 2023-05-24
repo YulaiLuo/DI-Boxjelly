@@ -33,7 +33,7 @@ export default function MappingResult() {
     const source = item.ontology;
     const confidence =
       item.status !== 'fail' && source !== 'UIL'
-        ? Number(item.extra['3'].value * 100).toFixed(2) + '%'
+        ? Number(item.accuracy * 100).toFixed(2) + '%'
         : null;
 
     return {
