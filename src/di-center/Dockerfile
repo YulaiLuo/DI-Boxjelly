@@ -7,7 +7,7 @@ FROM python:3.9.16-slim-bullseye
 WORKDIR /src/di-center
 
 # duplicate the required library into the base image
-COPY requirements.txt requirements.txt
+COPY requirements.txt requirements.txt -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
 RUN pip3 install -r requirements.txt
 
 # copy all file into the image

@@ -30,7 +30,7 @@ class Config:
 
     # Microservice Map
     SERVICE_MAP = {
-        "auth": "http://localhost:8001/auth",
-        "center": "http://localhost:8002/center",
-        "map": "http://localhost:8003/map"
+        "auth": "http://di-auth:8001/auth",
+        "center": "http://di-center:8002/center",
+        "map": "http://di-map:8003/map"
     }
