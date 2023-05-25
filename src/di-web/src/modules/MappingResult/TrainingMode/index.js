@@ -29,6 +29,19 @@ const TrainingMode = forwardRef((props, ref) => {
     form: filterForm,
   }));
 
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      await exportFile(team_id, taskId);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const [editableKeys, setEditableRowKeys] = useState([]);
   const { data: meta_data } = useRequest(() => getMappingTaskMetaDetail(taskId));
   const { data: codeSystemList } = useRequest(getCodeSystemList, {
@@ -127,8 +140,9 @@ const TrainingMode = forwardRef((props, ref) => {
                   <Button
                     type="primary"
                     size="large"
-                    onClick={() => exportFile(team_id, taskId)}
+                    onClick={handleExport}
                     icon={<DownloadOutlined />}
+                    disabled={isExporting}
                   >
                     Export
                   </Button>
