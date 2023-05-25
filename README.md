@@ -113,7 +113,7 @@ More details about the sub-directories can be found in docs directory [repositor
 ## Demo and preview
 
 A demo video is available:
-[![Watch the video](./docs/images/login.png)](https://www.youtube.com/watch?v=zaSCr7h_XnI)
+[![Watch the video](./docs/images/login.png)](https://youtu.be/BC8NPPdGJ6M)
 
 ## Prototypes
 
