@@ -47,14 +47,22 @@ class DownloadMapTaskResource(Resource):
                             'Source', 'Curated UIL', 'Status'])
         for item in map_items:
             status = item['status']
-
             if status == 'success':
-                csv_writer.writerow([item['text'],
-                                    item['mapped_concept'],
-                                    item['accuracy'] if item['ontology'] != 'UIL' else '-',
-                                    item['ontology'],
-                                    '-' if item['curated_concept'] == None else item['curated_concept']['concept']['name'],
-                                     status])
+                if item['extra'].get('2'):
+                    csv_writer.writerow([item['text'],
+                                        item['mapped_concept'],
+                                        item['accuracy'] if (item['ontology'] != 'UIL') | (
+                                            item['extra']['2']['value'] == 'UIL') else '-',
+                                        item['ontology'],
+                                        '-' if item['curated_concept'] == None else item['curated_concept']['concept']['name'],
+                                         status])
+                else:
+                    csv_writer.writerow([item['text'],
+                                        item['mapped_concept'],
+                                        item['accuracy'] if item['ontology'] != 'UIL' else '-',
+                                        item['ontology'],
+                                        '-' if item['curated_concept'] == None else item['curated_concept']['concept']['name'],
+                                         status])
             elif status == 'reviewed':
                 csv_writer.writerow([item['text'],
                                      item['mapped_concept'],

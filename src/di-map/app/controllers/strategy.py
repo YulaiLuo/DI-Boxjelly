@@ -6,6 +6,7 @@ from fuzzywuzzy import fuzz
 from pymongo import UpdateOne
 import threading
 import re
+from .ontoserver import check_uil_with_ontoserver
 
 
 class Strategy(ABC):
@@ -92,8 +93,27 @@ class PredictStrategy(Strategy):
         # step 1: Read texts from the requests
         texts = data['texts']
 
+        # (TO-DO) step 1.5: Check UIL using Ontoserver expand
+        uil_check_results = check_uil_with_ontoserver(texts)
+
         # step 2: Predict the texts to snomed-ct using MedCAT
         medcat_predictions = self._medcat_predict(cat, texts)
+
+        # step 2.5: Replace medcat_predictions with UIL results if available
+        for idx, result in uil_check_results.items():
+            if idx in medcat_predictions:
+                medcat_predictions[idx] = {
+                    "accuracy": result['similarity'],
+                    # now it's custom code by index instead of sct code
+                    "sct_code": result['uil_code'],
+                    "sct_term": result['uil_name'],
+                    "sct_pretty_name": result['uil_name'],
+                    "sct_status": 'UIL',
+                    "sct_status_confidence": result['similarity'],
+                    "sct_types": ['UIL'],
+                    "sct_types_ids": 0,
+                    "status": 'success'
+                }
 
         # step 3: (Concept Map) Convert the smoed-ct codes to UIL codes based on the history snomed-ct curation
         curated_results = self._translate_to_uil(medcat_predictions, texts)
@@ -201,35 +221,66 @@ class PredictStrategy(Strategy):
             else:
                 history_map = sct_dict.get(prediction['sct_code'], None)
                 uil_name = None if not history_map else history_map['curated_uil_name']
-                result[idx] = {
-                    'text': texts[int(idx)],
-                    'name': uil_name if uil_name else prediction['sct_pretty_name'],
-                    'ontology': 'UIL' if uil_name else 'SNOMED-CT',
-                    'accuracy': prediction['accuracy'],
-                    'status': 'success',
-                    'extra': {
-                        '0': {
-                            'display_name': 'SNOMED-CT Code',
-                            'value': prediction['sct_code']
-                        },
-                        '1': {
-                            'display_name': 'SNOMED-CT Name',
-                            'value': prediction['sct_term']
-                        },
-                        '2': {
-                            'display_name': 'SNOMED-CT Status',
-                            'value': prediction['sct_status']
-                        },
-                        '3': {
-                            'display_name': 'SNOMED-CT Status Confidence',
-                            'value': prediction['sct_status_confidence']
-                        },
-                        '4': {
-                            'display_name': 'SNOMED-CT Status Types',
-                            'value': ' '.join(prediction['sct_types'])
+                if prediction['sct_status'] == 'UIL':
+                    result[idx] = {
+                        'text': texts[int(idx)],
+                        'name': prediction['sct_pretty_name'],
+                        'ontology': 'UIL',
+                        'accuracy': prediction['accuracy'],
+                        'status': 'success',
+                        'extra': {
+                            '0': {
+                                'display_name': 'UIL Code',
+                                'value': prediction['sct_code']
+                            },
+                            '1': {
+                                'display_name': 'UIL Name',
+                                'value': prediction['sct_term']
+                            },
+                            '2': {
+                                'display_name': 'UIL Status',
+                                'value': prediction['sct_status']
+                            },
+                            '3': {
+                                'display_name': 'UIL Status Confidence',
+                                'value': prediction['sct_status_confidence']
+                            },
+                            '4': {
+                                'display_name': 'UIL Status Types',
+                                'value': ' '.join(prediction['sct_types'])
+                            }
                         }
                     }
-                }
+                else:
+                    result[idx] = {
+                        'text': texts[int(idx)],
+                        'name': uil_name if uil_name else prediction['sct_pretty_name'],
+                        'ontology': 'UIL' if uil_name else 'SNOMED-CT',
+                        'accuracy': prediction['accuracy'],
+                        'status': 'success',
+                        'extra': {
+                            '0': {
+                                'display_name': 'SNOMED-CT Code',
+                                'value': prediction['sct_code']
+                            },
+                            '1': {
+                                'display_name': 'SNOMED-CT Name',
+                                'value': prediction['sct_term']
+                            },
+                            '2': {
+                                'display_name': 'SNOMED-CT Status',
+                                'value': prediction['sct_status']
+                            },
+                            '3': {
+                                'display_name': 'SNOMED-CT Status Confidence',
+                                'value': prediction['sct_status_confidence']
+                            },
+                            '4': {
+                                'display_name': 'SNOMED-CT Status Types',
+                                'value': ' '.join(prediction['sct_types'])
+                            }
+                        }
+                    }
 
         return result
 

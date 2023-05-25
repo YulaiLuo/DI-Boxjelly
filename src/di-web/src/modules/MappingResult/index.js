@@ -31,8 +31,9 @@ export default function MappingResult() {
   const transformedItems = mappedItems.map((item) => {
     const mappingStatus = item.status !== 'fail' ? (item.status === 'success' ? 1 : 2) : 0;
     const source = item.ontology;
+    const uilStatus = item.extra?.['2']?.value;
     const confidence =
-      item.status !== 'fail' && source !== 'UIL'
+      (item.status !== 'fail' && source !== 'UIL') || uilStatus == 'UIL'
         ? Number(item.accuracy * 100).toFixed(2) + '%'
         : null;
 
