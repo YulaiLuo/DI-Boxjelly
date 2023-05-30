@@ -24,8 +24,8 @@
   - [Requirements](#requirements)
     - [System requirments](#system-requirments)
     - [Environment requirments](#environment-requirments)
-  - [Demo and preview](#demo-and-preview)
-  - [Prototypes](#prototypes)
+  - [Website Demo](#website-demo)
+  - [Website Preview](#website-preview)
         - [Main page:](#main-page)
         - [Mapping result (Inference Mode):](#mapping-result-inference-mode)
         - [Mapping result (Training Mode):](#mapping-result-training-mode)
@@ -110,14 +110,14 @@ More details about the sub-directories can be found in docs directory [repositor
 
         conda install ansible
 
-## Demo and preview
+## Website Demo
 
 A demo video is available:
 [![Watch the video](./docs/images/login.png)](https://www.youtube.com/watch?v=zaSCr7h_XnI)
 
-## Prototypes
+## Website Preview
 
-The following prototypes show the main page and the mapping results of this project. More prototypes are available in the prototype directory.
+The preview below showcases the current version of our website including main page and the mapping results. You can find additional design options and earlier versions in the prototype directory. 
 
 ##### Main page:
 
