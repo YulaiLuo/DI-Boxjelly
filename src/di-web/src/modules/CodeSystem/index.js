@@ -9,6 +9,7 @@ import {
   createNewCodeSystem,
   getAllCodeSystemVersion,
   deleteCodeSystem,
+  exportCodeSystem,
 } from './api';
 import { FileUploader, Spin } from '../../components';
 import { useMessageStore } from '../../store';
@@ -68,6 +69,13 @@ export default function CodeSystem() {
         runGetCodeSystemList();
         runGetAllCodeSystemVersion();
       },
+    }
+  );
+
+  const { run: runExportCodeSystem, loading: exportCodeSystemLoading } = useRequest(
+    exportCodeSystem,
+    {
+      manual: true,
     }
   );
 
@@ -154,7 +162,12 @@ export default function CodeSystem() {
           <Button type="primary" onClick={() => setIsModalOpen(true)} icon={<PlusOutlined />}>
             Code System
           </Button>
-          <Button type="primary" onClick={() => {}} icon={<DownloadOutlined />}>
+          <Button
+            type="primary"
+            loading={exportCodeSystemLoading}
+            onClick={() => runExportCodeSystem(codeSystemList?.data?.version)}
+            icon={<DownloadOutlined />}
+          >
             Export
           </Button>
           <Popconfirm

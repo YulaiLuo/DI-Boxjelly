@@ -1,18 +1,16 @@
 from flask_restful import Resource
 from marshmallow import Schema, fields, ValidationError, validates
 from flask import jsonify, request, make_response
-from app.models import MapTask, MapItem, TaskBoard, Concept
+from app.models import MapTask, MapItem, TaskBoard, Concept, ConceptVersion
 from bson import ObjectId
 from mongoengine.errors import DoesNotExist
 from flask import current_app as app
 import requests, traceback
 
 class PostMapTaskCurateSchema(Schema):
-    # board_id = fields.String(required=True)
-    # team_id = fields.String(required=True)
     map_item_id = fields.String(required=True)
-    concept_id = fields.String(required=True)
-
+    concept_name = fields.String(required=True)
+    codesystem_version = fields.String(required=True)
 
 class MapTaskCurateResource(Resource):
     
@@ -27,13 +25,12 @@ class MapTaskCurateResource(Resource):
         map_item = MapItem.objects(id=in_schema['map_item_id']).first()
         if not map_item:
             return make_response(jsonify(code=404, err="MAP_ITEM_NOT_FOUND"), 404)
-        curated_concept = Concept.objects(id=in_schema['concept_id']).first()
-        if not curated_concept:
+        
+        curated_concept_version = ConceptVersion.objects(concept__name=in_schema['concept_name'], code_system__version=in_schema['code_system_version']).first()
+        if not curated_concept_version:
             return make_response(jsonify(code=404, err="CONCEPT_NOT_FOUND"), 404)
-
         try:            
-            
-            map_item.curated_concept = curated_concept
+            map_item.curated_concept = curated_concept_version
             map_item.status = 'reviewed'
             
             # Send this curate to the mapper
@@ -52,12 +49,11 @@ class MapTaskCurateResource(Resource):
             data = {
                 "id": str(map_item.id),
                 "text": map_item.text,
-                "concept": curated_concept.name,
+                "concept": curated_concept_version.concept.name,
                 "confidence": 0,   
-                "source": curated_concept.code_system.name,
-                "status": map_item.status,
-                "concept_id": str(curated_concept.id),
-                "source_id": str(curated_concept.code_system.id)
+                "codesystem_name": curated_concept_version.code_system.name,
+                "codesystem_version": curated_concept_version.code_system.version,
+                "status": map_item.status
             }
             return make_response(jsonify(code=200, msg="ok", data=data), 200)
         except Exception as err:
