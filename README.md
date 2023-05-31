@@ -6,6 +6,7 @@
 ![Python Version](https://img.shields.io/badge/flask-v2.2.2%2B-red)
 ![Python Version](https://img.shields.io/badge/react-v18.2.0%2B-red)
 ![Python Version](https://img.shields.io/badge/release-1.2.0%2B-green)
+<!-- ![web workflow](https://github.com/github/docs/actions/workflows/deploy_web.yml/badge.svg) -->
 
 <!-- ![Code Coverage](https://img.shields.io/badge/coverage-10%-red) -->
 

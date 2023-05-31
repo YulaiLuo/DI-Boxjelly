@@ -19,7 +19,7 @@ EXPOSE 8001
 CMD ["gunicorn" , "main:app", "-c", "gunicorn_config.py"]
 
 # Build image:
-# sudo docker image build -t di_auth .
+# sudo docker image build -t di-auth .
 
 # Run the container:
-# sudo docker run -d --name di_auth --network di -p 0.0.0.0:8001:8001 di_auth:latest 
+# sudo docker run -d --name di-auth --network di -p 0.0.0.0:8001:8001 di-auth:latest 

@@ -19,7 +19,7 @@ EXPOSE 8002
 CMD ["gunicorn" , "main:app", "-c", "gunicorn_config.py"]
 
 # Build image:
-# sudo docker image build -t di_common .
+# sudo docker image build -t di-common .
 
 # Run the container:
-# sudo docker run -d --name di_common --network di -p 0.0.0.0:8001:8001 di_common:latest 
+# sudo docker run -d --name di-common --network di -p 0.0.0.0:8001:8001 di-common:latest 

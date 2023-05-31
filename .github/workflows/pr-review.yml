@@ -12,4 +12,5 @@ jobs:
           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
           github_token: ${{ secrets.MY_GITHUB_TOKEN }}
           github_pr_id: ${{ github.event.number }}
+          openai_max_tokens: "1024"
           file: "src/*.py,src/di-web/**/*.js,src/di-web/**/*.jsx"
