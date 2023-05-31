@@ -63,7 +63,7 @@ class CodeSystemResource(Resource):
          'groups':result
       }
 
-      return make_response(jsonify(code=200, msg='ok', date=data))
+      return make_response(jsonify(code=200, msg='ok', data=data))
 
    def post(self):
       """

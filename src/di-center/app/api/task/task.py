@@ -48,7 +48,6 @@ class MapTaskResource(Resource):
       in_schema = GetMapTaskInputSchema()
       
       try:
-            # TODO: check the permission
             user_id = request.headers.get('User-ID')
 
             in_schema = in_schema.load(request.args)
@@ -57,63 +56,62 @@ class MapTaskResource(Resource):
             size = in_schema['size']
             board_id = in_schema['board_id']
             
-            task_board = TaskBoard.objects(id=board_id,deleted=False).first()
+            task_board = TaskBoard.objects(id=ObjectId(board_id),deleted=False).first()
             if not task_board:
                return make_response(jsonify(code=404, err="BOARD_NOT_FOUND"), 404)
             
-            map_task_count = MapTask.objects(board=task_board,deleted=False).count()
+            tasks = MapTask.objects(board=ObjectId(board_id),deleted=False).order_by('-create_at').all()
+            print(len(tasks))
 
-            # Paginate the tasks
-            map_tasks_page = MapTask.objects(board=task_board,deleted=False).order_by('-id').skip((page-1)*size).limit(size)
-            
             pipeline = [
                {"$match": {"board": ObjectId(board_id), "deleted": False}},
-               {"$skip": (page - 1) * size},
-               {"$limit": size},
                {"$lookup": {
-                  "from": "user",  
+                  "from": "user",
                   "localField": "create_by",
                   "foreignField": "_id",
                   "as": "creator"
                }},
-               {"$unwind": {"path": "$creator"}},
+               {"$unwind": "$creator"},
                {"$lookup": {
-                  "from": "map_item",   
+                  "from": "map_item",
                   "localField": "_id",
                   "foreignField": "task",
                   "as": "map_items"
                }},
-               {"$unwind": {"path": "$map_items", "preserveNullAndEmptyArrays": True}},
-               {"$group": {
-                  "_id": "$_id",
-                  "status": {"$first": "$status"},
-                  "num": {"$first": "$num"},
-                  "create_at": {"$first": "$create_at"},
-                  "update_at": {"$first": "$update_at"},
-                  "file_name": {"$first": "$file_name"},
-                  "creator_id": {"$first": "$creator._id"},
-                  "creator_nickname": {"$first": "$creator.nickname"},
-                  "fail_count": {"$sum": {"$cond": [{"$eq": ["$map_items.status", "fail"]}, 1, 0]}},
-                  "success_count": {"$sum": {"$cond": [{"$eq": ["$map_items.status", "success"]}, 1, 0]}},
-                  "reviewed_count": {"$sum": {"$cond": [{"$eq": ["$map_items.status", "reviewed"]}, 1, 0]}}
-               }},
                {"$project": {
-                  "id": 1,
+                  "id": "$_id",
                   "status": 1,
                   "num": 1,
                   "create_at": 1,
                   "update_at": 1,
                   "file_name": 1,
-                  "creator_id": 1,
-                  "creator_nickname": 1,
-                  "fail_count": 1,
-                  "success_count": 1,
-                  "reviewed_count": 1
+                  "creator_id": "$creator._id",
+                  "creator_nickname": "$creator.nickname",
+                  "fail_count": {"$size": {"$filter": {
+                     "input": "$map_items",
+                     "as": "item",
+                     "cond": {"$eq": ["$$item.status", "fail"]}
+                  }}},
+                  "success_count": {"$size": {"$filter": {
+                     "input": "$map_items",
+                     "as": "item",
+                     "cond": {"$eq": ["$$item.status", "success"]}
+                  }}},
+                  "reviewed_count": {"$size": {"$filter": {
+                     "input": "$map_items",
+                     "as": "item",
+                     "cond": {"$eq": ["$$item.status", "reviewed"]}
+                  }}}
                }},
-               {"$sort": {"create_at": -1}}
+               {"$sort": {"create_at": -1}},
+               {"$skip": (page - 1) * size},
+               {"$limit": size}
             ]
 
             map_tasks_page = list(MapTask.objects.aggregate(*pipeline))
+            map_task_count = MapTask.objects(board=task_board.id,deleted=False).count()
+
+            print(map_tasks_page,map_task_count)
 
             # Convert the tasks to a list of dictionaries
             data = {
@@ -160,7 +158,7 @@ class MapTaskResource(Resource):
       # TODO: Websocket
 
       # Invoke the map api to convert the raw text to snomed ct
-      res = requests.post(f'{map_url}/map/predict', json={'texts': texts})
+      res = requests.post(f'{map_url}', json={'texts': texts})
       
       if res.status_code != 200:
          new_map_task.status = 'fail'
@@ -232,6 +230,7 @@ class MapTaskResource(Resource):
             return make_response(jsonify(code=400, err="INVALID_FILE_FORMAT"), 400)
 
          user_id = request.headers.get('User-ID')
+         print("User-ID", user_id)
          new_map_task = MapTask(
                num = len(texts),
                create_by = ObjectId(user_id),

@@ -7,7 +7,7 @@ from datetime import datetime
 from flask import current_app as app
 
 
-class PostInviteInputSchema(Schema):
+class InviteInputSchema(Schema):
     team_id = fields.String(required=True)
 
     @validates('team_id')
@@ -41,13 +41,14 @@ class PostAcceptInviteInputSchema(Schema):
             data['nickname'] = f"{data['first_name']} {data['last_name']}"
         return data
 
+
 class InviteResource(Resource):
-    def post(self):
+    def get(self):
         """ Generate an invitation token to invite members into the team
         """
 
         try:
-            in_schema = PostInviteInputSchema()  # team id
+            in_schema = InviteInputSchema()  # team id
             in_schema = in_schema.load(request.args)
         except ValidationError as err:
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)

@@ -8,3 +8,4 @@ export { default as RetrainHistory } from './RetrainHistory';
 export { default as TeamProfile } from './TeamProfile';
 export { default as Dashboard } from './Dashboard';
 export { default as CodeSystem } from './CodeSystem';
+export { default as Register } from './Register';

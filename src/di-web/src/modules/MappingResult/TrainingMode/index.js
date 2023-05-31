@@ -1,6 +1,6 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { useRequest } from 'ahooks';
-import { BarChartOutlined } from '@ant-design/icons';
+import { BarChartOutlined, DownloadOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';
 import { Form, Col, Row, Button, Select, Space, Pagination, Slider } from 'antd';
 import { getColumns } from './columns';
@@ -127,7 +127,12 @@ const TrainingMode = forwardRef((props, ref) => {
                   Reset
                 </Button>
                 <span class="ml-4">
-                  <Button type="primary" size="large" onClick={() => exportFile(team_id, taskId)}>
+                  <Button
+                    type="primary"
+                    size="large"
+                    onClick={() => exportFile(team_id, taskId)}
+                    icon={<DownloadOutlined />}
+                  >
                     Export
                   </Button>
                 </span>
