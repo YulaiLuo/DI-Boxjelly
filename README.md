@@ -104,7 +104,7 @@ Make sure you have the access to Ontoserver, and the client_id, client secrete r
 ## Website Demo
 
 A demo video is available:
-[![Watch the video](./docs/images/login.png)](https://www.youtube.com/watch?v=zaSCr7h_XnI)
+[![Watch the video](./docs/images/login.png)](https://youtu.be/BC8NPPdGJ6M)
 
 ## Website Preview
 
