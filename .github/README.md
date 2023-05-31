@@ -8,7 +8,7 @@ Run the following command on the instance your want to deploy the instance
 
         sudo docker run -d --restart always --name github-runner \
             -e REPO_URL="https://github.com/COMP90082-2023-SM1/DI-Boxjelly" \
-            -e RUNNER_NAME="di-github-runner-1" \
+            -e RUNNER_NAME="github-runner" \
             -e RUNNER_TOKEN=<Runner Token> \
             -e RUNNER_WORKDIR="/DI-Boxjelly/_runner_workdir" \
             -v /var/run/docker.sock:/var/run/docker.sock \
