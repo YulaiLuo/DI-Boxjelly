@@ -106,7 +106,7 @@ Note: Deploy di-map and di-web may take some times. Build the image of di-map re
 
 - Docker: Following the [offical docker installation](https://docs.docker.com/engine/install/ubuntu/)
 
-- Ontoserver: Make sure you have the access to Ontoserver, and the client_id, client secrete requireed by Ontoserver docker compose file
+- Ontoserver: Make sure you have the access to Ontoserver, and the client_id, client secrete requireed by Ontoserver docker compose file. Note that Ontoserver is offcially supported on Docker version 1.10.3
 
 ## Website Demo
 
