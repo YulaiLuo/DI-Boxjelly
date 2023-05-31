@@ -14,30 +14,30 @@ def init_jwt(app):
 
     @jwt.unauthorized_loader
     def custom_unauthorized_response(header_error):
-        response = jsonify(code=401 ,err="UNAUTHORIZED", msg="Missing or invalid token")
+        response = jsonify(code=401 ,err="UNAUTHORIZED", msg=header_error)
         response.status_code = 401
         return response
 
     @jwt.expired_token_loader
     def custom_expired_token_response(header_error):
-        response = jsonify(code=401 ,err="TOKEN_EXPIRED", msg="Token has expired")
+        response = jsonify(code=401 ,err="TOKEN_EXPIRED", msg=header_error)
         response.status_code = 401
         return response
 
     @jwt.revoked_token_loader
     def custom_revoked_token_response(header_error):
-        response = jsonify(code=401 ,err="TOKEN_REVOKED", msg="Token has been revoked")
+        response = jsonify(code=401 ,err="TOKEN_REVOKED", msg=header_error)
         response.status_code = 401
         return response
 
     @jwt.invalid_token_loader
     def custom_invalid_token_response(header_error):
-        response = jsonify(code=401 ,err="INVALID_TOKEN_TYPE", msg="Invalid token type")
+        response = jsonify(code=401 ,err="INVALID_TOKEN_TYPE", msg=header_error)
         response.status_code = 401
         return response
 
     @app.errorhandler(InvalidTokenError)
     def custom_jwt_decode_error_response(header_error):
-        response = jsonify(code=401 ,err="WRONG_TOKEN", msg="Error decoding the token")
+        response = jsonify(code=401 ,err="WRONG_TOKEN", msg=header_error)
         response.status_code = 401
         return response

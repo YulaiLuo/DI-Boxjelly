@@ -5,3 +5,5 @@ requests
 Flask-Pymongo
 marshmallow
 medcat
+fuzzywuzzy
+mongoengine

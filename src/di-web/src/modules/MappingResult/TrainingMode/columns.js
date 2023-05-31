@@ -1,114 +1,96 @@
-import { Space, Badge, Tooltip } from 'antd';
-import { EyeOutlined, ToolOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+import { ToolOutlined } from '@ant-design/icons';
 import { UNIVERSAL_INDICATION_LIST } from '../../../utils/constant/indicationList';
-
-const options = UNIVERSAL_INDICATION_LIST.map((item) => {
-  return {
-    value: item.group,
-    label: item.group,
-    children: item.children.map((child) => ({
-      value: child,
-      label: child,
-    })),
-  };
-});
 
 /**
  * @see {@link https://procomponents.ant.design/en-US/components/table#columns-column-definition}
  */
-export const columns = [
-  {
-    title: 'Raw text',
-    dataIndex: 'originalDisplay',
-    key: 'originalDisplay',
-    width: '20%',
-    ellipsis: {
-      showTitle: true,
+export const getColumns = (options) => {
+  const filter = (inputValue, path) =>
+    path.some((option) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
+
+  return [
+    {
+      title: 'Raw text',
+      dataIndex: 'originalText',
+      key: 'originalText',
+      width: 260,
+      ellipsis: {
+        showTitle: true,
+      },
+      readonly: true,
     },
-    readonly: true,
-    render: (text, record) => (
-      <Tooltip
-        placement="topLeft"
-        title={<span style={{ color: '#fff' }}>{record.originalDisplay}</span>}
-      >
-        {text}
-      </Tooltip>
-    ),
-  },
-  {
-    title: 'Output of the mapping tool',
-    dataIndex: 'display',
-    key: 'display',
-    width: '20%',
-    ellipsis: {
-      showTitle: true,
+    {
+      title: 'Output of the mapping tool',
+      dataIndex: 'mappedText',
+      key: 'mappedText',
+      width: 260,
+      ellipsis: {
+        showTitle: true,
+      },
+      readonly: true,
     },
-    readonly: true,
-    render: (text, record) => {
-      console.log('record', record);
-      if (record.mappingSuccess === true)
-        return (
-          <Tooltip
-            placement="topLeft"
-            title={<span style={{ color: '#fff' }}>{record.display}</span>}
-          >
-            {text}
-          </Tooltip>
-        );
-      else return '-';
+    {
+      title: 'Confidence',
+      key: 'confidence',
+      dataIndex: 'confidence',
+      readonly: true,
     },
-  },
-  {
-    title: 'Similarity / confidence score',
-    key: 'similarity',
-    dataIndex: 'similarity',
-    readonly: true,
-    render: () => {
-      return '-';
+    {
+      title: 'Source',
+      key: 'source',
+      dataIndex: 'source',
+      readonly: true,
     },
-  },
-  {
-    title: 'Source',
-    key: 'source',
-    dataIndex: 'source',
-    readonly: true,
-    render: () => {
-      return 'SNOMED-CT';
+    {
+      title: 'Status',
+      dataIndex: 'mappingStatus',
+      key: 'mappingStatus',
+      ellipsis: true,
+      readonly: true,
+      valueType: 'select',
+      valueEnum: {
+        0: { text: 'Fail', status: 'Error' },
+        1: {
+          text: 'Success',
+          status: 'Success',
+        },
+        2: {
+          text: 'Reviewed',
+          status: 'warning',
+        },
+      },
     },
-  },
-  {
-    title: 'Curated Category',
-    key: 'curatedCategory',
-    dataIndex: 'curatedCategory',
-    render: (_, row) => {
-      if (row.curatedCategory === null || row.curatedCategory === undefined) return '-';
-      else return row.curatedCategory[row.curatedCategory.length - 1];
+    {
+      title: 'Curated Category',
+      key: 'curate',
+      dataIndex: 'curate',
+      width: 260,
+      // render: (s, row) => {
+      //   console.log('ass', s, row);
+      //   if (row.curate === null || row.curate === undefined) return '-';
+      //   else return row.curate[row.curate.length - 1];
+      // },
+      valueType: 'cascader',
+      fieldProps: (form, config, x) => {
+        // console.log('sss', form, config, x);
+        return {
+          options,
+          showSearch: {
+            filter,
+          },
+          displayRender: (labels) => labels[labels.length - 1], // just show the leaf item
+        };
+      },
     },
-    valueType: 'cascader',
-    fieldProps: {
-      options,
-      displayRender: (labels) => labels[labels.length - 1], // just show the leaf item
-    },
-  },
-  {
-    title: 'Status',
-    dataIndex: 'mappingSuccess',
-    key: 'mappingSuccess',
-    ellipsis: true,
-    readonly: true,
-    render: (_, record) => {
-      if (record.mappingSuccess === true) return <Badge status="success" text="Success" />;
-      else return <Badge status="error" text="Fail" />;
-    },
-  },
-  {
-    title: 'Action',
-    width: '7%',
-    valueType: 'option',
-    render: (text, record, _, action) => (
-      <Space size="middle">
+    {
+      title: 'Action',
+      width: '120',
+      fixed: 'right',
+      valueType: 'option',
+      render: (text, record, _, action) => (
         <span
-          class="cursor-pointer"
+          class="cursor-pointer pl-3"
           key="editable"
           onClick={() => {
             action?.startEditable?.(record.id);
@@ -116,10 +98,7 @@ export const columns = [
         >
           <ToolOutlined />
         </span>
-        <span class="cursor-pointer">
-          <EyeOutlined />
-        </span>
-      </Space>
-    ),
-  },
-];
+      ),
+    },
+  ];
+};

@@ -1,0 +1,24 @@
+from flask_restful import Api
+from .mapper import PredictResource, RetrainResource, ResetResource
+
+def init_api(app):
+    """
+    Initialize the API, adding all routes to the Flask app.
+
+    Args:
+        app (Flask): The Flask app
+    """
+
+    # Create the API instance
+    api = Api()
+
+    # Add mapper resources
+    api.add_resource(PredictResource, '/map/predict', )
+    api.add_resource(RetrainResource, '/map/retrain')
+    api.add_resource(ResetResource, '/map/reset')
+
+    # Initialize the API
+    api.init_app(app)
+
+
+

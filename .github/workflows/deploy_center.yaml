@@ -1,0 +1,47 @@
+name: Deploy di-center on DEV server
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'src/di-center/**'
+
+jobs:
+  DEV_build_and_deploy:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Create center docker image
+      working-directory: src/di-center
+      run: |
+        sudo docker image build -t di-center . 
+    
+    - name: Save center Docker image as a file
+      run: |
+        sudo docker save di-uil -o di-center.tar
+
+    - name: Copy center Docker image to instance
+      uses: appleboy/scp-action@v0.1.4
+      with:
+        host: ${{ secrets.DEV_SERVER_IP }}
+        username: ${{ secrets.DEV_SERVER_USERNAME }}
+        key: ${{ secrets.DEV_SERVER_PRIVATE_KEY }}
+        source: "di-center.tar"
+        target: "etc"
+
+    - name: Load and deploy center image 
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.DEV_SERVER_IP }}
+        username: ${{ secrets.DEV_SERVER_USERNAME }}
+        key: ${{ secrets.DEV_SERVER_PRIVATE_KEY }}
+        script: |
+          sudo docker rm -f di-center || true
+          sudo docker image rm di-center || true
+
+          sudo docker load -i ./etc/di-center.tar
+          sudo docker run --network di --name di-center -d di-center:latest
