@@ -1,24 +1,12 @@
 # Repository Structure
 
-## Ansible files
-
-    .
-    ├── ...
-    ├── ansible                   
-    │   ├── roles           # ansible roles        
-    │   ├── vars            # ansible scripts configurations
-    │   ├── local_deploy.yaml            # ansible playbook to deploy on local machine
-    │   ├── localhost.ini            # deploy local configurations
-    │   ├── tencent_cloud.ini       # development infrastructure configurations
-    │   └── one_remote_playbook.yaml   # ansible playbook develop on the development server
-    └── ...
-
 ## Data samples
 
     .
     ├── ...
     ├── data samples     
-    │   ├── Indications (AMS)_Australia_19.xlsx indication list samples
+    │   ├── 50.csv          # This file include 50 SNOMED-CT code which equals to corresponding UIL code
+    │   ├── Indications (AMS)_Australia_19.xlsx indication list samples         # Universal indication list
     │   └── ReasonExample.txt   # inputs of the system providede by client
     └── ...
 
@@ -29,11 +17,11 @@
     ├── docs                   
     │   ├── checklist   # check list of each sprint         
     │   ├── release notes   # the docs of release
-    │   ├── wiki   # the additional documentation of project
+    │   ├── wiki   # the additional documentes of this project
     │   │    └── <Markdown pages>
     │   ├── images   # the images which will be used in markdown files
     │   │    └── <image files>
-    │   └── Expected outcome.pdf   # The expected system sturcture  provided by client  
+    │   └── Expected outcome.pdf   # The expected system sturcture provided by client  
     └── ...
 
 ## Prototypes files
@@ -41,7 +29,7 @@
     .
     ├── ...
     ├── prototypes                   
-    │   └── <There will be prototype images>
+    │   └── <The initial prototypes image in first sprint>
     └── ...
 
 ## Source code
@@ -49,12 +37,11 @@
     .
     ├── ...
     ├── src                   
-    │   ├── di-web          # frontend code    
+    │   ├── di-web          # frontend code with nginx settings 
     │   ├── di-auth          # microservice authentication and authorization 
-    │   ├── di-common       # microservice common services: email... 
-    │   ├── di-gateway      # microservice login 
+    │   ├── di-gateway      # microservice gateway 
     │   ├── di-map          # microservice map       
-    │   └── di-uil          # microservice UIL   
+    │   └── di-center          # microservice center   
     └── ...
 
 ## Tests 
@@ -62,5 +49,5 @@
     .
     ├── ...
     ├── tests                   
-    │   └── <There will be code pieces and tests files>
+    │   └── <Code pieces and tests files>
     └── ...

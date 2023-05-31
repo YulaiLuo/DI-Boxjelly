@@ -54,6 +54,8 @@ More details about the sub-directories can be found in docs directory [repositor
     ├── src           # Source code
     ├── tests         # Code pieces and tests of source code
     ├── LICENSE       # <Not included for now>
+    ├── docker-compose.yml  # deploy other services exclude ontoserver
+    ├── ontoserver-docker-compose.yml   # deploy ontoserver
     ├── README.md
     └── .gitignore
 
@@ -71,13 +73,23 @@ More details about the sub-directories can be found in docs directory [repositor
 
 Make sure your instance has docker and docker compose plugin installed
 
-1.  Clone the repository:
+1. Clone the repository:
 
     `git clone https://github.com/COMP90082-2023-SM1/DI-Boxjelly.git`
 
-2.  To deploy the program, make sure to modify the docker compose file in /src/di-map, make sure you have the access to the Ontoserver image, then run the following command.
+2. Deploy the Ontoserver, make sure you have access to the Ontoserver image.(Docker login required)
+
+        docker-compose -f ontoserver-docker-compose.yml up -d
+
+Note: The ontoserver-docker-compose.yml file is downloaded from [here](https://quay.io/repository/aehrc/ontoserver), make sure to ask for permission to get access for this image. After you get the access, remember to change the client id and client secrete in the file. ID and secret can obtain from [NCTS](https://www.healthterminologies.gov.au/).
+![](./docs/images/ontoserver-docker-compose.jpg)
+
+
+3. Run the final command
 
     docker-compose up -d
+
+Note: Deploy di-map and di-web may take some times. Build the image of di-map requires to download medcat which is a large python package. Deploy di-web requires to install many frontend dependencies and then build the production static web files. However, when you made any changes on website, you only need to send the file to **/data/nginx/html** directory on your deployment instance. 
 
 ## Requirements
 
