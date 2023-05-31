@@ -88,11 +88,21 @@ Note:
 ![](./docs/images/ontoserver-docker-compose.jpg)
 
 
-3. Run the final command
+3. Run the following command. 
 
     docker-compose up -d
 
-Note: Deploy di-map and di-web may take some times. Build the image of di-map requires to download medcat which is a large python package. Deploy di-web requires to install many frontend dependencies and then build the production static web files. However, when you made any changes on website, you only need to send the file to **/data/nginx/html** directory on your deployment instance. 
+Note:
+This allows you to have 5 containers: mongodb, di-gateway, di-auth, di-center, di-map, and nginx. However, we did not automate the di-web set up, so you will need to manully build the web static file, and move the file to the instance. Though we do have a Dockerfile *src/di-web*, it is not a good choice for CI/CD, because the nginx container bind the HTML files locally on the instance. Therefore, to make it faster for CI/CD, we decide to manully set up the di-web module at the first set-up.
+
+4. Set up the web, and nginx condiguration. In **src/di-web**, run the following command:
+
+        yarn install  
+        yarn build
+        
+Then move the build file to the folder(/data/nginx/html/di-web) of deploy instance, and move the nginx.conf file located in /src/di-web into the folder(/data/nginx/conf/default.conf) of deploy instance.
+
+
 
 ## Requirements
 
