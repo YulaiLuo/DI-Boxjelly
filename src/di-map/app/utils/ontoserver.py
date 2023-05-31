@@ -2,6 +2,7 @@ import pandas as pd
 import requests
 import json
 import os
+import glob
 
 
 def create_concepts_from_xlsx(file_path):
@@ -81,7 +82,16 @@ def init_ontoserver(app):
     os.system("sleep 30")
 
     # Define the path to your xlsx file
-    file_path = 'Indications (AMS)_Australia_19.xlsx'
+    # Get a list of all .xlsx files in the current directory
+    xlsx_files = glob.glob('./*.xlsx')
+
+    # Check if the list is not empty
+    if xlsx_files:
+        # Get the first file
+        file_path = xlsx_files[0]
+        print(f"Found file: {file_path}")
+    else:
+        print("No .xlsx files found in current directory.")
 
     # Create the concepts from the xlsx file
     concepts = create_concepts_from_xlsx(file_path)
@@ -91,5 +101,3 @@ def init_ontoserver(app):
 
     # Create the ValueSet
     valueset_response = create_valueset()
-
-
