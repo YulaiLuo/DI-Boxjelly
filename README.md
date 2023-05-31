@@ -92,14 +92,9 @@ Make sure your instance has docker and docker compose plugin installed
 
 ### Environment requirments
 
-Docker    
+- Docker: Following the [offical docker installation](https://docs.docker.com/engine/install/ubuntu/)
 
-Following the [offical docker installation](https://docs.docker.com/engine/install/ubuntu/)
-
-Ontoserver access
-
-Make sure you have the access to Ontoserver, and the client_id, client secrete requireed by Ontoserver docker compose file
-
+- Ontoserver: Make sure you have the access to Ontoserver, and the client_id, client secrete requireed by Ontoserver docker compose file
 
 ## Website Demo
 
@@ -107,20 +102,29 @@ A demo video is available:
 [![Watch the video](./docs/images/login.png)](https://www.youtube.com/watch?v=zaSCr7h_XnI)
 
 ## Website Preview
+### Login:
+![workflow](./docs/images/login.png)
 
-The preview below showcases the current version of our website including main page and the mapping results. You can find additional design options and earlier versions in the prototype directory. 
+### Dashboard:
+![workflow](./docs/images/dashboard.png)
 
-##### Main page:
+### Team members
+![workflow](./docs/images/team-member.png)
 
-![workflow](./docs/images/main_page.png)
+### Invite members
+![workflow](./docs/images/invite-member.png)
 
-##### Mapping result (Inference Mode):
+### Code system 
+![workflow](./docs/images/code-system.png)
 
-![workflow](./docs/images/mapping_result_inference.png)
+### Map Task
+![workflow](./docs/images/map-tasks.png)
 
-##### Mapping result (Training Mode):
+### Map result
+![workflow](./docs/images/map-result.png)
 
-![workflow](./docs/images/mapping_result_training.png)
+### Curate
+![workflow](./docs/images/curate.png)
 
 ## Project Workflow
 
