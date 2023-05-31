@@ -1,5 +1,5 @@
 from .db import init_db
-
+from .ontoserver import init_ontoserver
 def init_utils(app):
     """
     Initialize the API, adding all the helpers to the Flask app.
@@ -10,5 +10,8 @@ def init_utils(app):
 
     # Initialize the mongodb
     init_db(app)
+
+    # Initialize the ontoserver
+    init_ontoserver(app)
 
 

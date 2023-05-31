@@ -25,9 +25,3 @@ services:
       - JAVA_OPTS=-Xmx4G
     volumes:
       - onto:/var/onto
-  pyapp:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - ontoserver

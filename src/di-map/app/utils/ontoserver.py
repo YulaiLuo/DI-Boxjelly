@@ -1,6 +1,7 @@
 import pandas as pd
 import requests
 import json
+import os
 
 
 def create_concepts_from_xlsx(file_path):
@@ -72,7 +73,13 @@ def create_valueset():
     return response
 
 
-def initialize():
+def init_ontoserver(app):
+    # Run the ontoserver containers
+    os.system("docker-compose up -d")
+
+    # Wait for the ontoserver to be ready
+    os.system("sleep 30")
+
     # Define the path to your xlsx file
     file_path = 'Indications (AMS)_Australia_19.xlsx'
 
@@ -86,5 +93,3 @@ def initialize():
     valueset_response = create_valueset()
 
 
-if __name__ == "__main__":
-    initialize()
