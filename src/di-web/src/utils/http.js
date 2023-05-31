@@ -5,13 +5,10 @@ import { getCSRFTokenHeader } from './auth';
 import { redirectToLogin } from './router';
 
 const instance = axios.create({
-  // baseURL: 'http://localhost:8000',
   baseURL: BASE_URL,
   timeout: 8000,
   withCredentials: true,
 });
-
-// const csrfTokenHeader = getCSRFTokenHeader();
 
 instance.interceptors.response.use(
   (res) => {

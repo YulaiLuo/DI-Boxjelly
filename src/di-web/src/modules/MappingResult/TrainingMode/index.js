@@ -53,11 +53,9 @@ const TrainingMode = forwardRef((props, ref) => {
 
   const mappedCodeSystemList = codeSystemList?.data?.groups?.map((item) => {
     return {
-      // value: [item.group, item.group_id],
       value: item.group_name,
       label: item.group_name,
       children: item.concept_versions.map((child) => ({
-        // value: [child.name, child.id],
         value: child.concept_name,
         label: child.concept_name,
       })),

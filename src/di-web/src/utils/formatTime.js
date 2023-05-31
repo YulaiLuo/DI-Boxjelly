@@ -36,6 +36,6 @@ const calTimeDifference = (timeDifference) => {
     formattedTimeDifference = `${minutesDifference} minute${minutesDifference > 1 ? 's' : ''} ago`;
   }
   return formattedTimeDifference;
-}
+};
 
 export { formatTime, calTimeDifference };

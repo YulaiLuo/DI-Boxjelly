@@ -1,8 +1,6 @@
 import Cookies from 'js-cookie';
 import {
-  // ONTOSERVER_BASE_URL,
   MAP_URL,
-  // MAP_TASK_URL,
   MAP_BOARDS_URL,
   MAP_TASK_META_URL,
   MAP_TASK_DETAIL_URL,
@@ -11,7 +9,6 @@ import {
 } from '../../utils/constant/url';
 import http from '../../utils/http';
 
-// export const mapSingleText = (code) => http.get(SINGLE_TEXT_MAPPING_URL, { code });
 export const mapSingleText = (text) => {
   const csrfCookie = Cookies.get('csrf_access_token');
   return http.post(`${MAP_URL}`, { text: text }, { 'X-CSRF-TOKEN': csrfCookie });

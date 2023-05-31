@@ -221,8 +221,6 @@ export default function Main() {
 
         <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
           <Header class="bg-white px-8 py-3 flex sticky top-0 z-10 w-full">
-            {/* <span class="self-center">Header</span> */}
-
             <Space class="flex-1 flex justify-end items-center" size={12}>
               <Avatar
                 icon={<UserOutlined />}
