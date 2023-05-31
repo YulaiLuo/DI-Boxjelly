@@ -63,7 +63,7 @@ class MapTaskResource(Resource):
             tasks = MapTask.objects(board=ObjectId(board_id),deleted=False).order_by('-create_at').skip((page - 1) * size).limit(size)
             map_task_count = MapTask.objects(board=task_board.id,deleted=False).count()
 
-            # Retrieve the task creater's information
+            # Retrieve the task creator's information
             task_creaters = {}
             auth_url = app.config['AUTH_SERVICE_URL']
             for task in tasks:
@@ -71,8 +71,11 @@ class MapTaskResource(Resource):
                if task.create_by not in task_creaters:
                   res = requests.get(auth_url+'/user', params={'user_id': task.create_by})
                   
-                  task_creaters[task.create_by] = res.json()['data'] if res.status_code == 200 else {}
-                  task.nickname = res.json()['data']['nickname'] if res.status_code == 200 else 'USER NOT FOUND'
+                  # Update: check status code and decide what to do based on it
+                  if res.status_code == 200:  # user found
+                        task_creaters[task.create_by] = res.json()['data']['nickname']
+                  elif res.status_code == 404:  # user not found
+                        task_creaters[task.create_by] = 'USER REMOVED'
 
             # Convert the tasks to a list of dictionaries
             data = {
@@ -86,7 +89,7 @@ class MapTaskResource(Resource):
                   "status": task.status,
                   "num": task.num,
                   "create_by": task_creaters[task.create_by],
-                  "nickname": task_creaters[task.create_by]['nickname'],
+                  "nickname": task_creaters.get(task.create_by, "USER REMOVED"),
                   "create_at": task.create_at,
                   "update_at": task.update_at,
                   "file_name": str(task.file_name)

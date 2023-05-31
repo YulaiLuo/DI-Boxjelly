@@ -2,6 +2,16 @@ import pandas as pd
 import requests
 import json
 import os
+import glob
+
+
+def resource_exists(url):
+    # Send a GET request to the FHIR server
+    response = requests.get(url,
+                            headers={'Content-Type': 'application/fhir+json'},
+                            verify=False)
+    # If the status code is 200, then the resource exists
+    return response.status_code == 200 and response.json()["total"] > 0
 
 
 def create_concepts_from_xlsx(file_path):
@@ -36,11 +46,22 @@ def create_codesystem(concepts):
     # Convert the dictionary to a JSON string
     codesystem_json = json.dumps(codesystem)
 
-    # Send the request to the FHIR server
-    response = requests.post('https://localhost:8443/fhir/CodeSystem',
-                             data=codesystem_json,
-                             headers={'Content-Type': 'application/fhir+json'},
-                             verify=False)
+    # Check if the CodeSystem resource already exists
+    url = 'https://localhost:8443/fhir/CodeSystem?name=UIL'
+    if resource_exists(url):
+        # If it exists, use a PUT request to update it
+        response = requests.put('https://localhost:8443/fhir/CodeSystem',
+                                data=codesystem_json,
+                                headers={
+                                    'Content-Type': 'application/fhir+json'},
+                                verify=False)
+    else:
+        # If it doesn't exist, use a POST request to create it
+        response = requests.post('https://localhost:8443/fhir/CodeSystem',
+                                 data=codesystem_json,
+                                 headers={
+                                     'Content-Type': 'application/fhir+json'},
+                                 verify=False)
     return response
 
 
@@ -65,11 +86,22 @@ def create_valueset():
     # Convert the dictionary to a JSON string
     valueset_json = json.dumps(valueset)
 
-    # Send the request to the FHIR server
-    response = requests.post('https://localhost:8443/fhir/ValueSet',
-                             data=valueset_json,
-                             headers={'Content-Type': 'application/fhir+json'},
-                             verify=False)
+    # Check if the ValueSet resource already exists
+    url = 'https://localhost:8443/fhir/ValueSet?name=UIL'
+    if resource_exists(url):
+        # If it exists, use a PUT request to update it
+        response = requests.put('https://localhost:8443/fhir/ValueSet',
+                                data=valueset_json,
+                                headers={
+                                    'Content-Type': 'application/fhir+json'},
+                                verify=False)
+    else:
+        # If it doesn't exist, use a POST request to create it
+        response = requests.post('https://localhost:8443/fhir/ValueSet',
+                                 data=valueset_json,
+                                 headers={
+                                     'Content-Type': 'application/fhir+json'},
+                                 verify=False)
     return response
 
 
@@ -78,10 +110,19 @@ def init_ontoserver(app):
     os.system("docker-compose up -d")
 
     # Wait for the ontoserver to be ready
-    os.system("sleep 30")
+    os.system("sleep 15")
 
     # Define the path to your xlsx file
-    file_path = 'Indications (AMS)_Australia_19.xlsx'
+    # Get a list of all .xlsx files in the current directory
+    xlsx_files = glob.glob('./*.xlsx')
+
+    # Check if the list is not empty
+    if xlsx_files:
+        # Get the first file
+        file_path = xlsx_files[0]
+        print(f"Found file: {file_path}")
+    else:
+        print("No .xlsx files found in current directory.")
 
     # Create the concepts from the xlsx file
     concepts = create_concepts_from_xlsx(file_path)
@@ -91,5 +132,3 @@ def init_ontoserver(app):
 
     # Create the ValueSet
     valueset_response = create_valueset()
-
-
