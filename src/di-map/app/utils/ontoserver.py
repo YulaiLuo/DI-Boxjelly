@@ -106,12 +106,7 @@ def create_valueset():
 
 
 def init_ontoserver(app):
-    # Run the ontoserver containers
-    os.system("docker-compose up -d")
-
-    # Wait for the ontoserver to be ready
-    os.system("sleep 15")
-
+    
     # Define the path to your xlsx file
     # Get a list of all .xlsx files in the current directory
     xlsx_files = glob.glob('./*.xlsx')
