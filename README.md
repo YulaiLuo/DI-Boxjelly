@@ -81,7 +81,10 @@ Make sure your instance has docker and docker compose plugin installed
 
         docker-compose -f ontoserver-docker-compose.yml up -d
 
-Note: The ontoserver-docker-compose.yml file is downloaded from [here](https://quay.io/repository/aehrc/ontoserver), make sure to ask for permission to get access for this image. After you get the access, remember to change the client id and client secrete in the file. ID and secret can obtain from [NCTS](https://www.healthterminologies.gov.au/).
+Note: 
+- Root permission needed
+- Docker login to quay.io needed
+- Access to the Ontoserver image on quay.io is required. After you get the access, remember to change the client id and client secrete in the file. ID and secret can obtain from [NCTS](https://www.healthterminologies.gov.au/).
 ![](./docs/images/ontoserver-docker-compose.jpg)
 
 
