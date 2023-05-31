@@ -5,7 +5,6 @@
 ![Python Version](https://img.shields.io/badge/python-v3.9.16%2B-blue)
 ![Python Version](https://img.shields.io/badge/flask-v2.2.2%2B-red)
 ![Python Version](https://img.shields.io/badge/react-v18.2.0%2B-red)
-![Python Version](https://img.shields.io/badge/release-1.2.0%2B-green)
 <!-- ![web workflow](https://github.com/github/docs/actions/workflows/deploy_web.yml/badge.svg) -->
 
 <!-- ![Code Coverage](https://img.shields.io/badge/coverage-10%-red) -->
@@ -48,44 +47,37 @@ Here we list the top-level directory of this repository
 More details about the sub-directories can be found in docs directory [repository structure](./docs/wikis/repo_structure.md).
 
     .
-    ├── ansible       # Automated deployment scripts
+    ├── .github       # CI/CD Github Action scripts
     ├── data samples  # Sample input for the prototype
     ├── docs          # Documentation files
     ├── prototypes    # Designed user interface - prototypes
     ├── src           # Source code
-    ├── tests         # Code pieces and automated tests of source code
+    ├── tests         # Code pieces and tests of source code
     ├── LICENSE       # <Not included for now>
     ├── README.md
     └── .gitignore
 
 ## Features
 
-- Map clinical free text to Universal Indication List (UIL - a subset of SNOMED CT)
-- Curate mapping result category
-- Continuously improve mapping performance
-- Download mapping result
-- Collaborate with team members
-- Rollback the system
-- Data protection
+- Map: translate clinical texts to Universal Indication List and SNOMED-CT
+- Curate: mapping result category to continuously improve mapping performance
+- Visulization: mapping result visulization
+- Download: Export the mapping result
+- Dashboard: system performance visulization
+- Team: Member mangement
+- Code system: Update code system version
 
 ## Installation and deployment
+
+Make sure your instance has docker and docker compose plugin installed
 
 1.  Clone the repository:
 
     `git clone https://github.com/COMP90082-2023-SM1/DI-Boxjelly.git`
 
-2.  In the command line, go to the ansible directory
+2.  To deploy the program, make sure to modify the docker compose file in /src/di-map, make sure you have the access to the Ontoserver image, then run the following command.
 
-        cd ansible
-
-3.  Install the ansible requirments:
-
-        ansible-galaxy install -r requirements.yml
-
-4.  Modify the inventory configuration in the _inventory.ini_ file to the host your wanna deploy this system
-
-5.  Use ansible for auto-deployment:
-    - Follow [ansible README](./ansible/README.md)
+    docker-compose up -d
 
 ## Requirements
 
@@ -94,21 +86,20 @@ More details about the sub-directories can be found in docs directory [repositor
 | Resource      | Minmum | Recommended |
 | ------------- | ------ | ----------- |
 | CPUs or Cores | 4      | 8           |
-| RAM           | 4G     | 16G         |
+| RAM           | 8G     | 16G         |
 | Storage/Disk  | 20G    | >=40G       |
+
 
 ### Environment requirments
 
-- Python 3.9+
-- Docker  
-  Following the [offical docker installation](https://docs.docker.com/engine/install/ubuntu/)
-- Ansible
+Docker    
 
-        pip install ansible
+Following the [offical docker installation](https://docs.docker.com/engine/install/ubuntu/)
 
-  or
+Ontoserver access
 
-        conda install ansible
+Make sure you have the access to Ontoserver, and the client_id, client secrete requireed by Ontoserver docker compose file
+
 
 ## Website Demo
 
