@@ -14,5 +14,5 @@ RUN yarn build
 # Phase 2: Use Nginx image as the base image and copy the built static files from the first phase
 FROM nginx:stable
 
-COPY --from=build /src/di-web/build /usr/share/nginx/html
+COPY --from=build /src/di-web/build /usr/share/nginx/html/di-web
 COPY nginx.conf /etc/nginx/conf.d/default.conf
