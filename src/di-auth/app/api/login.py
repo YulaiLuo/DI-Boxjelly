@@ -92,7 +92,7 @@ class EmailLogin(Resource):
 
         # Generate and set the tokens
         access_token = create_access_token(identity=str(user.id))
-        refresh_token = create_refresh_token(identity=str(user.id))
+        # refresh_token = create_refresh_token(identity=str(user.id))
 
         data = {
             "user":{
@@ -119,7 +119,7 @@ class EmailLogin(Resource):
         # Add access token and refresh token cookies in headers
         response = jsonify(code=200,msg='ok',data=data)
         response.headers.add(app.config["JWT_ACCESS_COOKIE_NAME"],access_token)
-        response.headers.add(app.config["JWT_REFRESH_COOKIE_NAME"],refresh_token)
+        # response.headers.add(app.config["JWT_REFRESH_COOKIE_NAME"],refresh_token)
 
         res = make_response(response,200)
         return res

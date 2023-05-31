@@ -6,7 +6,7 @@ from .team import TeamResource
 from .user import UserResource
 from .avatar import AvatarResource
 from .invite import InviteResource, AcceptInviteResource
-
+from .blacklist import CheckBlackListResource
 
 def init_api(app):
     """
@@ -38,7 +38,7 @@ def init_api(app):
 
     api.add_resource(EmailLogin, '/auth/login/email',
                      resource_class_args=(mongo, bcrypt,))
-    api.add_resource(Logout, '/auth/logout', resource_class_args=(mongo, jwt,))
-
+    api.add_resource(Logout, '/auth/logout')
+    api.add_resource(CheckBlackListResource, '/auth/check-blacklist')
     # Initialize the API
     api.init_app(app)

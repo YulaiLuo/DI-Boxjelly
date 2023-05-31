@@ -7,6 +7,9 @@ from marshmallow import Schema, fields, ValidationError
 import json, traceback, io
 import pandas as pd
 from collections import defaultdict
+from app.controllers import CodeSystemController
+from flask import current_app as app
+import requests
 
 class PostCodeSystemInputSchema(Schema):
    # team_id = fields.String(required=True)          # team id
@@ -22,13 +25,7 @@ class GetCodeSystemInputSchema(Schema):
 class DeleteCodeSystemInputSchema(Schema):
    version = fields.String(required=True)
 
-
 class CodeSystemResource(Resource):
-
-   def _handle_objectid(self,obj):
-      if isinstance(obj, ObjectId):
-         return str(obj)
-      raise TypeError("Unserializable object {} of type {}".format(obj, type(obj)))
 
    def get(self):
       """return the list of code system concept given the team id
@@ -50,75 +47,19 @@ class CodeSystemResource(Resource):
       if not code_system:
          return make_response(jsonify(code=404, err="INVALID_INPUT"), 404)
       
-      pipeline = [
-         # Step one: Match the ConceptVersions of CodeSystem
-         {"$match": {"code_system": ObjectId(code_system.id)}},
-         # Step two: Add related Concept, ConceptGroup, and Tag docs to every ConceptVersion doc
-         {"$lookup": {
-               "from": "concept",
-               "localField": "concept",
-               "foreignField": "_id",
-               "as": "concept_doc"
-         }},
-         {"$lookup": {
-               "from": "concept_group",
-               "localField": "group",
-               "foreignField": "_id",
-               "as": "group_doc"
-         }},
-         {"$lookup": {
-               "from": "tag",
-               "localField": "tags",
-               "foreignField": "_id",
-               "as": "tag_docs"
-         }},
-         # Step 3: Format the doc strtucture to desired format
-         {"$project": {
-               "_id": 0,
-               "group_name": {"$arrayElemAt": ["$group_doc.name", 0]},
-               "concept_name": {"$arrayElemAt": ["$concept_doc.name", 0]},
-               "tag_names": "$tag_docs.name",
-               "alias": 1,
-               "tags":{
-                  "$filter": {
-                     "input": "$tag_docs",
-                     "as": "tag",
-                     "cond": {"$eq": ["$$tag.source", "official"]}
-                  }
-               },
-               "my_tags": {
-                "$filter": {
-                    "input": "$tag_docs",
-                    "as": "tag",
-                    "cond": {"$eq": ["$$tag.source", "user"]}
-                }
-            },
-         }},
-         # Step 4: Group the concept version by groups, and collect each group into one array
-         {"$group": {
-               "_id": "$group_name",
-               "concept_versions": {"$push": {
-                  "concept_name": "$concept_name",
-                  "alias": "$alias",
-                  "tags": "$tags.name",
-                  "my_tags": "$my_tags.name"
-               }}
-         }},
-         # Step 5: Reformat the docs sturcture to the final output
-         {"$project": {
-               "_id": 0,
-               "group_name": "$_id",
-               "concept_versions": 1
-         }}
-      ]
+      result = CodeSystemController.get_code_system_data(code_system)
 
-      result = list(ConceptVersion.objects().aggregate(*pipeline))
+      auth_url = app.config['AUTH_SERVICE_URL']
+      res = requests.get(auth_url+'/user', params={'user_id': code_system.create_by})
+      if res.status_code != 200:
+         return make_response(jsonify(code=400, err="CREATER_NOT_FOUND", msg="The creater of this code system is not found in database"), 400)
 
       data = {
          'name': code_system.name,
          'description': code_system.description,
          'version': code_system.version,
          'create_at': code_system.create_at,
+         'create_by': res.json()['data'],
          'groups':result
       }
 

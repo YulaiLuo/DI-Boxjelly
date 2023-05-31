@@ -1,9 +1,8 @@
 from flask import request, jsonify, request, Response, make_response
 from flask import current_app as app
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 import requests
-
 
 class GatewayResource(Resource):
     """
@@ -32,7 +31,7 @@ class GatewayResource(Resource):
 
         # Check if service is supported
         if service not in self.service_map:
-            return make_response(jsonify(code=404, err="SERVICE_NOT_FOUND"), 404)
+            return make_response(jsonify(code=404, err="SERVICE_NOT_FOUND", msg="Service not found on end points, Please check your route"), 404)
 
         # Create target url
         target_url = self.service_map[service] + \
@@ -42,7 +41,7 @@ class GatewayResource(Resource):
         # Create headers with user id from token
         headers = {
             "Content-Type": request.content_type,
-            "User-ID": str(user_id)
+            "User-ID": str(user_id),
         }
 
         # Forward request to target service
@@ -55,9 +54,11 @@ class GatewayResource(Resource):
             allow_redirects=False
         )
 
+        EXCLUDE_HEADERS = ['Content-Length', 'Transfer-Encoding']
+
         return Response(response=response.content,
                         status=response.status_code,
-                        headers={key: value for (key, value) in response.headers.items()})
+                        headers={key: value for (key, value) in response.headers.items() if key not in EXCLUDE_HEADERS})
 
     def get(self, path):
         """
