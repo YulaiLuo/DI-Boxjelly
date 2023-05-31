@@ -15,7 +15,6 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
 
   const title = (
     <div class="flex justify-between">
-      {/* <span class="w-3/5 overflow-hidden text-ellipsis">{createBy}</span> */}
       <span class="w-3/5 overflow-hidden text-ellipsis">{nickname}</span>
       <Badge
         status={badgeStatus[status]}
@@ -25,10 +24,8 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
   );
 
   const CreatTime = new Date(createAt);
-  const UpdateTime = new Date(updateAt);
 
   const formattedCreateAt = formatTime(CreatTime);
-  const formattedUpdateAt = updateAt ? formatTime(new Date(updateAt)) : null;
 
   const currentTime = new Date();
   const timeDifference = Math.abs(currentTime - CreatTime);
