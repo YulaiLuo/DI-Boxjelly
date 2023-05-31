@@ -29,4 +29,5 @@ class Config:
     # JWT_COOKIE_SAMESITE = "Lax"
 
     # Avatar settings
-    AVATAR_FOLDER = os.path.join(os.getcwd(), 'data', 'avatars')
+    AVATAR_FOLDER = '/data/di-auth/avatars'
+    # AVATAR_FOLDER = os.path.join(os.getcwd(), 'data', 'avatars')
