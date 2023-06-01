@@ -99,7 +99,7 @@ This allows you to have 5 containers: mongodb, di-gateway, di-auth, di-center, d
 
         yarn install  
         yarn build
-        
+
 Then move the build file to the folder(/data/nginx/html/di-web) of deploy instance, and move the nginx.conf file located in /src/di-web into the folder(/data/nginx/conf/default.conf) of deploy instance.
 
 
@@ -127,6 +127,9 @@ A demo video is available:
 [![Watch the video](./docs/images/login.png)](https://youtu.be/BC8NPPdGJ6M)
 
 ## Website Preview
+
+You can access the production environment at [http://115.146.95.215](http://115.146.95.215)
+
 ### Login:
 ![workflow](./docs/images/login.png)
 
