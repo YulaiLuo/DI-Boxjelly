@@ -19,6 +19,13 @@ Make sure that:
 - [ ] Students generated a release TAG on Github (containing all project resources, including exported documents/diagrams from Confluence).
 
 
+## Demonstration video of your product
+Make sure that:
+
+- [ ] Students generated a 3-5mins (max) video demonstrating their product (examples: https://cis-projects.carrd.co/)
+- [ ] Students uploaded their demo to Confluence
+
+
 ## ZIP File
 Make sure that:
 
@@ -36,12 +43,12 @@ Make sure that:
 Make sure that:
 
 - [ ] Industry partner was granted access to the final version of digital prototype and can run it independently after the end of the teaching semester. 
-- [ ] A document was also generated with SAMPLE DATA industry partner will need to simulate tasks and scenarios in the final digital prototype.
+- [ ] A document was also generated with SAMPLE DATA industry partner will need to simulate tasks and scenarios in the final digital prototype (IF APPLIED . If not, please explain).
 
 ## Product
 Make sure that your product satisfy the following criteria:
 
-- [ ] Product is deployed and an URL is available on Github README so client can access current version of this software.
+- [ ] Product is deployed and an URL is available on Github README so client can access current version of this software (IF APPLIED. If not, please explain).
 
 ## Additional Information
 
