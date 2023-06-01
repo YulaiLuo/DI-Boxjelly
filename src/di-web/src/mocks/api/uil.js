@@ -37,7 +37,6 @@ export const createTaskMockService = rest.post(
 export const getTaskDetailMockService = rest.get(
   `${BASE_URL}${MAP_TASK_URL}`,
   async (req, res, ctx) => {
-    console.log(req);
     const page = req.url.searchParams.get('page');
     const size = req.url.searchParams.get('size');
     const taskId = req.url.searchParams.get('task_id');
@@ -102,7 +101,6 @@ export const getCodeSystemList = rest.get(`${BASE_URL}${UIL_URL}`, async (req, r
 export const getCodeSystemListByGroup = rest.get(
   `${BASE_URL}${UIL_BY_GROUP}`,
   async (req, res, ctx) => {
-    console.log('sfsfsf');
     const groupId = req.url.searchParams.get('group_id');
     let data;
     if (groupId === '1') data = codeSystemGroups[0];

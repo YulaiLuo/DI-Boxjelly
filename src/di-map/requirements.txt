@@ -6,4 +6,8 @@ Flask-Pymongo
 marshmallow
 medcat
 fuzzywuzzy
+python-Levenshtein
 mongoengine
+pandas
+openpyxl
+pyopenssl

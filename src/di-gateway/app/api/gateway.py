@@ -54,11 +54,9 @@ class GatewayResource(Resource):
             allow_redirects=False
         )
 
-        EXCLUDE_HEADERS = ['Content-Length', 'Transfer-Encoding']
-
         return Response(response=response.content,
                         status=response.status_code,
-                        headers={key: value for (key, value) in response.headers.items() if key not in EXCLUDE_HEADERS})
+                        headers={key: value for (key, value) in response.headers.items()})
 
     def get(self, path):
         """
@@ -70,7 +68,6 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
-        print(request.headers)
         return self._gateway(path=path)
 
     def post(self, path):
@@ -83,7 +80,6 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
-        print(request.headers)
         return self._gateway(path=path)
 
     def put(self, path):
@@ -96,7 +92,6 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
-        print(request.headers)
         return self._gateway(path=path)
 
     def delete(self, path):
@@ -109,5 +104,4 @@ class GatewayResource(Resource):
         Returns:
             Response: HTTP Response from the corresponding service
         """
-        print(request.headers)
         return self._gateway(path=path)

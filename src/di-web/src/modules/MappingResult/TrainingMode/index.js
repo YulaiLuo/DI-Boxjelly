@@ -29,27 +29,35 @@ const TrainingMode = forwardRef((props, ref) => {
     form: filterForm,
   }));
 
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      await exportFile(team_id, taskId);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const [editableKeys, setEditableRowKeys] = useState([]);
   const { data: meta_data } = useRequest(() => getMappingTaskMetaDetail(taskId));
-  const { data: codeSystemList } = useRequest(
-    () => getCodeSystemList('60c879e72cb0e6f96d6b0f65', '645a4f69203d1d8b3fbb80b4'),
-    {
-      initialData: [],
-    }
-  );
+  const { data: codeSystemList } = useRequest(getCodeSystemList, {
+    initialData: [],
+  });
   const { run: runCurateMapping } = useRequest(curateMapping, {
     manual: true,
   });
 
-  const mappedCodeSystemList = codeSystemList?.data?.groups.map((item) => {
+  const mappedCodeSystemList = codeSystemList?.data?.groups?.map((item) => {
     return {
-      // value: [item.group, item.group_id],
-      value: item.group_id,
-      label: item.group,
-      children: item.concepts.map((child) => ({
-        // value: [child.name, child.id],
-        value: child.id,
-        label: child.name,
+      value: item.group_name,
+      label: item.group_name,
+      children: item.concept_versions.map((child) => ({
+        value: child.concept_name,
+        label: child.concept_name,
       })),
     };
   });
@@ -130,8 +138,9 @@ const TrainingMode = forwardRef((props, ref) => {
                   <Button
                     type="primary"
                     size="large"
-                    onClick={() => exportFile(team_id, taskId)}
+                    onClick={handleExport}
                     icon={<DownloadOutlined />}
+                    disabled={isExporting}
                   >
                     Export
                   </Button>
@@ -156,7 +165,7 @@ const TrainingMode = forwardRef((props, ref) => {
           editableKeys,
           onSave: async (rowKey, data, row) => {
             data.mappingStatus = 2;
-            runCurateMapping(data.mappedItemId, data.curate[1]);
+            runCurateMapping(data.mappedItemId, data.curate[1], codeSystemList?.data?.version);
           },
           onChange: setEditableRowKeys,
           actionRender: (row, config, dom) => [dom.save, dom.cancel],

@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { ToolOutlined } from '@ant-design/icons';
-import { UNIVERSAL_INDICATION_LIST } from '../../../utils/constant/indicationList';
 
 /**
  * @see {@link https://procomponents.ant.design/en-US/components/table#columns-column-definition}
@@ -73,7 +71,6 @@ export const getColumns = (options) => {
       // },
       valueType: 'cascader',
       fieldProps: (form, config, x) => {
-        // console.log('sss', form, config, x);
         return {
           options,
           showSearch: {

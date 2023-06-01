@@ -30,30 +30,33 @@ const RegisterPage = () => {
       for (const key in values) {
         formData.append(key, values[key]);
       }
-      const response = await registerUser(formData);
-      console.log(response);
+      await registerUser(formData);
       setLoading(false);
 
       // show success message
       message.success('Registration successful, redirecting to login page...', 3);
-      setTimeout(() => navigate('/login'), 3000);  // redirect to login page after 3 seconds
-      
+      setTimeout(() => navigate('/login'), 3000); // redirect to login page after 3 seconds
     } catch (error) {
       console.error(error);
       setLoading(false);
       // show error message
-      message.error('An error occurred during registration. Please try again.');
+      if (error.response && error.response.data && error.response.data.message) {
+        message.error(error.response.data.message);
+      } else {
+        message.error('An error occurred during registration. Please try again.');
+      }
     }
   };
 
   return (
     <Row justify="center" align="middle" style={{ minHeight: '100vh' }}>
       <Col span={8}>
-        <Title level={2} style={{ textAlign: 'center' }}>Welcome to the Digital Health Platform</Title>
+        <Title level={2} style={{ textAlign: 'center' }}>
+          Welcome to the Digital Health Platform
+        </Title>
         <Paragraph style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          We're delighted to have you on board.
-          Let's start by getting you registered. 
-          Please fill in the following information to create a new account.
+          We're delighted to have you on board. Let's start by getting you registered. Please fill
+          in the following information to create a new account.
         </Paragraph>
         <Form
           form={form}
@@ -68,7 +71,7 @@ const RegisterPage = () => {
             label="Invite Token"
             rules={[{ required: true, message: 'Please input your invite token!' }]}
           >
-            <Input placeholder="Invite Token" />
+            <Input placeholder="Invite Token" disabled={true} />
           </Form.Item>
 
           <Form.Item
@@ -126,7 +129,9 @@ const RegisterPage = () => {
                     return Promise.resolve();
                   }
 
-                  return Promise.reject(new Error('The two passwords that you entered do not match!'));
+                  return Promise.reject(
+                    new Error('The two passwords that you entered do not match!')
+                  );
                 },
               }),
             ]}

@@ -23,7 +23,7 @@ export default function Main() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [boardId, setBoardId] = useState(null);
-  const setLoggedIn = useUserStore((state) => state.setLoggedIn);
+  const user = useUserStore((state) => state.user);
   const msgApi = useMessageStore((state) => state.msgApi);
 
   const [createBoardForm] = Form.useForm();
@@ -32,7 +32,7 @@ export default function Main() {
   const navigate = useNavigate();
   const location = useLocation();
   const teamId = localStorage.getItem('team');
-  const user = JSON.parse(localStorage.getItem('userDetail'));
+  // const user = JSON.parse(localStorage.getItem('userDetail'));
   let selectedPath = location.pathname;
   if (selectedPath === '') selectedPath = 'dashboard';
 
@@ -52,17 +52,20 @@ export default function Main() {
   const { run: runEditBoard, loading: editBoardLoading } = useRequest(editBoard, {
     manual: true,
     onSuccess: () => {
-      msgApi.success('board updated successfully');
+      msgApi.success('The board is updated successfully');
       setIsEditModalOpen(false);
       editBoardForm.resetFields();
       refreshBoardList(teamId);
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     },
   });
 
   const { run: runDeleteBoard } = useRequest(deleteBoard, {
     manual: true,
     onSuccess: () => {
-      msgApi.success('board deleted successfully');
+      msgApi.success('The board is deleted successfully');
       navigate('/dashboard', { replace: true });
       refreshBoardList(teamId);
     },
@@ -97,7 +100,6 @@ export default function Main() {
   };
 
   const onBoardEditClick = (board) => {
-    console.log('edit', board);
     editBoardForm.setFieldsValue({
       name: board.name,
       description: board.description,
@@ -167,7 +169,6 @@ export default function Main() {
   ];
 
   const onProfileClick = () => {
-    console.log('go to profile page');
     navigate('/profile');
   };
 
@@ -220,8 +221,6 @@ export default function Main() {
 
         <Layout style={{ marginLeft: collapsed ? 80 : 200 }}>
           <Header class="bg-white px-8 py-3 flex sticky top-0 z-10 w-full">
-            {/* <span class="self-center">Header</span> */}
-
             <Space class="flex-1 flex justify-end items-center" size={12}>
               <Avatar
                 icon={<UserOutlined />}

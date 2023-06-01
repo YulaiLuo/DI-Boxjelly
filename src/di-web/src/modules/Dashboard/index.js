@@ -18,10 +18,14 @@ export default function Dashboard() {
   const { loading: singleMapLoading, run: handleMapSingleText } = useRequest(mapSingleText, {
     manual: true,
     onSuccess: (res) => {
-      if (res.data.result['0'] && res.data.result['0'] != null) {
+      if (
+        res.data.result['0'] &&
+        res.data.result['0'] !== null &&
+        res.data.result['0'] !== undefined
+      ) {
         const term = res.data.result['0']['name'];
         const ontology = res.data.result['0']['ontology'];
-        const singleResult = term + ' - ' + ontology;
+        const singleResult = [ontology, term];
         setSingleMappingResult(singleResult);
       } else {
         setSingleMappingResult('No mapping result');
@@ -34,6 +38,13 @@ export default function Dashboard() {
   const { data: dashboardHelloInfoResponse } = useRequest(getHelloInfo);
 
   const dashboardInfo = dashboardInfoResponse?.map((res) => res?.data);
+
+  const toTitleCase = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
+  const dashboardBarChartResponseTitled = dashboardBarChartResponse?.data.map((item) => ({
+    ...item,
+    type: toTitleCase(item.type),
+  }));
 
   const onSingleTextSearch = (value) => {
     if (value.trim() !== '') {
@@ -52,14 +63,13 @@ export default function Dashboard() {
   };
 
   const config = {
-    data: dashboardBarChartResponse?.data ?? [],
+    data: dashboardBarChartResponseTitled ?? [],
     isStack: true,
     xField: 'year',
     yField: 'value',
     seriesField: 'type',
     label: {
       position: 'middle',
-
       layout: [
         {
           type: 'interval-adjust-position',
@@ -103,7 +113,6 @@ export default function Dashboard() {
                 placeholder="Input a single text"
                 allowClear
                 onSearch={onSingleTextSearch}
-                //onSearch = {showModal}
                 ref={inputRef}
                 onChange={onSingleTextChange}
               />
@@ -117,7 +126,14 @@ export default function Dashboard() {
                   <Spin />
                 ) : (
                   <div class="text-center">
-                    <div class="text-2xl">{singleMappingResult}</div>
+                    {Array.isArray(singleMappingResult) && singleMappingResult.length === 2 ? (
+                      <>
+                        <div class="text-xl">{singleMappingResult[0]}</div>
+                        <div class="text-xl">{singleMappingResult[1]}</div>
+                      </>
+                    ) : (
+                      <div class="text-xl">{singleMappingResult}</div>
+                    )}
                   </div>
                 )}
               </div>
@@ -127,8 +143,8 @@ export default function Dashboard() {
 
         <div class="mt-5">
           <Row gutter={[24, 8]}>
-            {dashboardInfo?.map((item) => (
-              <Col xs={24} sm={24} md={12} lg={8} xl={8}>
+            {dashboardInfo?.map((item, index) => (
+              <Col xs={24} sm={24} md={12} lg={8} xl={8} key={index}>
                 <DashboardCard
                   title={item?.title}
                   percent={item?.percent}

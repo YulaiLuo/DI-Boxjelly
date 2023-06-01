@@ -5,7 +5,6 @@
 ![Python Version](https://img.shields.io/badge/python-v3.9.16%2B-blue)
 ![Python Version](https://img.shields.io/badge/flask-v2.2.2%2B-red)
 ![Python Version](https://img.shields.io/badge/react-v18.2.0%2B-red)
-![Python Version](https://img.shields.io/badge/release-1.2.0%2B-green)
 <!-- ![web workflow](https://github.com/github/docs/actions/workflows/deploy_web.yml/badge.svg) -->
 
 <!-- ![Code Coverage](https://img.shields.io/badge/coverage-10%-red) -->
@@ -26,9 +25,14 @@
     - [Environment requirments](#environment-requirments)
   - [Website Demo](#website-demo)
   - [Website Preview](#website-preview)
-        - [Main page:](#main-page)
-        - [Mapping result (Inference Mode):](#mapping-result-inference-mode)
-        - [Mapping result (Training Mode):](#mapping-result-training-mode)
+    - [Login:](#login)
+    - [Dashboard:](#dashboard)
+    - [Team members](#team-members)
+    - [Invite members](#invite-members)
+    - [Code system](#code-system)
+    - [Map Task](#map-task)
+    - [Map result](#map-result)
+    - [Curate](#curate)
   - [Project Workflow](#project-workflow)
 
 ## Background
@@ -48,44 +52,62 @@ Here we list the top-level directory of this repository
 More details about the sub-directories can be found in docs directory [repository structure](./docs/wikis/repo_structure.md).
 
     .
-    ├── ansible       # Automated deployment scripts
+    ├── .github       # CI/CD Github Action scripts
     ├── data samples  # Sample input for the prototype
     ├── docs          # Documentation files
     ├── prototypes    # Designed user interface - prototypes
     ├── src           # Source code
-    ├── tests         # Code pieces and automated tests of source code
+    ├── tests         # Code pieces and tests of source code
     ├── LICENSE       # <Not included for now>
+    ├── docker-compose.yml  # deploy other services exclude ontoserver
+    ├── ontoserver-docker-compose.yml   # deploy ontoserver
     ├── README.md
     └── .gitignore
 
 ## Features
 
-- Map clinical free text to Universal Indication List (UIL - a subset of SNOMED CT)
-- Curate mapping result category
-- Continuously improve mapping performance
-- Download mapping result
-- Collaborate with team members
-- Rollback the system
-- Data protection
+- Map: Translate clinical texts to Universal Indication List and SNOMED-CT
+- Curate: Mapping result category to continuously improve mapping performance
+- Visulization: Mapping result visulization
+- Download: Export the mapping result
+- Dashboard: System performance visulization
+- Team: Member mangement
+- Code system: Update code system version
 
 ## Installation and deployment
 
-1.  Clone the repository:
+Make sure your instance has docker and docker compose plugin installed
+
+1. Clone the repository:
 
     `git clone https://github.com/COMP90082-2023-SM1/DI-Boxjelly.git`
 
-2.  In the command line, go to the ansible directory
+2. Deploy the Ontoserver, make sure you have access to the Ontoserver image.(Docker login required)
 
-        cd ansible
+        docker-compose -f ontoserver-docker-compose.yml up -d
 
-3.  Install the ansible requirments:
+Note: 
+- Root permission needed
+- Docker login to quay.io needed
+- Access to the Ontoserver image on quay.io is required. After you get the access, remember to change the client id and client secrete in the file. ID and secret can obtain from [NCTS](https://www.healthterminologies.gov.au/).
+![](./docs/images/ontoserver-docker-compose.jpg)
 
-        ansible-galaxy install -r requirements.yml
 
-4.  Modify the inventory configuration in the _inventory.ini_ file to the host your wanna deploy this system
+3. Run the following command. 
 
-5.  Use ansible for auto-deployment:
-    - Follow [ansible README](./ansible/README.md)
+    docker-compose up -d
+
+Note:
+This allows you to have 5 containers: mongodb, di-gateway, di-auth, di-center, di-map, and nginx. However, we did not automate the di-web set up, so you will need to manully build the web static file, and move the file to the instance. Though we do have a Dockerfile *src/di-web*, it is not a good choice for CI/CD, because the nginx container bind the HTML files locally on the instance. Therefore, to make it faster for CI/CD, we decide to manully set up the di-web module at the first set-up.
+
+4. Set up the web, and nginx condiguration. In **src/di-web**, run the following command:
+
+        yarn install  
+        yarn build
+        
+Then move the build file to the folder(/data/nginx/html/di-web) of deploy instance, and move the nginx.conf file located in /src/di-web into the folder(/data/nginx/conf/default.conf) of deploy instance.
+
+
 
 ## Requirements
 
@@ -94,42 +116,45 @@ More details about the sub-directories can be found in docs directory [repositor
 | Resource      | Minmum | Recommended |
 | ------------- | ------ | ----------- |
 | CPUs or Cores | 4      | 8           |
-| RAM           | 4G     | 16G         |
+| RAM           | 8G     | 16G         |
 | Storage/Disk  | 20G    | >=40G       |
+
 
 ### Environment requirments
 
-- Python 3.9+
-- Docker  
-  Following the [offical docker installation](https://docs.docker.com/engine/install/ubuntu/)
-- Ansible
+- Docker: Following the [offical docker installation](https://docs.docker.com/engine/install/ubuntu/)
 
-        pip install ansible
-
-  or
-
-        conda install ansible
+- Ontoserver: Make sure you have the access to Ontoserver, and the client_id, client secrete requireed by Ontoserver docker compose file. Note that Ontoserver is offcially supported on Docker version 1.10.3
 
 ## Website Demo
 
 A demo video is available:
-[![Watch the video](./docs/images/login.png)](https://www.youtube.com/watch?v=zaSCr7h_XnI)
+[![Watch the video](./docs/images/login.png)](https://youtu.be/BC8NPPdGJ6M)
 
 ## Website Preview
+### Login:
+![workflow](./docs/images/login.png)
 
-The preview below showcases the current version of our website including main page and the mapping results. You can find additional design options and earlier versions in the prototype directory. 
+### Dashboard:
+![workflow](./docs/images/dashboard.png)
 
-##### Main page:
+### Team members
+![workflow](./docs/images/team-member.png)
 
-![workflow](./docs/images/main_page.png)
+### Invite members
+![workflow](./docs/images/invite-member.png)
 
-##### Mapping result (Inference Mode):
+### Code system 
+![workflow](./docs/images/code-system.png)
 
-![workflow](./docs/images/mapping_result_inference.png)
+### Map Task
+![workflow](./docs/images/map-tasks.png)
 
-##### Mapping result (Training Mode):
+### Map result
+![workflow](./docs/images/map-result.png)
 
-![workflow](./docs/images/mapping_result_training.png)
+### Curate
+![workflow](./docs/images/curate.png)
 
 ## Project Workflow
 

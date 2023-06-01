@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Button, Layout, Menu, Modal, Input, Space, Tooltip, Form, Select, Popconfirm } from 'antd';
-import { PlusOutlined, DownloadOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { useRequest } from 'ahooks';
 import CodeCard from './components/CodeCard';
 import {
@@ -9,7 +8,6 @@ import {
   createNewCodeSystem,
   getAllCodeSystemVersion,
   deleteCodeSystem,
-  exportCodeSystem,
 } from './api';
 import { FileUploader, Spin } from '../../components';
 import { useMessageStore } from '../../store';
@@ -18,7 +16,6 @@ const { Sider, Content } = Layout;
 
 export default function CodeSystem() {
   const [form] = Form.useForm();
-  const navigate = useNavigate();
 
   const [conceptsInGroup, setConceptsInGroup] = useState([]);
   const [allGroups, setAllGroups] = useState([]);
@@ -68,14 +65,11 @@ export default function CodeSystem() {
         msgApi.success('Deleted successfully!');
         runGetCodeSystemList();
         runGetAllCodeSystemVersion();
-      },
-    }
-  );
 
-  const { run: runExportCodeSystem, loading: exportCodeSystemLoading } = useRequest(
-    exportCodeSystem,
-    {
-      manual: true,
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      },
     }
   );
 
@@ -161,14 +155,6 @@ export default function CodeSystem() {
 
           <Button type="primary" onClick={() => setIsModalOpen(true)} icon={<PlusOutlined />}>
             Code System
-          </Button>
-          <Button
-            type="primary"
-            loading={exportCodeSystemLoading}
-            onClick={() => runExportCodeSystem(codeSystemList?.data?.version)}
-            icon={<DownloadOutlined />}
-          >
-            Export
           </Button>
           <Popconfirm
             title="Delete the code system"

@@ -40,7 +40,7 @@ class TopLeftResource(Resource):
         return make_response(jsonify(code=200, msg="ok", data={
             "title": f"Total Task submitted: {task_count}",
             "total_number": f"This week submit: {this_week_count}",
-            "delta": f"{'+' if delta>0 else '1'}{delta} since last week",
+            "delta": f"{'+' if delta>0 else ''}{delta} since last week",
             "percent": delta/last_week_count*100 if last_week_count > 0 else 0
         }))
 
@@ -60,7 +60,7 @@ class TopMiddleResource(Resource):
         return make_response(jsonify(code=200, msg="ok", data={
             "title": f"Total texts mapped: {total_count}",
             "total_number": f"This week mapped: {this_week_count}",
-            "delta": f"{'+' if delta>0 else '1'}{delta} since last week",
+            "delta": f"{'+' if delta>0 else ''}{delta} since last week",
             "percent": delta/last_week_count*100 if last_week_count > 0 else 0
         }))
 
@@ -80,7 +80,7 @@ class TopRightResource(Resource):
         return make_response(jsonify(code=200, msg="ok", data={
             "title": f"Total curated texts: {total_count}",
             "total_number": f"This week curated: {this_week_count}",
-            "delta": f"{'+' if delta>0 else '1'}{delta} since last week",
+            "delta": f"{'+' if delta>0 else ''}{delta} since last week",
             "percent": delta/last_week_count*100 if last_week_count > 0 else 0
         }))
 

@@ -8,7 +8,7 @@ Run the following command on the instance your want to deploy the instance
 
         sudo docker run -d --restart always --name github-runner \
             -e REPO_URL="https://github.com/COMP90082-2023-SM1/DI-Boxjelly" \
-            -e RUNNER_NAME="di-github-runner-1" \
+            -e RUNNER_NAME="github-runner" \
             -e RUNNER_TOKEN=<Runner Token> \
             -e RUNNER_WORKDIR="/DI-Boxjelly/_runner_workdir" \
             -v /var/run/docker.sock:/var/run/docker.sock \
@@ -18,3 +18,4 @@ Run the following command on the instance your want to deploy the instance
 Script behavior:
     By running the above script on a instance, you will have a github action self-hosted runner as a Docker container on this instance. This runner will be connected to the **REPO_URL**, which is *https://github.com/COMP90082-2023-SM1/DI-Boxjelly* in this case. The runner will be named as **RUNNER_NAME**, the working directory of this runner will be named as **RUNNER_WORKDIR**. The container will have two volumns outside the container.
 
+3. Remember to give your runner instance user access to docker. More detail can be view [here](https://docs.docker.com/engine/install/linux-postinstall/)

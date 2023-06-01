@@ -5,17 +5,15 @@ import TrainingMode from './TrainingMode';
 import { getMappingTaskDetail } from '../Mapping/api';
 
 export default function MappingResult() {
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 20;
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZE);
 
   const navigate = useNavigate();
   const { state } = useLocation();
-  // TODO: should get mappingRes from backend
   const taskId = state.id;
   const teamId = state.team_id;
   const boardId = state.board_id;
-  console.log(state);
 
   const formRef = useRef();
 
@@ -30,12 +28,14 @@ export default function MappingResult() {
   const mappedItems = data?.data.items ?? [];
   const totalNumber = data?.data.total;
 
-  // TODO: wait for backend response update
   const transformedItems = mappedItems.map((item) => {
-    // const mappedInfo = item.mapped_info[0];
     const mappingStatus = item.status !== 'fail' ? (item.status === 'success' ? 1 : 2) : 0;
     const source = item.ontology;
-    const confidence = item.status !== 'fail' ? Number(item.accuracy * 100).toFixed(2) + '%' : null;
+    const uilStatus = item.extra?.['2']?.value;
+    const confidence =
+      (item.status !== 'fail' && source !== 'UIL') || uilStatus === 'UIL'
+        ? Number(item.accuracy * 100).toFixed(2) + '%'
+        : null;
 
     return {
       originalText: item.text,
@@ -59,7 +59,6 @@ export default function MappingResult() {
       maxConfidence: values.confidence && values.confidence[1] / 100,
     };
 
-    console.log(filter);
     runFilterTaskDetail(taskId, teamId, boardId, 1, pageSize, filter);
   };
 
@@ -77,7 +76,14 @@ export default function MappingResult() {
   const handlePageChange = (page, curPageSize) => {
     setCurrentPage(page);
     setPageSize(curPageSize);
-    runFilterTaskDetail(taskId, teamId, boardId, page, curPageSize);
+    const filterForm = formRef.current?.form;
+    const values = filterForm.getFieldsValue();
+    const filter = {
+      ...values,
+      minConfidence: values.confidence && values.confidence[0] / 100,
+      maxConfidence: values.confidence && values.confidence[1] / 100,
+    };
+    runFilterTaskDetail(taskId, teamId, boardId, page, curPageSize, filter);
   };
 
   useEffect(() => {

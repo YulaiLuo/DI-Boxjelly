@@ -3,16 +3,14 @@ import { useMessageStore } from './store';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import {
   Login,
-  Mapping,
   TeamProfile,
   MappingHistory,
-  RetrainHistory,
   Main,
   MappingResult,
   Dashboard,
   CodeSystem,
   Profile,
-  Register
+  Register,
 } from './modules';
 import { checkAuthentication } from './utils/auth';
 import history from './utils/router';
@@ -45,20 +43,12 @@ function App() {
               element={loggedIn ? <Dashboard /> : <Navigate to="/login" replace />}
             />
             <Route
-              path="/mapping"
-              element={loggedIn ? <Mapping /> : <Navigate to="/login" replace />}
-            />
-            <Route
               path="/mapping-result"
               element={loggedIn ? <MappingResult /> : <Navigate to="/login" replace />}
             />
             <Route
               path="/mapping-history/:id"
               element={loggedIn ? <MappingHistory /> : <Navigate to="/login" replace />}
-            />
-            <Route
-              path="/retrain-history"
-              element={loggedIn ? <RetrainHistory /> : <Navigate to="/login" replace />}
             />
             <Route
               path="/team-profile"

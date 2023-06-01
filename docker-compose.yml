@@ -1,0 +1,81 @@
+version: "2"
+volumes:
+  di-data:
+    name: di-data
+  mongodb-data:
+    name: mongodb-data
+
+networks:
+  di-network:
+    name: di
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: always
+    volumes:
+      - mongodb-data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=boxjelly
+      - MONGO_INITDB_ROOT_PASSWORD=di_boxjelly90082
+    networks:
+      - di-network
+
+  nginx:
+    build: 
+      context: ./src/di-web
+      dockerfile: Dockerfile
+    container_name: nginx
+    restart: always
+    privileged: true
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /data/nginx/logs:/var/log/nginx
+      - /data/nginx/conf.d:/etc/nginx/conf.d
+      - /data/nginx/ssl:/etc/nginx/ssl
+      - /data/nginx/html:/usr/share/nginx/html
+
+  di-gateway:
+    build: 
+      context: ./src/di-gateway
+      dockerfile: Dockerfile
+    image: di-gateway
+    container_name: di-gateway
+    volumes:
+      - di-data:/data/di-data
+    networks:
+      - di-network
+
+  di-auth:
+    build: 
+      context: ./src/di-auth
+      dockerfile: Dockerfile
+    image: di-auth
+    container_name: di-auth
+    volumes:
+      - di-data:/data/di-data
+    networks:
+      - di-network
+
+  di-center:
+    build: 
+      context: ./src/di-center
+      dockerfile: Dockerfile
+    container_name: di-center
+    volumes:
+      - di-data:/data/di-data
+    networks:
+      - di-network
+
+  di-map:
+    build: 
+      context: ./src/di-map
+      dockerfile: Dockerfile
+    container_name: di-map
+    volumes:
+      - di-data:/data/di-data
+    networks:
+      - di-network
