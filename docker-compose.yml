@@ -29,7 +29,7 @@ services:
     container_name: nginx
     ports:
       - "80:80"
-      - "443:443"
+      - "8000:8000"
     volumes:
       - /data/nginx/logs:/var/log/nginx
       - /data/nginx/conf:/etc/nginx/conf.d
@@ -46,8 +46,6 @@ services:
     container_name: di-gateway
     volumes:
       - di-data:/data/di-data
-    ports:
-      - "8000:8000"
     networks:
       - di-network
 
