@@ -27,12 +27,13 @@
   - [Website Preview](#website-preview)
     - [Login:](#login)
     - [Dashboard:](#dashboard)
-    - [Team members](#team-members)
-    - [Invite members](#invite-members)
-    - [Code system](#code-system)
+    - [Team Management](#team-management)
+    - [Invite Members](#invite-members)
+    - [Code System](#code-system)
     - [Map Task](#map-task)
-    - [Map result](#map-result)
-    - [Curate](#curate)
+    - [Map Result](#map-result)
+    - [Map Result Visualisation](#map-result-visualisation)
+    - [Curation](#curation)
   - [Project Workflow](#project-workflow)
 
 ## Background
@@ -141,22 +142,26 @@ You can access the production environment at [http://115.146.95.215](http://115.
 ### Dashboard:
 ![workflow](./docs/images/dashboard.png)
 
-### Team members
+### Team Management
 ![workflow](./docs/images/team-member.png)
 
-### Invite members
+### Invite Members
 ![workflow](./docs/images/invite-member.png)
 
-### Code system 
+### Code System 
 ![workflow](./docs/images/code-system.png)
 
 ### Map Task
 ![workflow](./docs/images/map-tasks.png)
 
-### Map result
+
+### Map Result
 ![workflow](./docs/images/map-result.png)
 
-### Curate
+### Map Result Visualisation
+![workflow](./docs/images/visualisation.png)
+
+### Curation
 ![workflow](./docs/images/curate.png)
 
 ## Project Workflow
