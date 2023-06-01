@@ -33,8 +33,8 @@ class User(DIDocument):
 
 class Team(DIDocument):
     name = StringField(required=True)
-    create_by = ReferenceField(
-        User, required=True)                       # creator id
+    # create_by = ReferenceField(
+    #     User, required=True)                       # creator id
 
 
 class UserTeam(DIDocument):

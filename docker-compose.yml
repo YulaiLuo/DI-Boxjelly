@@ -19,24 +19,24 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=boxjelly
       - MONGO_INITDB_ROOT_PASSWORD=di_boxjelly90082
+    ports:
+      - "27017:27017"
     networks:
       - di-network
 
   nginx:
-    build: 
-      context: ./src/di-web
-      dockerfile: Dockerfile
+    image: nginx:stable
     container_name: nginx
-    restart: always
-    privileged: true
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - /data/nginx/logs:/var/log/nginx
-      - /data/nginx/conf.d:/etc/nginx/conf.d
+      - /data/nginx/conf:/etc/nginx/conf.d
       - /data/nginx/ssl:/etc/nginx/ssl
       - /data/nginx/html:/usr/share/nginx/html
+    networks:
+      - di-network   
 
   di-gateway:
     build: 
@@ -46,6 +46,8 @@ services:
     container_name: di-gateway
     volumes:
       - di-data:/data/di-data
+    ports:
+      - "8000:8000"
     networks:
       - di-network
 
@@ -64,6 +66,7 @@ services:
     build: 
       context: ./src/di-center
       dockerfile: Dockerfile
+    image: di-center
     container_name: di-center
     volumes:
       - di-data:/data/di-data
@@ -74,8 +77,9 @@ services:
     build: 
       context: ./src/di-map
       dockerfile: Dockerfile
+    image: di-map
     container_name: di-map
     volumes:
-      - di-data:/data/di-data
+      - /data/di-data/di-map/medcat_model:/data/di-data/di-map/medcat_model
     networks:
       - di-network
