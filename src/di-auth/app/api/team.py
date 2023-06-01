@@ -43,37 +43,6 @@ def convert_objectid_to_str(data):
 
 class TeamResource(Resource):
 
-    def post(self):
-        """Create a new team and add the creator as the team member
-        """
-        try:
-            in_schema = PostTeamInputSchema()
-            in_schema = in_schema.load(request.form)
-        except ValidationError as err:
-            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
-
-        try:
-            user_id = request.headers.get('User-ID')
-
-            new_team = Team(name=in_schema['name'],
-                            create_by=ObjectId(user_id),
-                            )
-            new_team.save()
-
-            new_user_team = UserTeam(user_id=ObjectId(user_id),
-                                     team_id=new_team.id,
-                                     role="owner")
-            new_user_team.save()
-            data = {
-                'team_id': str(new_team.id),
-                'name': new_team.name
-            }
-            return make_response(jsonify(code=200, msg="ok", data=data), 200)
-
-        except Exception as err:
-            print(err)
-            return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
-
     def get(self):
         """Get all active status team members and informations
         """
