@@ -25,9 +25,14 @@
     - [Environment requirments](#environment-requirments)
   - [Website Demo](#website-demo)
   - [Website Preview](#website-preview)
-        - [Main page:](#main-page)
-        - [Mapping result (Inference Mode):](#mapping-result-inference-mode)
-        - [Mapping result (Training Mode):](#mapping-result-training-mode)
+    - [Login:](#login)
+    - [Dashboard:](#dashboard)
+    - [Team members](#team-members)
+    - [Invite members](#invite-members)
+    - [Code system](#code-system)
+    - [Map Task](#map-task)
+    - [Map result](#map-result)
+    - [Curate](#curate)
   - [Project Workflow](#project-workflow)
 
 ## Background
@@ -61,11 +66,11 @@ More details about the sub-directories can be found in docs directory [repositor
 
 ## Features
 
-- Map: translate clinical texts to Universal Indication List and SNOMED-CT
-- Curate: mapping result category to continuously improve mapping performance
-- Visulization: mapping result visulization
+- Map: Translate clinical texts to Universal Indication List and SNOMED-CT
+- Curate: Mapping result category to continuously improve mapping performance
+- Visulization: Mapping result visulization
 - Download: Export the mapping result
-- Dashboard: system performance visulization
+- Dashboard: System performance visulization
 - Team: Member mangement
 - Code system: Update code system version
 
