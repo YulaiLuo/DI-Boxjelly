@@ -28,11 +28,11 @@ def init_utils(app):
     # Initialize the first user
     if Team.objects().count() == 0:
         print("No user found, creating default user")
-        team = Team(name='Default team')
+        team = Team(name='Research team')
         user = User(username='admin',
                     email='diboxjelly@student.unimelb.edu.au',
                     password=_bcrypt.generate_password_hash('diboxjelly').decode('utf-8'),
-                    first_name='',
+                    first_name='Admin',
                     last_name='Admin',
                     gender='Other')
         user_team = UserTeam(user_id=user,
