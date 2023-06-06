@@ -25,6 +25,7 @@
 		- [Prerequisites (for Ubuntu Linux)](#prerequisites-for-ubuntu-linux)
 		- [Prerequisites (for macOS)](#prerequisites-for-macos)
 		- [Ontoserver Setup and Licensing](#ontoserver-setup-and-licensing)
+		- [MedCAT Model Setup](#medcat-model-setup)
 	- [Installation and deployment](#installation-and-deployment)
 	- [Website Demo](#website-demo)
 	- [Website Preview](#website-preview)
@@ -137,6 +138,13 @@ Ensure that the following software is installed:
 ![](./docs/images/docker-login1.png)
 ![](./docs/images/docker-login2.png)
 
+### MedCAT Model Setup
+1. Download the model by [following this link](https://uts.nlm.nih.gov/uts/login?service=https://medcat.rosalind.kcl.ac.uk/auth-callback) and sign into your NIH profile / UMLS license. 
+2. You will then be redirected to the MedCAT model download form. Please complete the form and you will be provided a download link.
+3. Unzip the downloaded model and move the folder under `data/di-data/di-map`.
+
+Ensure that you select the option to use model of SNOMED International (Full SNOMED modelpack trained on MIMIC-III).
+
 ## Installation and deployment
 
 1. Clone the repository:
@@ -151,7 +159,7 @@ Ensure that the following software is installed:
 
 		./setup.sh
 
-	The setup script automates the installation and deployment process, including the deployment of the Ontoserver service and other services. If you prefer to run the script, proceed with this step and then go to step 7. Otherwise, you can proceed with alternative manual deployment from step 4 to 6. 
+	The setup script automates the installation and deployment process, including the deployment of the Ontoserver service and other services. If you prefer to run the script, proceed with this step and then continue from step 7. Otherwise, you can proceed with alternative manual deployment from step 4 to 6. 
 
 4. Deploy the Ontoserver service:
 
@@ -171,7 +179,9 @@ Ensure that the following software is installed:
 		yarn install
 		yarn build
 
-7. Then move the build file to the folder(`/data/nginx/html/di-web`) of deploy instance, and move the nginx.conf file located in `/src/di-web` into the folder(`/data/nginx/conf/default.conf`) of deploy instance.
+7. Locate the `build` folder inside the `di-web` directory. Move the `build` folder under the folder `/data/nginx/html/di-web` in the deployed instance.
+
+8. Locate the `nginx.conf` file inside the `di-web` directory. Move the `nginx.conf` file under the folder `/data/nginx/conf/default.conf` in the deployed instance.
 
 ## Website Demo
 
