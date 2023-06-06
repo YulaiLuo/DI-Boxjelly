@@ -19,7 +19,7 @@ def check_uil_with_ontoserver(texts):
                     "parameter": [
                         {
                             "name": "url",
-                            "valueUri": "http://localhost:8443/fhir/ValueSet/uil"
+                            "valueUri": "http://ontoserver:8443/fhir/ValueSet/uil"
                         },
                         {
                             "name": "count",
@@ -40,7 +40,7 @@ def check_uil_with_ontoserver(texts):
 
     # Make the request to the Ontoserver bundle expand API
     response = requests.post(
-        "https://localhost:8443/fhir", json=payload, verify=False)
+        "https://ontoserver:8443/fhir", json=payload, verify=False)
 
     # Check if the request was successful
     if response.status_code != 200:

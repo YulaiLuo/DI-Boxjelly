@@ -33,12 +33,12 @@ def create_codesystem(concepts):
     # Create the CodeSystem resource
     codesystem = {
         "resourceType": "CodeSystem",
-        "url": "http://115.146.95.215:8443/fhir/CodeSystem/uil",
+        "url": "http://ontoserver:8443/fhir/CodeSystem/uil",
         "name": "UIL",
         "status": "draft",
         "publisher": "DI-BoxJelly",
         "caseSensitive": False,
-        "valueSet": "http://115.146.95.215:8443/fhir/ValueSet/uil",
+        "valueSet": "http://ontoserver:8443/fhir/ValueSet/uil",
         "content": "complete",
         "concept": concepts
     }
@@ -47,17 +47,17 @@ def create_codesystem(concepts):
     codesystem_json = json.dumps(codesystem)
 
     # Check if the CodeSystem resource already exists
-    url = 'https://115.146.95.215:8443/fhir/CodeSystem?name=UIL'
+    url = 'https://ontoserver:8443/fhir/CodeSystem?name=UIL'
     if resource_exists(url):
         # If it exists, use a PUT request to update it
-        response = requests.put('https://115.146.95.215:8443/fhir/CodeSystem',
+        response = requests.put('https://ontoserver:8443/fhir/CodeSystem',
                                 data=codesystem_json,
                                 headers={
                                     'Content-Type': 'application/fhir+json'},
                                 verify=False)
     else:
         # If it doesn't exist, use a POST request to create it
-        response = requests.post('https://115.146.95.215:8443/fhir/CodeSystem',
+        response = requests.post('https://ontoserver:8443/fhir/CodeSystem',
                                  data=codesystem_json,
                                  headers={
                                      'Content-Type': 'application/fhir+json'},
@@ -69,7 +69,7 @@ def create_valueset():
     # Create the ValueSet resource
     valueset = {
         "resourceType": "ValueSet",
-        "url": "http://115.146.95.215:8443/fhir/ValueSet/uil",
+        "url": "http://ontoserver:8443/fhir/ValueSet/uil",
         "name": "UIL",
         "publisher": "DI-BoxJelly",
         "status": "active",
@@ -77,7 +77,7 @@ def create_valueset():
         "compose": {
             "include": [
                 {
-                    "system": "http://115.146.95.215:8443/fhir/CodeSystem/uil"
+                    "system": "http://ontoserver:8443/fhir/CodeSystem/uil"
                 }
             ]
         }
@@ -87,17 +87,17 @@ def create_valueset():
     valueset_json = json.dumps(valueset)
 
     # Check if the ValueSet resource already exists
-    url = 'https://115.146.95.215:8443/fhir/ValueSet?name=UIL'
+    url = 'https://ontoserver:8443/fhir/ValueSet?name=UIL'
     if resource_exists(url):
         # If it exists, use a PUT request to update it
-        response = requests.put('https://115.146.95.215:8443/fhir/ValueSet',
+        response = requests.put('https://ontoserver:8443/fhir/ValueSet',
                                 data=valueset_json,
                                 headers={
                                     'Content-Type': 'application/fhir+json'},
                                 verify=False)
     else:
         # If it doesn't exist, use a POST request to create it
-        response = requests.post('https://115.146.95.215:8443/fhir/ValueSet',
+        response = requests.post('https://ontoserver:8443/fhir/ValueSet',
                                  data=valueset_json,
                                  headers={
                                      'Content-Type': 'application/fhir+json'},
