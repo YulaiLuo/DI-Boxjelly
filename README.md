@@ -131,7 +131,7 @@ Ensure that the following software is installed:
 - Within Australia, email help@digitalhealth.gov.au to request a (free) Ontoserver licence. ADHA will then arrange authorisation for your quay.io account
 - Elsewhere, email ontoserver-support@csiro.au to discuss licensing terms (both evaluation and production licences are available for single and multiple instances with no limit on the number of users). Once the licence is established, CSIRO will register your quay.io account name to enable access to their repository
 - Note: The license is provided for either individual or organisation. University of Melbourne holds an active license, if you would like to use the license from Unimelb, please contact who is responsible for the Ontoserver license at Unimelb.
-- Once you have a license and have access to the Ontoserver image on quay.io, remember to change the `CLIENT_ID` and `CLIENT_SECRET` in the `ontoserver-docker-compose.yml`. For information on how to retrieve these credentials, please consult the [Ontoserver documentation](https://ontoserver.csiro.au/docs/6.1/config-syndication.html#Australian_NCTS_Syndication).
+- Once you have a license and have access to the Ontoserver image on quay.io, remember to change the `CLIENT_ID` and `CLIENT_SECRET` in the `docker-compose.yml`. For information on how to retrieve these credentials, please consult the [Ontoserver documentation](https://ontoserver.csiro.au/docs/6.1/config-syndication.html#Australian_NCTS_Syndication).
 ![](./docs/images/ontoserver-docker-compose.jpg)
 - Ensure your dockerhub account has been registered with ontoserver-support@csiro.au
 - Docker login to quay.io required
@@ -159,29 +159,24 @@ Ensure that you select the option to use model of SNOMED International (Full SNO
 
 		./setup.sh
 
-	The setup script automates the installation and deployment process, including the deployment of the Ontoserver service and other services. If you prefer to run the script, proceed with this step and then continue from step 7. Otherwise, you can proceed with alternative manual deployment from step 4 to 6. 
+	The setup script automates the installation and deployment process, including the deployment of the Ontoserver service and other services. If you prefer to run the script, proceed with this step and then continue from step 6. Otherwise, you can proceed with alternative manual deployment from step 4.
 
-4. Deploy the Ontoserver service:
-
-		docker-compose -f ontoserver-docker-compose.yml up -d
-
-
-5. Run the following command to deploy other services.
+4. Run the following command to deploy all services.
 
 		docker-compose up -d
 
 	Note:
-	- This allows you to have 5 containers: mongodb, di-gateway, di-auth, di-center, di-map, and nginx.
+	- This allows you to have 7 containers: mongodb, di-gateway, di-auth, di-center, di-map, nginx, ontoserver and ontoserver-db.
 	- However, we did not automate the di-web set up, so you will need to manully build the web static file, and move the file to the instance. Though we do have a Dockerfile *src/di-web*, it is not a good choice for CI/CD, because the nginx container bind the HTML files locally on the instance. Therefore, to make it faster for CI/CD, we decide to manully set up the di-web module at the first set-up.
 
-6. Set up the web, and nginx condiguration. In **src/di-web**, run the following command:
+5. Set up the web, and nginx condiguration. In **src/di-web**, run the following command:
 
 		yarn install
 		yarn build
 
-7. Locate the `build` folder inside the `di-web` directory. Move the `build` folder under the folder `/data/nginx/html/di-web` in the deployed instance.
+6. Locate the `build` folder inside the `di-web` directory. Move the `build` folder under the folder `/data/nginx/html/di-web` in the deployed instance.
 
-8. Locate the `nginx.conf` file inside the `di-web` directory. Move the `nginx.conf` file under the folder `/data/nginx/conf/default.conf` in the deployed instance.
+7. Locate the `nginx.conf` file inside the `di-web` directory. Move the `nginx.conf` file under the folder `/data/nginx/conf/default.conf` in the deployed instance.
 
 ## Website Demo
 
@@ -210,7 +205,6 @@ You can access the production environment at [http://115.146.95.215](http://115.
 ### Map Task
 ![workflow](./docs/images/map-tasks.png)
 
-
 ### Map Result
 ![workflow](./docs/images/map-result.png)
 
@@ -224,6 +218,6 @@ You can access the production environment at [http://115.146.95.215](http://115.
 
 Team members follow the following version control convention and branch naming convention when developing code.
 
-More detail how to follow the workflow please visits [workflow](./docs/wikis/workflow.md)
+More detail how to follow the workflow please visits [workflow](./docs/wikis/workflow.md).
 
 ![workflow](./docs/images/workflow.jpg)
