@@ -15,28 +15,29 @@
 
 ## Table of Contents
 - [SNOMED CT Diagnostic and Prescription Mapping Tool](#snomed-ct-diagnostic-and-prescription-mapping-tool)
-  - [Table of Contents](#table-of-contents)
-  - [Background](#background)
-  - [Repository Structure](#repository-structure)
-  - [Features](#features)
-  - [Requirements](#requirements)
-    - [System requirments](#system-requirments)
-    - [Prerequisites (for Windows Server 2019)](#prerequisites-for-windows-server-2019)
-    - [Prerequisites (for Ubuntu Linux)](#prerequisites-for-ubuntu-linux)
-    - [Prerequisites (for macOS)](#prerequisites-for-macos)
-  - [Installation and deployment](#installation-and-deployment)
-  - [Website Demo](#website-demo)
-  - [Website Preview](#website-preview)
-    - [Login:](#login)
-    - [Dashboard:](#dashboard)
-    - [Team Management](#team-management)
-    - [Invite Members](#invite-members)
-    - [Code System](#code-system)
-    - [Map Task](#map-task)
-    - [Map Result](#map-result)
-    - [Map Result Visualisation](#map-result-visualisation)
-    - [Curation](#curation)
-  - [Project Workflow](#project-workflow)
+	- [Table of Contents](#table-of-contents)
+	- [Background](#background)
+	- [Repository Structure](#repository-structure)
+	- [Features](#features)
+	- [Requirements](#requirements)
+		- [System requirments](#system-requirments)
+		- [Prerequisites (for Windows Server 2019)](#prerequisites-for-windows-server-2019)
+		- [Prerequisites (for Ubuntu Linux)](#prerequisites-for-ubuntu-linux)
+		- [Prerequisites (for macOS)](#prerequisites-for-macos)
+		- [Ontoserver Setup and Licensing](#ontoserver-setup-and-licensing)
+	- [Installation and deployment](#installation-and-deployment)
+	- [Website Demo](#website-demo)
+	- [Website Preview](#website-preview)
+		- [Login:](#login)
+		- [Dashboard:](#dashboard)
+		- [Team Management](#team-management)
+		- [Invite Members](#invite-members)
+		- [Code System](#code-system)
+		- [Map Task](#map-task)
+		- [Map Result](#map-result)
+		- [Map Result Visualisation](#map-result-visualisation)
+		- [Curation](#curation)
+	- [Project Workflow](#project-workflow)
 
 ## Background
 
@@ -54,18 +55,18 @@ Here we list the top-level directory of this repository
 
 More details about the sub-directories can be found in docs directory [repository structure](./docs/wikis/repo_structure.md).
 
-    .
-    ├── .github       # CI/CD Github Action scripts
-    ├── data samples  # Sample input for the prototype
-    ├── docs          # Documentation files
-    ├── prototypes    # Designed user interface - prototypes
-    ├── src           # Source code
-    ├── tests         # Code pieces and tests of source code
-    ├── LICENSE       # <Not included for now>
-    ├── docker-compose.yml  # deploy other services exclude ontoserver
-    ├── ontoserver-docker-compose.yml   # deploy ontoserver
-    ├── README.md
-    └── .gitignore
+	.
+	├── .github       # CI/CD Github Action scripts
+	├── data samples  # Sample input for the prototype
+	├── docs          # Documentation files
+	├── prototypes    # Designed user interface - prototypes
+	├── src           # Source code
+	├── tests         # Code pieces and tests of source code
+	├── LICENSE       # <Not included for now>
+	├── docker-compose.yml  # deploy other services exclude ontoserver
+	├── ontoserver-docker-compose.yml   # deploy ontoserver
+	├── README.md
+	└── .gitignore
 
 ## Features
 
@@ -109,10 +110,10 @@ Ensure that the following software is installed:
 
 3. Node.js and Yarn: Download and install Node.js and Yarn by unning the following commands in the terminal:
 
-        sudo apt update
-        sudo apt install nodejs
-        sudo apt install npm
-        npm install --global yarn
+		sudo apt update
+		sudo apt install nodejs
+		sudo apt install npm
+		npm install --global yarn
 
 ### Prerequisites (for macOS)
 Ensure that the following software is installed:
@@ -123,39 +124,54 @@ Ensure that the following software is installed:
 
 3. Node.js and Yarn: Download and install Node.js from the [official Node.js website](https://nodejs.org/en/download). After installing Node.js, install Yarn by following the instructions on the [Yarn website](https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable).
 
+### Ontoserver Setup and Licensing
+- Root permission required
+- Ontoserver license:
+- Within Australia, email help@digitalhealth.gov.au to request a (free) Ontoserver licence. ADHA will then arrange authorisation for your quay.io account
+- Elsewhere, email ontoserver-support@csiro.au to discuss licensing terms (both evaluation and production licences are available for single and multiple instances with no limit on the number of users). Once the licence is established, CSIRO will register your quay.io account name to enable access to their repository
+- Note: The license is provided for either individual or organisation. University of Melbourne holds an active license, if you would like to use the license from Unimelb, please contact who is responsible for the Ontoserver license at Unimelb.
+- Once you have a license and have access to the Ontoserver image on quay.io, remember to change the `CLIENT_ID` and `CLIENT_SECRET` in the `ontoserver-docker-compose.yml`. For information on how to retrieve these credentials, please consult the [Ontoserver documentation](https://ontoserver.csiro.au/docs/6.1/config-syndication.html#Australian_NCTS_Syndication).
+![](./docs/images/ontoserver-docker-compose.jpg)
+- Ensure your dockerhub account has been registered with ontoserver-support@csiro.au
+- Docker login to quay.io required
+![](./docs/images/docker-login1.png)
+![](./docs/images/docker-login2.png)
+
 ## Installation and deployment
 
 1. Clone the repository:
 
-        git clone https://github.com/COMP90082-2023-SM1/DI-Boxjelly.git
+		git clone https://github.com/COMP90082-2023-SM1/DI-Boxjelly.git
 
-2. Deploy the Ontoserver service:
+2. Navigate into the cloned repository:
 
-        docker-compose -f ontoserver-docker-compose.yml up -d
+		cd DI-Boxjelly
 
-    Note: 
-    - Root permission required
-    - Access to the Ontoserver image on quay.io is required. After you get the access, remember to change the `CLIENT_ID` and `CLIENT_SECRET` in the `ontoserver-docker-compose.yml`. For information on how to retrieve these credentials, please consult the [Ontoserver documentation](https://ontoserver.csiro.au/docs/6.1/config-syndication.html#Australian_NCTS_Syndication).
-    ![](./docs/images/ontoserver-docker-compose.jpg)
-    - (Once you have a license) Ensure your dockerhub account has been registered with ontoserver-support@csiro.au
-    - Docker login to quay.io required
-    ![](./docs/images/docker-login1.png)
-    ![](./docs/images/docker-login2.png)
+3. Run the setup script:
+
+		./setup.sh
+
+	The setup script automates the installation and deployment process, including the deployment of the Ontoserver service and other services. If you prefer to run the script, proceed with this step and then go to step 7. Otherwise, you can proceed with alternative manual deployment from step 4 to 6. 
+
+4. Deploy the Ontoserver service:
+
+		docker-compose -f ontoserver-docker-compose.yml up -d
 
 
-3. Run the following command to deploy other services. 
+5. Run the following command to deploy other services.
 
-        docker-compose up -d
+		docker-compose up -d
 
-    Note:
-    This allows you to have 5 containers: mongodb, di-gateway, di-auth, di-center, di-map, and nginx. However, we did not automate the di-web set up, so you will need to manully build the web static file, and move the file to the instance. Though we do have a Dockerfile *src/di-web*, it is not a good choice for CI/CD, because the nginx container bind the HTML files locally on the instance. Therefore, to make it faster for CI/CD, we decide to manully set up the di-web module at the first set-up.
+	Note:
+	- This allows you to have 5 containers: mongodb, di-gateway, di-auth, di-center, di-map, and nginx.
+	- However, we did not automate the di-web set up, so you will need to manully build the web static file, and move the file to the instance. Though we do have a Dockerfile *src/di-web*, it is not a good choice for CI/CD, because the nginx container bind the HTML files locally on the instance. Therefore, to make it faster for CI/CD, we decide to manully set up the di-web module at the first set-up.
 
-4. Set up the web, and nginx condiguration. In **src/di-web**, run the following command:
+6. Set up the web, and nginx condiguration. In **src/di-web**, run the following command:
 
-        yarn install  
-        yarn build
+		yarn install
+		yarn build
 
-Then move the build file to the folder(`/data/nginx/html/di-web`) of deploy instance, and move the nginx.conf file located in `/src/di-web` into the folder(`/data/nginx/conf/default.conf`) of deploy instance.
+7. Then move the build file to the folder(`/data/nginx/html/di-web`) of deploy instance, and move the nginx.conf file located in `/src/di-web` into the folder(`/data/nginx/conf/default.conf`) of deploy instance.
 
 ## Website Demo
 
@@ -178,7 +194,7 @@ You can access the production environment at [http://115.146.95.215](http://115.
 ### Invite Members
 ![workflow](./docs/images/invite-member.png)
 
-### Code System 
+### Code System
 ![workflow](./docs/images/code-system.png)
 
 ### Map Task
