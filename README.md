@@ -19,10 +19,12 @@
   - [Background](#background)
   - [Repository Structure](#repository-structure)
   - [Features](#features)
-  - [Installation and deployment](#installation-and-deployment)
   - [Requirements](#requirements)
     - [System requirments](#system-requirments)
-    - [Environment requirments](#environment-requirments)
+    - [Prerequisites (for Windows Server 2019)](#prerequisites-for-windows-server-2019)
+    - [Prerequisites (for Ubuntu Linux)](#prerequisites-for-ubuntu-linux)
+    - [Prerequisites (for macOS)](#prerequisites-for-macos)
+  - [Installation and deployment](#installation-and-deployment)
   - [Website Demo](#website-demo)
   - [Website Preview](#website-preview)
     - [Login:](#login)
@@ -75,41 +77,6 @@ More details about the sub-directories can be found in docs directory [repositor
 - Team: Member mangement
 - Code system: Update code system version
 
-## Installation and deployment
-
-Make sure your instance has docker and docker compose plugin installed
-
-1. Clone the repository:
-
-    `git clone https://github.com/COMP90082-2023-SM1/DI-Boxjelly.git`
-
-2. Deploy the Ontoserver, make sure you have access to the Ontoserver image.(Docker login required)
-
-        docker-compose -f ontoserver-docker-compose.yml up -d
-
-Note: 
-- Root permission needed
-- Docker login to quay.io needed
-- Access to the Ontoserver image on quay.io is required. After you get the access, remember to change the client id and client secrete in the file. ID and secret can obtain from [NCTS](https://www.healthterminologies.gov.au/).
-![](./docs/images/ontoserver-docker-compose.jpg)
-
-
-3. Run the following command. 
-
-    docker-compose up -d
-
-Note:
-This allows you to have 5 containers: mongodb, di-gateway, di-auth, di-center, di-map, and nginx. However, we did not automate the di-web set up, so you will need to manully build the web static file, and move the file to the instance. Though we do have a Dockerfile *src/di-web*, it is not a good choice for CI/CD, because the nginx container bind the HTML files locally on the instance. Therefore, to make it faster for CI/CD, we decide to manully set up the di-web module at the first set-up.
-
-4. Set up the web, and nginx condiguration. In **src/di-web**, run the following command:
-
-        yarn install  
-        yarn build
-
-Then move the build file to the folder(/data/nginx/html/di-web) of deploy instance, and move the nginx.conf file located in /src/di-web into the folder(/data/nginx/conf/default.conf) of deploy instance.
-
-
-
 ## Requirements
 
 ### System requirments
@@ -120,12 +87,75 @@ Then move the build file to the folder(/data/nginx/html/di-web) of deploy instan
 | RAM           | 8G     | 16G         |
 | Storage/Disk  | 20G    | >=40G       |
 
+### Prerequisites (for Windows Server 2019)
+Ensure that the following software is installed:
 
-### Environment requirments
+1. Windows Subsystem for Linux (WSL): Follow the [official Microsoft WSL Installation Guide](https://learn.microsoft.com/en-us/windows/wsl/install).
 
-- Docker: Following the [offical docker installation](https://docs.docker.com/engine/install/ubuntu/)
+2. Docker: Download [Docker for Windows](https://docs.docker.com/desktop/install/windows-install/) from the Docker website and install it.
 
-- Ontoserver: Make sure you have the access to Ontoserver, and the client_id, client secrete requireed by Ontoserver docker compose file. Note that Ontoserver is offcially supported on Docker version 1.10.3
+3. Docker Compose: Docker Compose is included in the Docker Desktop installation package.
+
+4. Node.js and Yarn: Download and install Node.js from the [official Node.js website](https://nodejs.org/en/download). After installing Node.js, install Yarn by following the instructions on the [Yarn website](https://classic.yarnpkg.com/en/docs/install/#windows-stable).
+
+Ensure that you select the option to use WSL 2 as the default when installing Docker.
+
+### Prerequisites (for Ubuntu Linux)
+Ensure that the following software is installed:
+
+1. Docker: Follow the official [Docker installation guide for Ubuntu](https://docs.docker.com/engine/install/ubuntu/) to install it.
+
+2. Docker Compose: After Docker is installed, follow the [Docker Compose installation guide](https://docs.docker.com/compose/install/).
+
+3. Node.js and Yarn: Download and install Node.js and Yarn by unning the following commands in the terminal:
+
+        sudo apt update
+        sudo apt install nodejs
+        sudo apt install npm
+        npm install --global yarn
+
+### Prerequisites (for macOS)
+Ensure that the following software is installed:
+
+1. Docker: Download Docker Desktop for Mac from the [Docker website](https://docs.docker.com/desktop/install/mac-install/) and install it.
+
+2. Docker Compose: Docker Compose is included in the Docker Desktop installation package.
+
+3. Node.js and Yarn: Download and install Node.js from the [official Node.js website](https://nodejs.org/en/download). After installing Node.js, install Yarn by following the instructions on the [Yarn website](https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable).
+
+## Installation and deployment
+
+1. Clone the repository:
+
+        git clone https://github.com/COMP90082-2023-SM1/DI-Boxjelly.git
+
+2. Deploy the Ontoserver service:
+
+        docker-compose -f ontoserver-docker-compose.yml up -d
+
+    Note: 
+    - Root permission required
+    - Access to the Ontoserver image on quay.io is required. After you get the access, remember to change the `CLIENT_ID` and `CLIENT_SECRET` in the `ontoserver-docker-compose.yml`. For information on how to retrieve these credentials, please consult the [Ontoserver documentation](https://ontoserver.csiro.au/docs/6.1/config-syndication.html#Australian_NCTS_Syndication).
+    ![](./docs/images/ontoserver-docker-compose.jpg)
+    - (Once you have a license) Ensure your dockerhub account has been registered with ontoserver-support@csiro.au
+    - Docker login to quay.io required
+    ![](./docs/images/docker-login1.png)
+    ![](./docs/images/docker-login2.png)
+
+
+3. Run the following command to deploy other services. 
+
+        docker-compose up -d
+
+    Note:
+    This allows you to have 5 containers: mongodb, di-gateway, di-auth, di-center, di-map, and nginx. However, we did not automate the di-web set up, so you will need to manully build the web static file, and move the file to the instance. Though we do have a Dockerfile *src/di-web*, it is not a good choice for CI/CD, because the nginx container bind the HTML files locally on the instance. Therefore, to make it faster for CI/CD, we decide to manully set up the di-web module at the first set-up.
+
+4. Set up the web, and nginx condiguration. In **src/di-web**, run the following command:
+
+        yarn install  
+        yarn build
+
+Then move the build file to the folder(`/data/nginx/html/di-web`) of deploy instance, and move the nginx.conf file located in `/src/di-web` into the folder(`/data/nginx/conf/default.conf`) of deploy instance.
 
 ## Website Demo
 
