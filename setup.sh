@@ -21,9 +21,6 @@ then
     exit 1
 fi
 
-# Run the first Docker Compose command
-docker-compose -f ontoserver-docker-compose.yml up -d
-
 # Run the second Docker Compose command
 docker-compose up -d
 
