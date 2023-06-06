@@ -1,5 +1,9 @@
 version: "2"
 volumes:
+  onto:
+    driver: local
+  pgdata:
+    driver: local
   di-data:
     name: di-data
   mongodb-data:
@@ -31,10 +35,10 @@ services:
       - "80:80"
       - "8000:8000"
     volumes:
-      - /data/nginx/logs:/var/log/nginx
-      - /data/nginx/conf:/etc/nginx/conf.d
-      - /data/nginx/ssl:/etc/nginx/ssl
-      - /data/nginx/html:/usr/share/nginx/html
+      - ./data/nginx/logs:/var/log/nginx
+      - ./data/nginx/conf:/etc/nginx/conf.d
+      - ./data/nginx/ssl:/etc/nginx/ssl
+      - ./data/nginx/html:/usr/share/nginx/html
     networks:
       - di-network   
 
@@ -78,6 +82,33 @@ services:
     image: di-map
     container_name: di-map
     volumes:
-      - /data/di-data/di-map/medcat_model:/data/di-data/di-map/medcat_model
+      - ./data/di-data/di-map/medcat_model:/data/di-data/di-map/medcat_model
+    networks:
+      - di-network
+
+  db:
+    image: postgres
+    container_name: ontoserver-db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    networks:
+      - di-network
+
+  ontoserver:
+    image: quay.io/aehrc/ontoserver:ctsa-6.12.3
+    container_name: ontoserver
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      - authentication.oauth.endpoint.client_id.0=6i0p6pu3a05mv0rsuq0hds45mm
+      - authentication.oauth.endpoint.client_secret.0=1cnbh5btj2h40d0lp0uupnkn1pi0j1uemcl0nm32mgpf9akfiipu
+      - JAVA_OPTS=-Xmx4G
+    volumes:
+      - onto:/var/onto
     networks:
       - di-network
