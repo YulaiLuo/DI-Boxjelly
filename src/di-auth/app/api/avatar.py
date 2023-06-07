@@ -70,7 +70,7 @@ class AvatarResource(Resource):
 
             # Save the new avatar, remove old avatar, and update user avatar field
             try:
-                if old_avatar == "fae8532f1684325376":
+                if old_avatar == "default":
                     pass
                 else:
                     os.remove(os.path.join(

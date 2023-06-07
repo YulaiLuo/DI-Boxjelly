@@ -20,7 +20,7 @@ class DIDocument(Document):
 
 
 class User(DIDocument):
-    avatar = StringField(required=False, default='fae8532f1684325376')
+    avatar = StringField(required=False, default='default')
     username = StringField(unique=True, required=True)
     email = StringField(unique=True, required=True)
     password = StringField(required=True)
