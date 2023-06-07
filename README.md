@@ -141,7 +141,7 @@ Ensure that the following software is installed:
 ### MedCAT Model Setup
 1. Download the model by [following this link](https://uts.nlm.nih.gov/uts/login?service=https://medcat.rosalind.kcl.ac.uk/auth-callback) and sign into your NIH profile / UMLS license. 
 2. You will then be redirected to the MedCAT model download form. Please complete the form and you will be provided a download link.
-3. Unzip the downloaded model, rename the folder as `medtcat_model` and move the folder under `data/di-data/di-map`.
+3. Unzip the downloaded model, rename the folder as `medtcat_model` and move the folder under `di-map` folder.
 
 Ensure that you select the option to use model of SNOMED International (Full SNOMED modelpack trained on MIMIC-III).
 
@@ -159,7 +159,7 @@ Ensure that you select the option to use model of SNOMED International (Full SNO
 
 		./setup.sh
 
-	The setup script automates the installation and deployment process, including the deployment of the Ontoserver service and other services. If you prefer to run the script, proceed with this step and then continue from step 6. Otherwise, you can proceed with alternative manual deployment from step 4.
+	The setup script automates the installation and deployment process, including the deployment of the Ontoserver service and other services. If you prefer to run the script, proceed with this step. Otherwise, you can proceed with alternative manual deployment from step 4 to step 5.
 
 4. Run the following command to deploy all services.
 
@@ -173,10 +173,6 @@ Ensure that you select the option to use model of SNOMED International (Full SNO
 
 		yarn install
 		yarn build
-
-6. Locate the `build` folder inside the `di-web` directory. Move the `build` folder under the folder `/data/nginx/html/di-web` in the deployed instance.
-
-7. Locate the `nginx.conf` file inside the `di-web` directory. Move the `nginx.conf` file under the folder `/data/nginx/conf/default.conf` in the deployed instance.
 
 ## Website Demo
 

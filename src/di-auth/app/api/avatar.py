@@ -32,26 +32,26 @@ class AvatarResource(Resource):
         # Check if the image exits in request
         file = in_schema['file']
         if file.filename == '':
-            return make_response(jsonify(code=400, err="NO_SELECTED_FILE"), 400)
+            return make_response(jsonify(code=400, err="NO_SELECTED_FILE", msg="No file is selected!"), 400)
 
         # check if the file is an image
         try:
             Image.open(file)
         except IOError as err:
-            return make_response(jsonify(code=400, err="NOT_IMAGE_ERROR"), 400)
+            return make_response(jsonify(code=400, err="NOT_IMAGE_ERROR", msg="The file selected is not an image!"), 400)
 
         # Check image size is smaller than 1MB
         file.seek(0, os.SEEK_END)
         file_size = file.tell()
         if file_size > 1024*1024:
-            return make_response(jsonify(code=400, err="FILE_TOO_LARGE"), 400)
+            return make_response(jsonify(code=400, err="FILE_TOO_LARGE", msg="The file selected is too large!"), 400)
 
         # Find the user
         user_id = request.headers.get('User-ID')
         try:
             user = User.objects(id=user_id).first()
         except DoesNotExist as err:
-            return make_response(jsonify(code=400, err="USER_NOT_EXIST"), 400)
+            return make_response(jsonify(code=400, err="USER_NOT_EXIST", msg="The user does not exist!"), 400)
 
         # Generate the file name and save the avatar
         try:
