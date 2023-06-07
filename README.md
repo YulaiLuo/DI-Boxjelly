@@ -72,11 +72,11 @@ More details about the sub-directories can be found in docs directory [repositor
 ## Features
 
 - Map: Translate clinical texts to Universal Indication List and SNOMED-CT
-- Curate: Mapping result category to continuously improve mapping performance
+- Curate: Manually map result category to continuously improve mapping performance
 - Visulization: Mapping result visulization
 - Download: Export the mapping result
 - Dashboard: System performance visulization
-- Team: Member mangement
+- Team: Member management
 - Code system: Update code system version
 
 ## Requirements
@@ -141,7 +141,7 @@ Ensure that the following software is installed:
 ### MedCAT Model Setup
 1. Download the model by [following this link](https://uts.nlm.nih.gov/uts/login?service=https://medcat.rosalind.kcl.ac.uk/auth-callback) and sign into your NIH profile / UMLS license. 
 2. You will then be redirected to the MedCAT model download form. Please complete the form and you will be provided a download link.
-3. Unzip the downloaded model and move the folder under `data/di-data/di-map`.
+3. Unzip the downloaded model, rename the folder as `medtcat_model` and move the folder under `data/di-data/di-map`.
 
 Ensure that you select the option to use model of SNOMED International (Full SNOMED modelpack trained on MIMIC-III).
 
