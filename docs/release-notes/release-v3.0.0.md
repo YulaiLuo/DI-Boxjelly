@@ -1,11 +1,11 @@
 ## Features
 
-- Map: translate clinical texts to Universal Indication List and SNOMED-CT
-- Curate: mapping result category to continuously improve mapping performance
-- Visulization: mapping result visulization
+- Map: Translate clinical texts to Universal Indication List and SNOMED-CT
+- Curate: Manually map result category to continuously improve mapping performance
+- Visulization: Mapping result visulization
 - Download: Export the mapping result
-- Dashboard: system performance visulization
-- Team: Member mangement
+- Dashboard: System performance visulization
+- Team: Member management
 - Code system: Update code system version
 
 ## Website Preview
