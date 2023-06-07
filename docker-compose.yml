@@ -35,10 +35,10 @@ services:
       - "80:80"
       - "8000:8000"
     volumes:
-      - ./data/nginx/logs:/var/log/nginx
-      - ./data/nginx/conf/nginx.conf:/etc/nginx/conf.d/default.conf
-      - ./data/nginx/ssl:/etc/nginx/ssl
-      - ./data/nginx/html:/usr/share/nginx/html
+      - ./src/di-web/nginx/logs:/var/log/nginx
+      - ./src/di-web/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./src/di-web/nginx/ssl:/etc/nginx/ssl
+      - ./src/di-web/build:/usr/share/nginx/html
     networks:
       - di-network   
 
@@ -82,7 +82,7 @@ services:
     image: di-map
     container_name: di-map
     volumes:
-      - ./data/di-data/di-map/medcat_model:/data/di-data/di-map/medcat_model
+      - ./src/di-map/medcat_model:/data/di-data/di-map/medcat_model
     networks:
       - di-network
 
