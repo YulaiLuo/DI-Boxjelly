@@ -55,7 +55,7 @@ class CodeSystemResource(Resource):
                 version=in_schema['version'], deleted=False).first()
 
         if not code_system:
-            return make_response(jsonify(code=404, err="INVALID_INPUT", msg="No code system found, please add the UIL!"), 404)
+            return make_response(jsonify(code=404, err="INVALID_INPUT", msg="No code system found, please upload the latest UIL!"), 404)
 
         result = CodeSystemController.get_code_system_data(code_system)
 
