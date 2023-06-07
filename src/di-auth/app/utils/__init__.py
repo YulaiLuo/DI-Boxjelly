@@ -7,6 +7,7 @@ _bcrypt = None
 _mongo = None
 _jwt = None
 
+
 def init_utils(app):
     """
     Initialize the API, adding all the helpers to the Flask app.
@@ -30,29 +31,34 @@ def init_utils(app):
         print("No user found, creating default user")
         team = Team(name='Research team')
         user = User(username='admin',
-                    email='diboxjelly@student.unimelb.edu.au',
-                    password=_bcrypt.generate_password_hash('diboxjelly').decode('utf-8'),
+                    email='diboxjelly@unimelb.edu.au',
+                    password=_bcrypt.generate_password_hash(
+                        'diboxjelly').decode('utf-8'),
                     first_name='Admin',
-                    last_name='Admin',
+                    last_name='User',
+                    nickname='admin',
                     gender='Other')
         user_team = UserTeam(user_id=user,
-                 team_id=team,
-                 role='owner',
-                 invite_by=user,
-                 status='active')
+                             team_id=team,
+                             role='owner',
+                             invite_by=user,
+                             status='active')
         team.save()
         user.save()
         user_team.save()
+
 
 def get_mongo():
     if _mongo == None:
         raise Exception("MongoDB not initialized")
     return _mongo
 
+
 def get_jwt():
     if _jwt is None:
         raise Exception("JWTManager not initialized")
     return _jwt
+
 
 def get_bcrypt():
     if _bcrypt is None:
