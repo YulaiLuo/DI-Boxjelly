@@ -54,6 +54,9 @@ const TrainingMode = forwardRef((props, ref) => {
   });
   const { run: runCurateMapping } = useRequest(curateMapping, {
     manual: true,
+    onError: (err) => {
+      if (err?.response?.data?.code === 404) navigate('/code-system', { replace: true });
+    },
   });
 
   const mappedCodeSystemList = codeSystemList?.data?.groups?.map((item) => {
