@@ -51,7 +51,7 @@ cp -r build/* ~/data/nginx/html/ || { echo "Failed to copy files from the build 
 cd ../..
 
 # Copy the default avatar
-cp /src/di-auth/default.jpg ~/data/di-data/di-auth/avatars/ || { echo "Failed to copy the default avatar."; exit 1; }
+cp src/di-auth/default.jpg ~/data/di-data/di-auth/avatars/ || { echo "Failed to copy the default avatar."; exit 1; }
 
 # Run the Docker Compose command
 docker-compose up -d
