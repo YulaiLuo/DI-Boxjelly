@@ -36,16 +36,8 @@ then
 fi
 
 # Create the necessary directories
-mkdir -p ../../data/nginx/conf
-mkdir -p ../../data/nginx/html
-mkdir -p ../../data/nginx/ssl
-mkdir -p ../../data/nginx/logs
-
-# Copy nginx configuration file in the di-web directory to the desired location
-cp -r nginx.conf ../../data/nginx/conf/ || { echo "Failed to copy files from the di-web directory."; exit 1; }
-
-# Copy all files in the build directory to the desired location
-cp -r build/* ../../data/nginx/html/ || { echo "Failed to copy files from the build directory."; exit 1; }
+mkdir -p nginx/ssl
+mkdir -p nginx/logs
 
 # Navigate back to the root directory
 cd ../..
