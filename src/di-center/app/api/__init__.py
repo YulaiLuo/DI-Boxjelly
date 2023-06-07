@@ -7,7 +7,6 @@ from .task.task_meta import *
 from .task.task_detail import *
 
 from .codesystem.system import *
-from .codesystem.download import *
 from .codesystem.group import *
 from .codesystem.version import *
 
@@ -27,7 +26,6 @@ def init_api(app):
     api.add_resource(CodeSystemResource, '/center/codesystem')
     api.add_resource(CodeSystemVersionResource, '/center/codesystem/versions')
     api.add_resource(ConceptGroupResource, '/center/codesystem/groups')
-    api.add_resource(DownloadCodeSystemResource, '/center/codesystem/download/<version>')
 
     api.add_resource(MapTaskBoardsResource, '/center/boards')
     api.add_resource(MapTaskResource, '/center/boards/tasks')
