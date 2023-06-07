@@ -1,4 +1,5 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRequest } from 'ahooks';
 import { BarChartOutlined, DownloadOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';
@@ -22,6 +23,7 @@ const TrainingMode = forwardRef((props, ref) => {
   } = props;
 
   const team_id = localStorage.getItem('team');
+  const navigate = useNavigate();
 
   const [filterForm] = Form.useForm();
 
@@ -46,6 +48,9 @@ const TrainingMode = forwardRef((props, ref) => {
   const { data: meta_data } = useRequest(() => getMappingTaskMetaDetail(taskId));
   const { data: codeSystemList } = useRequest(getCodeSystemList, {
     initialData: [],
+    onError: (err) => {
+      if (err?.response?.data?.code === 404) navigate('/code-system', { replace: true });
+    },
   });
   const { run: runCurateMapping } = useRequest(curateMapping, {
     manual: true,
