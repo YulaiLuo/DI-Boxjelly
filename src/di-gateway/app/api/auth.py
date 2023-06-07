@@ -40,7 +40,13 @@ class UserEmailLoginResource(Resource):
         
         # Create new response and set cookies
         new_response = Response(response=response.content,status=response.status_code)
-        set_access_cookies(new_response, response.headers.get(app.config["JWT_ACCESS_COOKIE_NAME"]))
+        
+        # Set cookies if the JWT tokens are present in the response headers
+        jwt_access_cookie = response.headers.get(app.config["JWT_ACCESS_COOKIE_NAME"])
+        # jwt_refresh_cookie = response.headers.get(app.config["JWT_REFRESH_COOKIE_NAME"])
+
+        if jwt_access_cookie:
+            set_access_cookies(new_response, jwt_access_cookie)
         # set_refresh_cookies(new_response, response.headers.get(app.config["JWT_REFRESH_COOKIE_NAME"]))
 
         return new_response
