@@ -52,6 +52,9 @@ export default function CodeSystem() {
         setIsModalOpen(false);
         msgApi.success('Updated successfully!');
         runGetAllCodeSystemVersion();
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
       },
     }
   );
@@ -65,7 +68,6 @@ export default function CodeSystem() {
         msgApi.success('Deleted successfully!');
         runGetCodeSystemList();
         runGetAllCodeSystemVersion();
-
         setTimeout(() => {
           window.location.reload();
         }, 500);
