@@ -56,22 +56,22 @@ class EmailLogin(Resource):
             in_schema = EmailLoginSchema()
             in_schema = in_schema.load(request.form)
         except ValidationError:
-            response = jsonify(code=400,err="INVALID_EMAIL_PASSWORD")
+            response = jsonify(code=400,err="INVALID_EMAIL_PASSWORD", msg="The Email format you entered is incorrect!")
             return make_response(response,400)
 
         # Find the user in the database
         try:
             user = User.objects(email=in_schema['email']).get()
         except DoesNotExist:
-            response = jsonify(code=404,err="USER_NOT_FOUND")
+            response = jsonify(code=404,err="USER_NOT_FOUND", msg="User is not found!")
             return make_response(response,404)
         except MultipleObjectsReturned:
-            response = jsonify(code=500,err="MULTIPLE_USERS_FOUND")
+            response = jsonify(code=500,err="MULTIPLE_USERS_FOUND", msg="Multiple users found!")
             return make_response(response,500)
             
         # Check the password
         if not self.bcrypt.check_password_hash(user.password, in_schema['password']):
-            response = jsonify(code=401,err="INCORRECT_PASSWORD")
+            response = jsonify(code=401,err="INCORRECT_PASSWORD", msg="The password you entered is incorrect!")
             return make_response(response,401)
 
         # TODO: There will only be one team, to support multiple team, change the following lines
