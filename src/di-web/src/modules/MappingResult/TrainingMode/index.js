@@ -49,14 +49,15 @@ const TrainingMode = forwardRef((props, ref) => {
   const { data: codeSystemList } = useRequest(getCodeSystemList, {
     initialData: [],
     onError: (err) => {
-      if (err?.response?.data?.code === 404) navigate('/code-system', { replace: true });
+      if (err?.response?.data?.code === 404) {
+        setTimeout(() => {
+          navigate('/code-system', { replace: true });
+        }, 1000);
+      }
     },
   });
   const { run: runCurateMapping } = useRequest(curateMapping, {
     manual: true,
-    onError: (err) => {
-      if (err?.response?.data?.code === 404) navigate('/code-system', { replace: true });
-    },
   });
 
   const mappedCodeSystemList = codeSystemList?.data?.groups?.map((item) => {
