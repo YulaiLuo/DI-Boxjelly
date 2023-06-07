@@ -41,6 +41,7 @@ mkdir -p ~/data/nginx/html
 mkdir -p ~/data/nginx/ssl
 mkdir -p ~/data/nginx/logs
 mkdir -p ~/data/di-data/di-auth/avatars
+mkdir -p ~/data/di-data/di-map/medtcat_model
 
 # Copy nginx configuration file in the di-web directory to the desired location
 cp -r nginx.conf ~/data/nginx/conf/ || { echo "Failed to copy files from the di-web directory."; exit 1; }
@@ -50,6 +51,9 @@ cp -r build/* ~/data/nginx/html/ || { echo "Failed to copy files from the build 
 
 # Navigate back to the root directory
 cd ../..
+
+# Copy the medcat model folder to the desired location
+cp -r src/di-map/medtcat_model/* ~/data/di-data/di-map/medtcat_model/ || { echo "Failed to copy files from the medcat_model directory. Please ensure you unzip the downloaded model, rename the folder as `medtcat_model` and move it under `di-map` folder."; exit 1; }
 
 # Copy the default avatar
 cp src/di-auth/default.jpg ~/data/di-data/di-auth/avatars/ || { echo "Failed to copy the default avatar."; exit 1; }

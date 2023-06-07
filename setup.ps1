@@ -41,6 +41,7 @@ $directories = @(
     "~\data\nginx\ssl",
     "~\data\nginx\logs",
     "~\data\di-data\di-auth\avatars"
+    "~/data/di-data/di-map/medtcat_model"
 )
 foreach($directory in $directories) {
     if(-Not (Test-Path -Path $directory)) {
@@ -56,6 +57,9 @@ Copy-Item -Path .\build\* -Destination ~\data\nginx\html\ -ErrorAction Stop -For
 
 # Navigate back to the root directory
 Set-Location -Path ..\..
+
+# Copy the medcat model
+Copy-Item -Path .\src\di-map\medtcat_model\* -Destination ~\data\di-data\di-map\medtcat_model\ -ErrorAction Stop -Force
 
 # Copy the default avatar
 Copy-Item -Path .\src\di-auth\default.jpg -Destination ~\data\di-data\di-auth\avatars\ -ErrorAction Stop -Force
