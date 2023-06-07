@@ -27,4 +27,4 @@ class Config:
     JWT_CSRF_CHECK_FORM = True
 
     # Avatar settings
-    AVATAR_FOLDER = '/data/di-data/di-auth/avatars'
+    AVATAR_FOLDER = '~/data/di-data/di-auth/avatars'
