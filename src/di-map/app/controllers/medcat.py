@@ -11,7 +11,7 @@ class MedcatController(MapperController):
     def __init__(self):
         super().__init__()
 
-        unzip = '/data/di-data/di-map/medcat_model/' # Define the model path
+        unzip = '~/data/di-data/di-map/medcat_model/' # Define the model path
         vocab = Vocab.load(unzip+'vocab.dat')   # Load the vocab model you downloaded
         cdb = CDB.load(unzip+'cdb.dat')         # Load the cdb model you downloaded
 
