@@ -21,7 +21,7 @@
 	- [Features](#features)
 	- [Requirements](#requirements)
 		- [System requirments](#system-requirments)
-		- [Prerequisites (for Windows Server 2019)](#prerequisites-for-windows-server-2019)
+		- [Prerequisites (for Windows/Windows Server)](#prerequisites-for-windowswindows-server)
 		- [Prerequisites (for Ubuntu Linux)](#prerequisites-for-ubuntu-linux)
 		- [Prerequisites (for macOS)](#prerequisites-for-macos)
 		- [Ontoserver Setup and Licensing](#ontoserver-setup-and-licensing)
@@ -89,7 +89,7 @@ More details about the sub-directories can be found in docs directory [repositor
 | RAM           | 8G     | 16G         |
 | Storage/Disk  | 20G    | >=40G       |
 
-### Prerequisites (for Windows Server 2019)
+### Prerequisites (for Windows/Windows Server)
 Ensure that the following software is installed:
 
 1. Windows Subsystem for Linux (WSL): Follow the [official Microsoft WSL Installation Guide](https://learn.microsoft.com/en-us/windows/wsl/install).
@@ -109,7 +109,7 @@ Ensure that the following software is installed:
 
 2. Docker Compose: After Docker is installed, follow the [Docker Compose installation guide](https://docs.docker.com/compose/install/).
 
-3. Node.js and Yarn: Download and install Node.js and Yarn by unning the following commands in the terminal:
+3. Node.js and Yarn: Download and install Node.js and Yarn by running the following commands in the terminal:
 
 		sudo apt update
 		sudo apt install nodejs
@@ -141,7 +141,7 @@ Ensure that the following software is installed:
 ### MedCAT Model Setup
 1. Download the model by [following this link](https://uts.nlm.nih.gov/uts/login?service=https://medcat.rosalind.kcl.ac.uk/auth-callback) and sign into your NIH profile / UMLS license. 
 2. You will then be redirected to the MedCAT model download form. Please complete the form and you will be provided a download link.
-3. Unzip the downloaded model, rename the folder as `medtcat_model` and move the folder under `di-map` folder.
+3. Unzip the downloaded model, rename the folder as `medtcat_model` and move it under `src/di-map` folder.
 
 Ensure that you select the option to use model of SNOMED International (Full SNOMED modelpack trained on MIMIC-III).
 
@@ -155,24 +155,16 @@ Ensure that you select the option to use model of SNOMED International (Full SNO
 
 		cd DI-Boxjelly
 
-3. Run the setup script:
+3. Run the setup script (for Windows/Windows Server):
+
+		sudo ./setup.ps1
+		
+	Run the setup script (for Ubuntu Linux/macOS):
 
 		sudo ./setup.sh
 
-	The setup script automates the installation and deployment process, including the deployment of the Ontoserver service and other services. If you prefer to run the script, proceed with this step. Otherwise, you can proceed with alternative manual deployment from step 4 to step 5.
-
-4. Run the following command to deploy all services.
-
-		docker-compose up -d
-
-	Note:
-	- This allows you to have 7 containers: mongodb, di-gateway, di-auth, di-center, di-map, nginx, ontoserver and ontoserver-db.
-	- However, we did not automate the di-web set up, so you will need to manully build the web static file, and move the file to the instance. Though we do have a Dockerfile *src/di-web*, it is not a good choice for CI/CD, because the nginx container bind the HTML files locally on the instance. Therefore, to make it faster for CI/CD, we decide to manully set up the di-web module at the first set-up.
-
-5. Set up the web, and nginx condiguration. In **src/di-web**, run the following command:
-
-		yarn install
-		yarn build
+	- The setup script automates the installation and deployment process.
+	- This allows you to have 8 containers: mongo, di-gateway, di-auth, di-center, di-map, nginx, ontoserver and ontoserver-db.
 
 ## Website Demo
 
@@ -180,8 +172,6 @@ A demo video is available:
 [![Watch the video](./docs/images/login.png)](https://youtu.be/BC8NPPdGJ6M)
 
 ## Website Preview
-
-You can access the production environment at [http://115.146.95.215](http://115.146.95.215)
 
 ### Login:
 ![workflow](./docs/images/login.png)
