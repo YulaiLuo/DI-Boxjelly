@@ -1,5 +1,5 @@
 import { message } from 'antd';
-import { useMessageStore } from './store';
+import { useMessageStore, useUserStore } from './store';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import {
   Login,
@@ -12,14 +12,13 @@ import {
   Profile,
   Register,
 } from './modules';
-import { checkAuthentication } from './utils/auth';
 import history from './utils/router';
 
 function App() {
   // global message display
   const [messageApi, contextHolder] = message.useMessage();
 
-  const loggedIn = checkAuthentication();
+  const loggedIn = useUserStore((state) => state.loggedIn);
   const setMsgApi = useMessageStore((state) => state.setMsgApi);
 
   setMsgApi(messageApi);

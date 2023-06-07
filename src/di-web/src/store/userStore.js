@@ -1,7 +1,8 @@
 import { create } from 'zustand';
+import { checkAuthentication } from '../utils/auth';
 
 const useUserStore = create((set) => ({
-  loggedIn: false,
+  loggedIn: checkAuthentication(),
   user: JSON.parse(localStorage.getItem('userDetail')) || {
     email: '',
     first_name: '',
