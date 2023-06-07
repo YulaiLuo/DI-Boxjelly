@@ -217,7 +217,7 @@ export default function CodeSystem() {
             <Input />
           </Form.Item>
           <Form.Item
-            label="version"
+            label="Version"
             name="version"
             rules={[
               {
