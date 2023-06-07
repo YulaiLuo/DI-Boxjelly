@@ -157,7 +157,7 @@ Ensure that you select the option to use model of SNOMED International (Full SNO
 
 3. Run the setup script:
 
-		./setup.sh
+		sudo ./setup.sh
 
 	The setup script automates the installation and deployment process, including the deployment of the Ontoserver service and other services. If you prefer to run the script, proceed with this step. Otherwise, you can proceed with alternative manual deployment from step 4 to step 5.
 
