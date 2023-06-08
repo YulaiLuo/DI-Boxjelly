@@ -19,6 +19,20 @@ class DownloadMapTaskResource(Resource):
 
     def export_map_task_to_csv(self, map_task, map_items):
 
+        """
+        Export the map task and its map items to a CSV file.
+
+        Args:
+            map_task (MapTask): The map task object.
+            map_items (List[MapItem]): The list of map items.
+
+        Returns:
+            bytes: The CSV file content as bytes.
+
+        Raises:
+            Exception: If any error occurs during the export process.
+        """
+
         csv_data = io.StringIO()
         csv_writer = csv.writer(csv_data, delimiter=',',
                                 quotechar='"', quoting=csv.QUOTE_MINIMAL)
@@ -81,7 +95,18 @@ class DownloadMapTaskResource(Resource):
         return csv_data.getvalue().encode('utf-8')
 
     def get(self):
-        """Download the map task result
+        """
+        Download the map task result as a CSV file.
+
+        Args:
+            team_id (str): The ID of the team associated with the map task.
+            task_id (str): The ID of the map task.
+
+        Raises:
+        ValidationError: If the input data is invalid.
+        DoesNotExist: If the map task or map items are not found.
+        Exception: If any other error occurs during the process.
+
         """
         try:
             in_schema = GetDownloadMapTaskInputSchema()

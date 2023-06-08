@@ -15,7 +15,21 @@ class PostMapTaskCurateSchema(Schema):
 class MapTaskCurateResource(Resource):
     
     def post(self):
-        """Curate a map item to UIL
+        """
+        Curate a map item to UIL.
+
+        Args:
+            map_item_id (str): The ID of the map item to curate.
+            concept_name (str): The name of the curated concept.
+            code_system_version (str): The version of the code system for the curated concept.
+
+        Returns:
+            Response: HTTP Response indicating the success of the curation.
+
+        Raises:
+            ValidationError: If the input data is invalid.
+            DoesNotExist: If the map item, code system, or concept is not found.
+            Exception: If any other error occurs during the curation process.
         """
         try:
             in_schema = PostMapTaskCurateSchema().load(request.get_json())

@@ -149,6 +149,12 @@ class MapTaskResource(Resource):
       # TODO: Websocket
  
    def post(self):
+      """
+      Create a new map task.
+
+      Returns:
+         Response: JSON response indicating the status of the request
+      """
 
       # The data can come from file, form and ...etc
       data = {}
