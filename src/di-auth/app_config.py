@@ -17,7 +17,7 @@ from datetime import timedelta
 class Config:
 
     # MongoDB
-    MONGO_URI = os.environ.get('MONGO_URI') or 'mongodb://boxjelly:di_boxjelly90082@mongo:27017/di?authSource=admin'
+    MONGO_URI = os.environ.get('MONGO_URI') or 'mongodb://boxjelly:di_boxjelly90082@localhost:27017/di?authSource=admin'
 
     # JWT Setting
     JWT_TOKEN_LOCATION = ['cookies']
@@ -27,4 +27,4 @@ class Config:
     JWT_CSRF_CHECK_FORM = True
 
     # Avatar settings
-    AVATAR_FOLDER = '~/data/di-data/di-auth/avatars'
+    AVATAR_FOLDER = os.path.expanduser('~/data/di-data/di-auth/avatars')
