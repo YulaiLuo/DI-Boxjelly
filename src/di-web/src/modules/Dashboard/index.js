@@ -1,3 +1,4 @@
+// Importing required dependencies
 import React, { useState, useRef } from 'react';
 import { Col, Row, Input, Spin, Modal } from 'antd';
 import { Column } from '@ant-design/plots';
@@ -8,6 +9,7 @@ import { getDashboardInfo, getBarChartInfo, getHelloInfo } from './api';
 
 const { Search } = Input;
 
+// Main Dashboard component
 export default function Dashboard() {
   const [showSingleMapping, setShowSingleMapping] = useState(false);
   const [singleMappingResult, setSingleMappingResult] = useState('');
@@ -15,9 +17,11 @@ export default function Dashboard() {
   // ref of single text search input
   const inputRef = useRef(null);
 
+  // Request handler for mapSingleText API
   const { loading: singleMapLoading, run: handleMapSingleText } = useRequest(mapSingleText, {
     manual: true,
     onSuccess: (res) => {
+      // process and update the mapping result state
       if (
         res.data.result['0'] &&
         res.data.result['0'] !== null &&
@@ -33,19 +37,20 @@ export default function Dashboard() {
     },
   });
 
+  // Fetch dashboard info, bar chart info and hello info
   const { data: dashboardInfoResponse } = useRequest(getDashboardInfo);
   const { data: dashboardBarChartResponse } = useRequest(getBarChartInfo);
   const { data: dashboardHelloInfoResponse } = useRequest(getHelloInfo);
 
+  // Processing the response data for rendering
   const dashboardInfo = dashboardInfoResponse?.map((res) => res?.data);
-
   const toTitleCase = (str) => str.charAt(0).toUpperCase() + str.slice(1);
-
   const dashboardBarChartResponseTitled = dashboardBarChartResponse?.data.map((item) => ({
     ...item,
     type: toTitleCase(item.type),
   }));
 
+  // Event handlers for single text search
   const onSingleTextSearch = (value) => {
     if (value.trim() !== '') {
       setIsModalOpen(true);
@@ -62,6 +67,7 @@ export default function Dashboard() {
     }
   };
 
+  // Chart configuration
   const config = {
     data: dashboardBarChartResponseTitled ?? [],
     isStack: true,
@@ -94,6 +100,7 @@ export default function Dashboard() {
     setIsModalOpen(false);
   };
 
+  // Rendering the dashboard, search input, modals and chart
   return (
     <div>
       <div class="mx-8 pt-4 flex-1">

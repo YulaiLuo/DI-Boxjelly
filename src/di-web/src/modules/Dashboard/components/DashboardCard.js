@@ -1,6 +1,8 @@
+// Importing required modules
 import React from 'react';
 import { Card, Progress } from 'antd';
 
+// DashboardCard is a functional component that displays some key statistics
 export default function DashboardCard({ title, percent, totalNumber, delta }) {
   return (
     <Card title={title}>
