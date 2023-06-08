@@ -1,3 +1,7 @@
+// This module defines the HTTP API calls that are used in the Mapping module of the application.
+// It utilizes a http utility and axios for making these calls to server endpoints.
+// It provides functions to map a single text, create a mapping task, get mapping task detail,
+// get mapping task meta detail, export file and curate mapping.
 import Cookies from 'js-cookie';
 import {
   MAP_URL,
@@ -9,12 +13,13 @@ import {
 } from '../../utils/constant/url';
 import http from '../../utils/http';
 
+// Function to map a single text
 export const mapSingleText = (text) => {
   const csrfCookie = Cookies.get('csrf_access_token');
   return http.post(`${MAP_URL}`, { text: text }, { 'X-CSRF-TOKEN': csrfCookie });
 };
 
-// Create a mapping task
+// Function to create a new mapping task
 export const createMappingTask = (teamId, boardId, file) => {
   const csrfCookie = Cookies.get('csrf_access_token');
   const formData = new FormData();
@@ -24,7 +29,7 @@ export const createMappingTask = (teamId, boardId, file) => {
   return http.postFormData(`${MAP_BOARDS_URL}/tasks`, formData, { 'X-CSRF-TOKEN': csrfCookie });
 };
 
-// Get mapping task detail
+// Function to get detailed information of a mapping task
 export const getMappingTaskDetail = (
   task_id,
   team_id,
@@ -33,6 +38,7 @@ export const getMappingTaskDetail = (
   size = 10,
   filter = {}
 ) => {
+  // Additional logic to handle filtering parameters for the mapping task details
   let params = {
     task_id,
     team_id,
@@ -70,12 +76,14 @@ export const getMappingTaskDetail = (
   return http.get(`${MAP_TASK_DETAIL_URL}`, params);
 };
 
-// Get mapping task meta detail
+// Function to get meta detail of a mapping task
 export const getMappingTaskMetaDetail = (task_id) => {
   return http.get(`${MAP_TASK_META_URL}`, { task_id });
 };
 
+// Function to export a mapping task as a CSV file
 export const exportFile = async (team_id, task_id) => {
+  // Logic to handle download of CSV file
   try {
     const response = await http.get(
       `${MAP_TASK_DOWNLOAD_URL}`,
@@ -98,10 +106,12 @@ export const exportFile = async (team_id, task_id) => {
     link.click();
     link.parentNode.removeChild(link);
   } catch (error) {
+    // Error handling for download failures
     console.error('Error downloading CSV:', error);
   }
 };
 
+// Function to curate a mapping
 export const curateMapping = (map_item_id, concept_name, code_system_version) => {
   return http.post(MAP_TASK_CURATE_URL, { map_item_id, concept_name, code_system_version });
 };
