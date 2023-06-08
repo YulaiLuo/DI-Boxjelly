@@ -176,13 +176,13 @@ Environment variables are used in this project to manage different configuration
 
 5. Run the setup script:
 
-		sudo ./setup.sh
+		./setup.sh
 
 	(For Windows users) Run the setup script:
 
 		sudo apt-get install dos2unix
 		dos2unix setup.sh
-		sudo bash ./setup.sh
+		bash ./setup.sh
 
 	- The setup script automates the installation and deployment process.
 	- This allows you to have 8 containers: mongo, di-gateway, di-auth, di-center, di-map, nginx, ontoserver and ontoserver-db.
