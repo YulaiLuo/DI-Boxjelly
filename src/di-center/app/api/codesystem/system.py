@@ -189,16 +189,16 @@ class CodeSystemResource(Resource):
         try:
             in_schema = DeleteCodeSystemInputSchema().load(request.args)
         except ValidationError as err:
-            err
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
 
         # Delete the codesystem given a unique version as input
         code_system = CodeSystem.objects(version=in_schema['version']).first()
         if not code_system:
             return make_response(jsonify(code=404, err="NOT_FOUND", msg="Code system version not found"))
-
-        code_system.deleted = True
-        code_system.save()
+        
+        ConceptVersion.objects(code_system=code_system).delete()
+        code_system.delete()
+        # code_system.save()
 
         data = {
             'name': code_system.name,
