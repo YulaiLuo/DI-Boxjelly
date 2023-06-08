@@ -1,16 +1,9 @@
 # SNOMED CT Diagnostic and Prescription Mapping Tool
-<!-- [![Sprint Status](https://img.shields.io/badge/sprint2-dev-orange)](https://your_project_management_tool.com/sprint_details)  -->
-<!-- ![Status Status](https://img.shields.io/badge/user_stories-1/8-green) -->
 
 ![Python Version](https://img.shields.io/badge/python-v3.9.16%2B-blue)
 ![Python Version](https://img.shields.io/badge/flask-v2.2.2%2B-red)
 ![Python Version](https://img.shields.io/badge/react-v18.2.0%2B-red)
-<!-- ![web workflow](https://github.com/github/docs/actions/workflows/deploy_web.yml/badge.svg) -->
-
-<!-- ![Code Coverage](https://img.shields.io/badge/coverage-10%-red) -->
-
 <!-- ![License](https://img.shields.io/badge/license-MIT-green) -->
-
 <!-- ![Build Status](https://img.shields.io/badge/build-passing-brightgreen) -->
 
 ## Table of Contents
@@ -115,7 +108,7 @@ Ensure that the following software is installed:
 		sudo apt update
 		sudo apt install nodejs
 		sudo apt install npm
-		npm install --global yarn
+		sudo npm install --global yarn
 
 ### Prerequisites (for macOS)
 Ensure that the following software is installed:
