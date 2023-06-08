@@ -1,11 +1,15 @@
+// Importing required dependencies
 import React, { useState, useEffect } from 'react';
 import { Tag } from 'antd';
 import { EditableProTable } from '@ant-design/pro-components';
 
+// The CodeCard component that displays the details of a specific code in an editable table
 export default function CodeCard({ data }) {
+  // State variables for editable row keys and data source
   const [editableKeys, setEditableRowKeys] = useState([]);
   const [dataSource, setDataSource] = useState([]);
 
+  // useEffect to set data source and reset editable keys when data prop changes
   useEffect(() => {
     setDataSource(
       data.map((v, i) => {
@@ -18,6 +22,7 @@ export default function CodeCard({ data }) {
     setEditableRowKeys([]);
   }, [data]);
 
+  // Columns configuration for the table
   const columns = [
     {
       title: 'Indication',
@@ -49,6 +54,7 @@ export default function CodeCard({ data }) {
     },
   ];
 
+  // Render the editable table with specified configuration
   return (
     <div>
       <EditableProTable
