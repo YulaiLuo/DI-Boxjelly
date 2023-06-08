@@ -4,15 +4,19 @@ import { Card, Badge, Popconfirm } from 'antd';
 import { DeleteOutlined, BarChartOutlined, DownloadOutlined } from '@ant-design/icons';
 import { formatTime, calTimeDifference } from '../../../utils/formatTime';
 
+// TaskCard is a React component that represents an individual task within a mapping project.
+// This component receives a task item and callback functions for various user interactions as props.
 const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisualizeClick }) => {
   const { status, num, nickname, createAt, updateAt, fileName } = item;
 
+  // Define badge status colors for different statuses.
   const badgeStatus = {
     success: 'success',
     fail: 'error',
     pending: 'processing',
   };
 
+  // Define the title of the task card.
   const title = (
     <div class="flex justify-between">
       <span class="w-3/5 overflow-hidden text-ellipsis">{nickname}</span>
@@ -23,15 +27,16 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
     </div>
   );
 
+  // Calculate and format the creation time of the task.
   const CreatTime = new Date(createAt);
-
   const formattedCreateAt = formatTime(CreatTime);
 
+  // Calculate and format the time difference between now and the creation time.
   const currentTime = new Date();
   const timeDifference = Math.abs(currentTime - CreatTime);
-
   const formattedTimeDifference = calTimeDifference(timeDifference);
 
+  // Determine the set of action icons for the card based on the task status.
   const getActions = () => {
     let actions = [
       <Popconfirm
@@ -55,6 +60,7 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
     return actions;
   };
 
+  // Render the task card with the title, formatted time information, and the appropriate set of action icons.
   return (
     <Card title={title} bordered={false} actions={getActions()}>
       <div
@@ -81,6 +87,7 @@ const TaskCard = ({ item, onEditClick, onDownloadClick, onDeleteClick, onVisuali
 
 export default TaskCard;
 
+// Define the types of the props passed to the TaskCard component.
 TaskCard.propTypes = {
   item: PropTypes.shape({
     id: PropTypes.string.isRequired,
@@ -90,8 +97,12 @@ TaskCard.propTypes = {
     createAt: PropTypes.string.isRequired,
     updateAt: PropTypes.string,
   }).isRequired,
+  // onEditClick is a function that gets called when a user clicks to edit this task.
   onEditClick: PropTypes.func,
+  // onDownloadClick is a function that gets called when a user clicks to download the data of this task.
   onDownloadClick: PropTypes.func,
+  // onDeleteClick is a function that gets called when a user confirms the deletion of this task.
   onDeleteClick: PropTypes.func,
+  // onVisualizeClick is a function that gets called when a user clicks to visualize the data of this task.
   onVisualizeClick: PropTypes.func,
 };

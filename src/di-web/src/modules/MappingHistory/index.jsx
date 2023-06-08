@@ -1,3 +1,7 @@
+// This module exports the MappingHistory React component, which is responsible for displaying
+// a list of all mapping tasks associated with a particular board.
+// It provides functionality to create new mapping tasks, navigate to mapping task results,
+// visualize task meta-data, and delete mapping tasks.
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { List, Pagination, Button, Modal } from 'antd';
@@ -12,6 +16,7 @@ import { useMessageStore } from '../../store';
 import { createMappingTask, getMappingTaskMetaDetail, exportFile } from '../Mapping/api';
 
 export default function MappingHistory() {
+  // Various states used in the MappingHistory component.
   const team_id = localStorage.getItem('team');
   const { id: board_id } = useParams();
   const PAGE_SIZE = 10;
@@ -21,13 +26,17 @@ export default function MappingHistory() {
   const [files, setFiles] = useState([]);
   const [open, setOpen] = useState(false);
 
+  // Use the 'useNavigate' and 'useParams' hooks from react-router-dom to navigate between routes
+  // and fetch URL parameters respectively.
   const navigate = useNavigate();
   const msgApi = useMessageStore((state) => state.msgApi);
 
+  // Function executed on successful task detail retrieval. Navigates to the 'mapping-result' route.
   const onGetTaskDetailSuccess = (id, team_id, board_id) => {
     navigate('/mapping-result', { state: { id, team_id, board_id } });
   };
 
+  // Fetch all mapping tasks associated with the current board.
   const { data, loading } = useRequest(
     () => getAllMappingTasks(team_id, board_id, currentPage, PAGE_SIZE),
     {
@@ -35,6 +44,7 @@ export default function MappingHistory() {
     }
   );
 
+  // Execute the 'getMappingTaskMetaDetail' function when the visualization button is clicked.
   const { run: onVisualizationClick } = useRequest(getMappingTaskMetaDetail, {
     manual: true,
     onSuccess: (data) => {
@@ -42,6 +52,8 @@ export default function MappingHistory() {
     },
   });
 
+  // Execute the 'deleteMappingTask' function when the delete button is clicked. On successful
+  // deletion, a success message is displayed and the page is refreshed.
   const { run: onTaskDeleteClick } = useRequest(deleteMappingTask, {
     manual: true,
     onSuccess: (data) => {
@@ -56,10 +68,12 @@ export default function MappingHistory() {
   const boardDescription = data?.data?.board_description;
   const boardName = data?.data?.board_name;
 
+  // Convert the keys of the fetched task data from snake case to camel case for consistency.
   const mappedTasks = tasks.map((task) => {
     return convertKeysToCamelCase(task);
   });
 
+  // Functions for handling the opening and closing of the modal.
   const showModal = () => {
     setOpen(true);
   };
@@ -81,6 +95,7 @@ export default function MappingHistory() {
     }
   );
 
+  // Create a mapping task when the "Create Task" button is clicked.
   const onCreateTaskClick = async (team_id, board_id) => {
     const uploadedFile = files[0]?.file;
     handleCreateMappingTask(team_id, board_id, uploadedFile);
@@ -91,6 +106,7 @@ export default function MappingHistory() {
   };
 
   return (
+    // JSX for the MappingHistory component.
     <div class="p-4 ">
       {loading ? (
         <Spin />
