@@ -2,7 +2,9 @@ from flask import request, jsonify, request, Response, make_response
 from flask import current_app as app
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
+from jwt.exceptions import ExpiredSignatureError
 import requests
+
 
 class GatewayResource(Resource):
     """
@@ -23,40 +25,54 @@ class GatewayResource(Resource):
     @jwt_required()
     def _gateway(self, path):
 
-        # Get user id from token
-        user_id = get_jwt_identity()
+        try:
+            # Get user id from token
+            user_id = get_jwt_identity()
 
-        # Get service name from path
-        service = path.split("/")[0]
+            # Check if no user id (this means no valid token was provided)
+            if not user_id:
+                response = jsonify(code=401, err="TOKEN_EXPIRED",
+                                   msg="Token has expired, please login again!")
+                response.status_code = 401
+                return response
 
-        # Check if service is supported
-        if service not in self.service_map:
-            return make_response(jsonify(code=404, err="SERVICE_NOT_FOUND", msg="Service not found on end points, Please check your route"), 404)
+            # Get service name from path
+            service = path.split("/")[0]
 
-        # Create target url
-        target_url = self.service_map[service] + \
-            "/" + "/".join(path.split("/")[1:])
-        target_url = target_url.rstrip('/')  # Remove trailing slash
+            # Check if service is supported
+            if service not in self.service_map:
+                return make_response(jsonify(code=404, err="SERVICE_NOT_FOUND", msg="Service not found on end points, Please check your route"), 404)
 
-        # Create headers with user id from token
-        headers = {
-            "Content-Type": request.content_type,
-            "User-ID": str(user_id),
-        }
+            # Create target url
+            target_url = self.service_map[service] + \
+                "/" + "/".join(path.split("/")[1:])
+            target_url = target_url.rstrip('/')  # Remove trailing slash
 
-        # Forward request to target service
-        response = requests.request(
-            method=request.method,
-            url=target_url,
-            headers=headers,
-            data=request.get_data(),
-            params=request.args,
-            allow_redirects=False
-        )
+            # Create headers with user id from token
+            headers = {
+                "Content-Type": request.content_type,
+                "User-ID": str(user_id),
+            }
 
-        return Response(response=response.content,
-                        status=response.status_code,
-                        headers={key: value for (key, value) in response.headers.items()})
+            # Forward request to target service
+            response = requests.request(
+                method=request.method,
+                url=target_url,
+                headers=headers,
+                data=request.get_data(),
+                params=request.args,
+                allow_redirects=False
+            )
+
+            return Response(response=response.content,
+                            status=response.status_code,
+                            headers={key: value for (key, value) in response.headers.items()})
+
+        except ExpiredSignatureError:
+            response = jsonify(code=401, err="TOKEN_EXPIRED",
+                               msg="Token has expired, please login again")
+            response.status_code = 401
+            return response
 
     def get(self, path):
         """

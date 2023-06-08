@@ -3,6 +3,7 @@ from flask_jwt_extended import JWTManager
 from jwt.exceptions import InvalidTokenError
 import requests
 
+
 def init_jwt(app):
     """
     Initialize the JWTManager
@@ -22,13 +23,14 @@ def init_jwt(app):
 
     @jwt.unauthorized_loader
     def custom_unauthorized_response(header_error):
-        response = jsonify(code=401 ,err="UNAUTHORIZED", msg=header_error)
+        response = jsonify(code=401, err="UNAUTHORIZED", msg=header_error)
         response.status_code = 401
         return response
 
     @jwt.expired_token_loader
     def custom_expired_token_response(expired_token, err):
-        response = jsonify(code=401 ,err="TOKEN_EXPIRED", msg="Token has expired, please login again")
+        response = jsonify(code=401, err="TOKEN_EXPIRED",
+                           msg="Token has expired, please login again!")
         response.status_code = 401
         return response
 
