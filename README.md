@@ -26,6 +26,7 @@
 		- [Prerequisites (for macOS)](#prerequisites-for-macos)
 		- [Ontoserver Licensing and Setup](#ontoserver-licensing-and-setup)
 		- [MedCAT Model Setup](#medcat-model-setup)
+		- [Environment Variables Setup](#environment-variables-setup)
 	- [Installation and deployment](#installation-and-deployment)
 	- [Website Demo](#website-demo)
 	- [Website Preview](#website-preview)
@@ -141,9 +142,21 @@ Ensure that the following software is installed:
 ### MedCAT Model Setup
 1. Download the model by [following this link](https://uts.nlm.nih.gov/uts/login?service=https://medcat.rosalind.kcl.ac.uk/auth-callback) and sign into your NIH profile / UMLS license. 
 2. You will then be redirected to the MedCAT model download form. Please complete the form and you will be provided a download link.
-3. Unzip the downloaded model, rename the folder as `medcat_model` and move it under `src/di-map` folder.
+3. Unzip the downloaded model, rename the folder as `medcat_model` and move it under `DI-Boxjelly/src/di-map` folder.
 
 Ensure that you select the option to use model of SNOMED International (Full SNOMED modelpack trained on MIMIC-III).
+
+### Environment Variables Setup
+Environment variables are used in this project to manage different configurations for different environments (development, production, etc.). In particular, REACT_APP_PROD_BASE_URL and REACT_APP_PROD_DOMAIN_URL are required.
+
+1. In the directory of the `DI-Boxjelly/src/di-web`, create a new file named .env.
+
+2. Open the .env file and define the environment variables in the following format:
+
+		REACT_APP_PROD_BASE_URL=http://localhost:8000
+		REACT_APP_PROD_DOMAIN_URL=http://localhost
+
+	Replace http://localhost:8000 and http://localhost with the appropriate URL of your production server and domain, especially if you're running on a remote instance.
 
 ## Installation and deployment
 
@@ -151,22 +164,32 @@ Ensure that you select the option to use model of SNOMED International (Full SNO
 
 		git clone https://github.com/COMP90082-2023-SM1/DI-Boxjelly.git
 
-2. Navigate into the cloned repository:
+	Or unzip the provided package to a suitable location on your system.
+
+2. (For Windows users) Open the WSL terminal. You can do this by opening the Start menu, typing "WSL", and selecting the WSL application. Alternatively, open a command prompt and type `wsl` to switch to the Linux environment.
+
+3. Navigate into the project repository:
 
 		cd DI-Boxjelly
 
-3. Docker login to quay.io following instruction in [Ontoserver Licensing and Setup](#ontoserver-licensing-and-setup)
+	(For Windows users) The Windows file system can be accessed under `/mnt/` in WSL. For example, if you unzipped the package to `C:\myproject\DI-Boxjelly` on your Windows file system, you can access it in WSL with the following command:
 
-4. Run the setup script (for Windows/Windows Server):
+		cd /mnt/c/myproject/DI-Boxjelly
 
-		sudo ./setup.ps1
-		
-	Run the setup script (for Ubuntu Linux/macOS):
+4. Docker login to quay.io following instruction in [Ontoserver Licensing and Setup](#ontoserver-licensing-and-setup)
+
+5. Run the setup script:
 
 		sudo ./setup.sh
 
+	(For Windows users) Run the setup script:
+
+		sudo bash ./setup.sh
+
 	- The setup script automates the installation and deployment process.
 	- This allows you to have 8 containers: mongo, di-gateway, di-auth, di-center, di-map, nginx, ontoserver and ontoserver-db.
+
+	Note: `sudo` runs commands with administrative privileges, which may ask for your system password.
 
 ## Website Demo
 
