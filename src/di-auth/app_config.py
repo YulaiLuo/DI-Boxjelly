@@ -25,7 +25,7 @@ class Config:
     JWT_COOKIE_SECURE = False   # Only set flask in development environment
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'di'
     JWT_ACCESS_TOKEN_EXPIRES = os.environ.get(
-        'JWT_ACCESS_TOKEN_EXPIRES') or timedelta(minutes=60)
+        'JWT_ACCESS_TOKEN_EXPIRES') or timedelta(hours=24)
     JWT_CSRF_CHECK_FORM = True
 
     # Avatar settings
