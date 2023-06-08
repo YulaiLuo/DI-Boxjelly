@@ -92,7 +92,7 @@ Ensure that the following software is installed:
 
 3. Docker Compose: Docker Compose is included in the Docker Desktop installation package.
 
-4. Node.js and Yarn: Download and install Node.js from the [official Node.js website](https://nodejs.org/en/download). After installing Node.js, install Yarn by following the instructions on the [Yarn website](https://classic.yarnpkg.com/en/docs/install/#windows-stable).
+4. Node.js and Yarn: Download and install Node.js from the [official Node.js website](https://nodejs.org/en/download). Please ensure you select a version that is 18.x or above. After installing Node.js, install Yarn by following the instructions on the [Yarn website](https://classic.yarnpkg.com/en/docs/install/#windows-stable).
 
 Ensure that you select the option to use WSL 2 as the default when installing Docker.
 
@@ -106,6 +106,7 @@ Ensure that the following software is installed:
 3. Node.js and Yarn: Download and install Node.js and Yarn by running the following commands in the terminal:
 
 		sudo apt update
+		curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 		sudo apt install nodejs
 		sudo apt install npm
 		sudo npm install --global yarn
@@ -117,7 +118,7 @@ Ensure that the following software is installed:
 
 2. Docker Compose: Docker Compose is included in the Docker Desktop installation package.
 
-3. Node.js and Yarn: Download and install Node.js from the [official Node.js website](https://nodejs.org/en/download). After installing Node.js, install Yarn by following the instructions on the [Yarn website](https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable).
+3. Node.js and Yarn: Download and install Node.js from the [official Node.js website](https://nodejs.org/en/download). Please ensure you select a version that is 18.x or above. After installing Node.js, install Yarn by following the instructions on the [Yarn website](https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable).
 
 ### Ontoserver Licensing and Setup
 - Root permission required
@@ -169,7 +170,9 @@ Environment variables are used in this project to manage different configuration
 
 		cd /mnt/c/myproject/DI-Boxjelly
 
-4. Docker login to quay.io following instruction in [Ontoserver Licensing and Setup](#ontoserver-licensing-and-setup)
+4. Docker login to quay.io following instruction in [Ontoserver Licensing and Setup](#ontoserver-licensing-and-setup).
+
+		sudo docker login -u=[Username] -p=[CLI Password] quay.io
 
 5. Run the setup script:
 
