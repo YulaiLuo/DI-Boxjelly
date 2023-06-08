@@ -13,7 +13,14 @@ import xlsxwriter
 class DownloadCodeSystemResource(Resource):
 
    def get(self, version):
-      """Download the code system given a version
+      """
+      Download the code system given a version.
+
+      Args:
+         version (str): The version of the code system.
+
+      Returns:
+         response (Response): HTTP Response containing the code system data as an Excel file attachment.
       """
       
       code_system = CodeSystem.objects(version=version).first()
