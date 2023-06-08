@@ -33,10 +33,10 @@ services:
       - "80:80"
       - "8000:8000"
     volumes:
-      - ~/data/nginx/logs:/var/log/nginx
-      - ~/data/nginx/conf/nginx.conf:/etc/nginx/conf.d/default.conf
-      - ~/data/nginx/ssl:/etc/nginx/ssl
-      - ~/data/nginx/html:/usr/share/nginx/html
+      - ~/data/di-data/nginx/logs:/var/log/nginx
+      - ~/data/di-data/nginx/conf/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ~/data/di-data/nginx/ssl:/etc/nginx/ssl
+      - ~/data/di-data/nginx/html:/usr/share/nginx/html
     networks:
       - di-network
 

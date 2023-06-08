@@ -36,12 +36,12 @@ if(-Not (Test-Path -Path .\build)) {
 
 # Create the necessary directories
 $directories = @(
-    "~\data\nginx\conf",
-    "~\data\nginx\html",
-    "~\data\nginx\ssl",
-    "~\data\nginx\logs",
+    "~\data\di-data\nginx\conf",
+    "~\data\di-data\nginx\html",
+    "~\data\di-data\nginx\ssl",
+    "~\data\di-data\nginx\logs",
     "~\data\di-data\di-auth\avatars"
-    "~/data/di-data/di-map/medtcat_model"
+    "~\data\di-data\di-map\medcat_model"
 )
 foreach($directory in $directories) {
     if(-Not (Test-Path -Path $directory)) {
@@ -50,16 +50,16 @@ foreach($directory in $directories) {
 }
 
 # Copy nginx configuration file in the di-web directory to the desired location
-Copy-Item -Path .\nginx.conf -Destination ~\data\nginx\conf\ -ErrorAction Stop -Force
+Copy-Item -Path .\nginx.conf -Destination ~\data\di-data\nginx\conf\ -ErrorAction Stop -Force
 
 # Copy all files in the build directory to the desired location
-Copy-Item -Path .\build\* -Destination ~\data\nginx\html\ -ErrorAction Stop -Force
+Copy-Item -Path .\build\* -Destination ~\data\di-data\nginx\html\ -ErrorAction Stop -Force
 
 # Navigate back to the root directory
 Set-Location -Path ..\..
 
 # Copy the medcat model
-Copy-Item -Path .\src\di-map\medtcat_model\* -Destination ~\data\di-data\di-map\medtcat_model\ -ErrorAction Stop -Force
+Copy-Item -Path .\src\di-map\medcat_model\* -Destination ~\data\di-data\di-map\medcat_model\ -ErrorAction Stop -Force
 
 # Copy the default avatar
 Copy-Item -Path .\src\di-auth\default.jpg -Destination ~\data\di-data\di-auth\avatars\ -ErrorAction Stop -Force

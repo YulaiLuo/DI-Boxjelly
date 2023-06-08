@@ -24,7 +24,7 @@
 		- [Prerequisites (for Windows/Windows Server)](#prerequisites-for-windowswindows-server)
 		- [Prerequisites (for Ubuntu Linux)](#prerequisites-for-ubuntu-linux)
 		- [Prerequisites (for macOS)](#prerequisites-for-macos)
-		- [Ontoserver Setup and Licensing](#ontoserver-setup-and-licensing)
+		- [Ontoserver Licensing and Setup](#ontoserver-licensing-and-setup)
 		- [MedCAT Model Setup](#medcat-model-setup)
 	- [Installation and deployment](#installation-and-deployment)
 	- [Website Demo](#website-demo)
@@ -125,7 +125,7 @@ Ensure that the following software is installed:
 
 3. Node.js and Yarn: Download and install Node.js from the [official Node.js website](https://nodejs.org/en/download). After installing Node.js, install Yarn by following the instructions on the [Yarn website](https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable).
 
-### Ontoserver Setup and Licensing
+### Ontoserver Licensing and Setup
 - Root permission required
 - Ontoserver license:
 - Within Australia, email help@digitalhealth.gov.au to request a (free) Ontoserver licence. ADHA will then arrange authorisation for your quay.io account
@@ -141,7 +141,7 @@ Ensure that the following software is installed:
 ### MedCAT Model Setup
 1. Download the model by [following this link](https://uts.nlm.nih.gov/uts/login?service=https://medcat.rosalind.kcl.ac.uk/auth-callback) and sign into your NIH profile / UMLS license. 
 2. You will then be redirected to the MedCAT model download form. Please complete the form and you will be provided a download link.
-3. Unzip the downloaded model, rename the folder as `medtcat_model` and move it under `src/di-map` folder.
+3. Unzip the downloaded model, rename the folder as `medcat_model` and move it under `src/di-map` folder.
 
 Ensure that you select the option to use model of SNOMED International (Full SNOMED modelpack trained on MIMIC-III).
 
@@ -155,7 +155,9 @@ Ensure that you select the option to use model of SNOMED International (Full SNO
 
 		cd DI-Boxjelly
 
-3. Run the setup script (for Windows/Windows Server):
+3. Docker login to quay.io following instruction in [Ontoserver Licensing and Setup](#ontoserver-licensing-and-setup)
+
+4. Run the setup script (for Windows/Windows Server):
 
 		sudo ./setup.ps1
 		
