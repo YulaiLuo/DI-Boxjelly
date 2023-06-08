@@ -4,11 +4,14 @@ import { ToolOutlined } from '@ant-design/icons';
  * @see {@link https://procomponents.ant.design/en-US/components/table#columns-column-definition}
  */
 export const getColumns = (options) => {
+  // Function for filtering cascader options
   const filter = (inputValue, path) =>
     path.some((option) => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1);
 
+  // Array of column configuration objects
   return [
     {
+      // Raw text column
       title: 'Raw text',
       dataIndex: 'originalText',
       key: 'originalText',
@@ -19,6 +22,7 @@ export const getColumns = (options) => {
       readonly: true,
     },
     {
+      // Output of the mapping tool column
       title: 'Output of the mapping tool',
       dataIndex: 'mappedText',
       key: 'mappedText',
@@ -29,18 +33,21 @@ export const getColumns = (options) => {
       readonly: true,
     },
     {
+      // Confidence column
       title: 'Confidence',
       key: 'confidence',
       dataIndex: 'confidence',
       readonly: true,
     },
     {
+      // Source column
       title: 'Source',
       key: 'source',
       dataIndex: 'source',
       readonly: true,
     },
     {
+      // Status column
       title: 'Status',
       dataIndex: 'mappingStatus',
       key: 'mappingStatus',
@@ -60,6 +67,7 @@ export const getColumns = (options) => {
       },
     },
     {
+      // Curated Category column
       title: 'Curated Category',
       key: 'curate',
       dataIndex: 'curate',
@@ -81,6 +89,7 @@ export const getColumns = (options) => {
       },
     },
     {
+      // Action column
       title: 'Action',
       width: '120',
       fixed: 'right',
