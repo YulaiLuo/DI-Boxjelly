@@ -8,7 +8,7 @@ then
 fi
 
 # Check if Docker Compose is installed
-if ! command -v docker-compose &> /dev/null
+if ! command -v docker-compose &> /dev/null && ! command -v docker-compose-plugin &> /dev/null
 then
     echo "Docker Compose is not installed. Please install it and run this script again."
     exit 1
