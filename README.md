@@ -184,6 +184,8 @@ Environment variables are used in this project to manage different configuration
 
 	(For Windows users) Run the setup script:
 
+		sudo apt-get install dos2unix
+		dos2unix setup.sh
 		sudo bash ./setup.sh
 
 	- The setup script automates the installation and deployment process.
