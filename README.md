@@ -96,6 +96,8 @@ Ensure that the following software is installed:
 
 Ensure that you select the option to use WSL 2 as the default when installing Docker.
 
+Note: If using Docker Desktop for Windows, Select the Use WSL 2 based engine check box from Settings. And then select Apply & Restart.
+
 ### Prerequisites (for Ubuntu Linux)
 Ensure that the following software is installed:
 
