@@ -1,3 +1,4 @@
+// Import necessary modules and components
 import React, { useState } from 'react';
 import copy from 'copy-to-clipboard';
 import { List, Avatar, Layout, Button, notification, message, Tag } from 'antd';
@@ -9,11 +10,14 @@ import { useMessageStore } from '../../store';
 
 const { Content } = Layout;
 
+// The main function component
 export default function TeamProfile() {
+  // Get team and user IDs from local storage
   const teamId = localStorage.getItem('team');
   const userId = localStorage.getItem('user');
   const msgApi = useMessageStore((state) => state.msgApi);
 
+  // Fetch team info from API, and refresh the data
   const { data: teamInfo, refresh: refreshGetTeamInfo } = useRequest(() => getTeamInfo(teamId));
   const data = teamInfo?.data;
   const members = teamInfo?.data?.members ?? [];
@@ -22,6 +26,7 @@ export default function TeamProfile() {
 
   const [isDeleteLoading, setIsDeleteLoading] = useState(false);
 
+  // Make delete team member request
   const { run: runDeleteTeamMember } = useRequest(deleteTeamMember, {
     manual: true,
     onSuccess: () => {
@@ -34,8 +39,8 @@ export default function TeamProfile() {
     },
   });
 
+  // Copy invitation token state and functionality
   const [isLoading, setIsLoading] = useState(false);
-
   const [api, contextHolder] = notification.useNotification();
   const openNotification = () => {
     api.open({
@@ -64,6 +69,7 @@ export default function TeamProfile() {
     setIsLoading(false);
   };
 
+  // Component return
   return (
     <div class="mx-4 py-3">
       <div class="flex items-center justify-between">
