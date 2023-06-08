@@ -194,7 +194,7 @@ Environment variables are used in this project to manage different configuration
 The production environment can be accessed at  [http://172.26.131.202](http://172.26.131.202). Please note that access is only available via the University of Melbourne's Wi-Fi network or through a Cisco VPN. This is due to the fact that the website is hosted on an internal network for security reasons. This instance will not be available in the near future.
 
 A demo video is available:
-[![Watch the video](./docs/images/login.png)](https://youtu.be/BC8NPPdGJ6M)
+[![Watch the video](./docs/images/login.png)](https://youtu.be/FCiu6JOqIio)
 
 ## Website Preview
 
