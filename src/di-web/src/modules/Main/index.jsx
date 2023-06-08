@@ -157,6 +157,12 @@ export default function Main() {
     getSidebarItem(getBoardListTitle(), '/mapping-history', null, 'group', taskBoardItems),
   ];
 
+  const collapsedSidebarItems = [
+    getSidebarItem('Dashboard', '/dashboard', <HomeOutlined />),
+    getSidebarItem(getMemberItem(), '/team-profile', <UserOutlined />),
+    getSidebarItem('Code System', '/code-system', <InsertRowAboveOutlined />),
+  ];
+
   const ProfileDropdownItems = [
     {
       key: 'profile',
@@ -209,12 +215,11 @@ export default function Main() {
             {!collapsed && <span class="font-bold text-primary ml-2 text-xl">Mapping</span>}
           </div>
           <Menu
-            // style={{ height: '100vh', overflowY: 'scroll' }}
             onClick={onMenuItemClick}
             defaultSelectedKeys={[selectedPath]}
             selectedKeys={[selectedPath]}
             mode="inline"
-            items={sidebarItems}
+            items={collapsed ? collapsedSidebarItems : sidebarItems}
             theme="light"
           />
         </Sider>
