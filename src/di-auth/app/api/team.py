@@ -44,7 +44,22 @@ def convert_objectid_to_str(data):
 class TeamResource(Resource):
 
     def post(self):
-        """Create a new team and add the creator as the team member
+        """
+        Create a new team and add the creator as the team member.
+
+        Args:
+            name (str): The name of the team.
+            emails (list): List of email addresses of team members (optional).
+            first_board_name (str): The name of the first board (optional).
+            first_board_description (str): The description of the first board (optional).
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the team details
+                    - team_id (str): The ID of the created team
+                    - name (str): The name of the team
         """
         try:
             in_schema = PostTeamInputSchema()
@@ -75,7 +90,29 @@ class TeamResource(Resource):
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
 
     def get(self):
-        """Get all active status team members and informations
+        """
+        Get all active status team members and information.
+
+        Args:
+            team_id (str): The ID of the team.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the team and member details
+                    - team_id (str): The ID of the team
+                    - team_name (str): The name of the team
+                    - members (list): List of member details
+                        - user_id (str): The ID of the user
+                        - username (str): The username of the user
+                        - first_name (str): The first name of the user
+                        - last_name (str): The last name of the user
+                        - nickname (str): The nickname of the user
+                        - email (str): The email of the user
+                        - gender (str): The gender of the user
+                        - avatar (str): The avatar of the user
+                        - role (str): The role of the user in the team
         """
         try:
             in_schema = GetTeamInputSchema()
@@ -126,7 +163,20 @@ class TeamResource(Resource):
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
 
     def put(self):
-        """Update the team name
+        """
+        Update the team name.
+
+        Args:
+            team_id (str): The ID of the team.
+            new_name (str): The new name for the team.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the updated team details
+                    - id (str): The ID of the team
+                    - name (str): The updated name of the team
         """
         try:
             in_schema = PutTeamInputSchema()
@@ -154,7 +204,17 @@ class TeamResource(Resource):
 class TeamMemberResource(Resource):
 
     def delete(self):
-        """Delete a team member
+        """
+        Delete a team member.
+
+        Args:
+        team_id (str): The ID of the team.
+        user_id (str): The ID of the user to be deleted.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
         """
         try:
             in_schema = DeleteTeamInputSchema().load(request.args)
@@ -193,6 +253,21 @@ class TeamMemberResource(Resource):
 class TransferOwnerResource(Resource):
 
     def post(self):
+
+        """
+        Transfer the ownership of a team to a new owner.
+
+        Args:
+            team_id (str): The ID of the team.
+            new_owner_id (str): The ID of the new owner.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the updated roles of the users
+        """
+        
         try:
             in_schema = PostTransferOwnerInputSchema().load(request.get_json())
         except ValidationError as err:

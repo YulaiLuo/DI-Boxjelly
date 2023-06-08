@@ -10,6 +10,20 @@ class PostInBlackListResource(Schema):
 class CheckBlackListResource(Resource):
 
     def post(self):
+        """
+        Check if a token is in the blacklist.
+
+        Args:
+            jti (str): The JWT ID (jti) of the token to check.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - err (str): Error message, if any
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the result of the check
+                    - in_blacklist (bool): True if the token is in the blacklist, False otherwise
+        """
         try:
             in_schema = PostInBlackListResource().load(request.args)
         except ValidationError as err:

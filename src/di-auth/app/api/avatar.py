@@ -21,7 +21,18 @@ class PostAvatarInputSchema(Schema):
 class AvatarResource(Resource):
 
     def post(self):
-        """Upload the avatar
+        """
+        Upload the avatar.
+
+        Args:
+            file (File): The avatar image file to upload.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the uploaded avatar filename
+                    - avatar (str): The filename of the uploaded avatar
         """
         try:
             in_schema = PostAvatarInputSchema()
@@ -88,7 +99,14 @@ class AvatarResource(Resource):
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
 
     def get(self):
-        """send the avatar
+        """
+        Send the avatar.
+
+        Args:
+            avatar (str): The filename of the avatar to send.
+
+        Returns:
+            res (Response): The avatar image file.
         """
         try:
             in_schema = GetAvatarInputSchema().load(request.args)
