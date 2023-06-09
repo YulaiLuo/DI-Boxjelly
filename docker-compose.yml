@@ -46,8 +46,6 @@ services:
       dockerfile: Dockerfile
     image: di-gateway
     container_name: di-gateway
-    ports:
-      - "8000:8000"
     networks:
       - di-network
 
