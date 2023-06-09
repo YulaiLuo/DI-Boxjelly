@@ -35,8 +35,8 @@ class DeleteCodeSystemInputSchema(Schema):
 
 class CodeSystemResource(Resource):
 
-   def get(self):
-      """
+    def get(self):
+        """
         Get code system information and concepts.
 
         Returns:
@@ -60,11 +60,10 @@ class CodeSystemResource(Resource):
                             - create_at (datetime): Timestamp of concept creation
         """
 
-      try:
-         in_schema = GetCodeSystemInputSchema().load(request.args)
-      except ValidationError as err:
-         return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
-      
+        try:
+            in_schema = GetCodeSystemInputSchema().load(request.args)
+        except ValidationError as err:
+            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
 
         if in_schema['version'] == 'latest':
             code_system = CodeSystem.objects(
@@ -144,7 +143,8 @@ class CodeSystemResource(Resource):
                 concept.name: concept for concept in Concept.objects().all()}
             existing_groups = {
                 group.name: group for group in ConceptGroup.objects().all()}
-            existing_tags = {(tag.name, tag.source): tag for tag in Tag.objects().all()}
+            existing_tags = {(tag.name, tag.source)
+                              : tag for tag in Tag.objects().all()}
 
             new_concepts = []
             new_groups = []
@@ -215,12 +215,6 @@ class CodeSystemResource(Resource):
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
 
     def delete(self):
-        try:
-            in_schema = DeleteCodeSystemInputSchema().load(request.args)
-        except ValidationError as err:
-            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
-
-   def delete(self):
         """
         Delete a code system version.
 
@@ -233,18 +227,18 @@ class CodeSystemResource(Resource):
                     - description (str): Description of the code system
                     - version (str): Version of the code system
                     - deleted (bool): Flag indicating if the code system is deleted
-         """
+        """
         try:
-             in_schema = DeleteCodeSystemInputSchema().load(request.args)
+            in_schema = DeleteCodeSystemInputSchema().load(request.args)
         except ValidationError as err:
             err
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
-        
+
         # Delete the codesystem given a unique version as input
         code_system = CodeSystem.objects(version=in_schema['version']).first()
         if not code_system:
             return make_response(jsonify(code=404, err="NOT_FOUND", msg="Code system version not found"))
-        
+
         ConceptVersion.objects(code_system=code_system).delete()
         code_system.delete()
 

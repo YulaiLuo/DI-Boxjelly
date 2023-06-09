@@ -116,6 +116,10 @@ const RegisterPage = () => {
                 required: true,
                 message: 'Please input your password!',
               },
+              {
+                pattern: /^.{6,}$/,
+                message: 'Password must be at least 6 characters!',
+              },
             ]}
             hasFeedback
           >
