@@ -16,7 +16,6 @@
     ├── ...
     ├── docs                   
     │   ├── checklist   # check list of each sprint         
-    │   ├── release notes   # the docs of release
     │   ├── wiki   # the additional documentes of this project
     │   │    └── <Markdown pages>
     │   ├── images   # the images which will be used in markdown files
