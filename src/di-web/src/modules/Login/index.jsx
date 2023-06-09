@@ -1,10 +1,8 @@
-/**
- * This file defines the Login component which is responsible for handling user logins.
- * It uses react hooks and the useRequest hook from ahooks library for making the API call.
- * The 'login' function for the API call is imported from the api.js file in the same module.
- * On successful login, user information is stored in local storage and state, and the user is redirected to the dashboard.
- */
-
+// This file defines the Login component which is responsible for handling user logins.
+// It uses react hooks and the useRequest hook from ahooks library for making the API call.
+// The 'login' function for the API call is imported from the api.js file in the same module.
+// On successful login, user information is stored in local storage and state, and the user is redirected to the dashboard.
+ 
 // Importing required modules
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -13,13 +11,11 @@ import { Form, Input, Button } from 'antd';
 import { login } from './api';
 import { useMessageStore, useUserStore } from '../../store';
 
-/**
- * Login is a functional component for handling user logins.
- * It renders a form with fields for email and password, and a button for submitting the form.
- * On form submission, it calls the 'login' function to make the API request.
- * If the request is successful, it stores user information in local storage and state, displays a success message,
- * and navigates to the dashboard.
- */
+// Login is a functional component for handling user logins.
+// It renders a form with fields for email and password, and a button for submitting the form.
+// On form submission, it calls the 'login' function to make the API request.
+// If the request is successful, it stores user information in local storage and state, displays a success message,
+// and navigates to the dashboard.
 export default function Login() {
   const navigate = useNavigate();
   const msgApi = useMessageStore((state) => state.msgApi);
