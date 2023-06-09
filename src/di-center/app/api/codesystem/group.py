@@ -45,7 +45,7 @@ class ConceptGroupResource(Resource):
          # concept groups
          group = ConceptGroup.objects(id=ObjectId(in_schema['group_id'])).first()
          if not group:
-            return make_response(jsonify(code=404, err="GROUP_NOT_FOUND"), 404)
+            return make_response(jsonify(code=404, err="GROUP_NOT_FOUND", msg="Group is not found!"), 404)
 
          concepts = Concept.objects(group=ObjectId(in_schema['group_id']), child_concept=None).all()
 

@@ -4,6 +4,7 @@ from medcat.cdb import CDB
 from medcat.vocab import Vocab
 from medcat.meta_cat import MetaCAT
 from .strategy import PredictStrategy, RetrainStrategy, ResetStrategy
+import os
 
 
 class MedcatController(MapperController):
@@ -11,9 +12,11 @@ class MedcatController(MapperController):
     def __init__(self):
         super().__init__()
 
-        unzip = 'app/controllers/medcat_model/' # Define the model path
-        vocab = Vocab.load(unzip+'vocab.dat')   # Load the vocab model you downloaded
-        cdb = CDB.load(unzip+'cdb.dat')         # Load the cdb model you downloaded
+        unzip = '/data/di-data/di-map/medcat_model/'  # Define the model path
+        # Load the vocab model you downloaded
+        vocab = Vocab.load(unzip+'vocab.dat')
+        # Load the cdb model you downloaded
+        cdb = CDB.load(unzip+'cdb.dat')
 
         # needed to add these two lines
         cdb.config.linking.filters.cuis = set()
@@ -21,7 +24,8 @@ class MedcatController(MapperController):
 
         # Download the mc_status model from the models section below and unzip it
         mc_status = MetaCAT.load(unzip+'meta_Status/')
-        cat = CAT(cdb=cdb, config=cdb.config, vocab=vocab, meta_cats=[mc_status])
+        cat = CAT(cdb=cdb, config=cdb.config,
+                  vocab=vocab, meta_cats=[mc_status])
 
         # Initialize the MedCAT model
         self.cat = cat
@@ -31,12 +35,9 @@ class MedcatController(MapperController):
 
     def predict(self, data):
         return self.predict_strategy.execute(self.cat, data)
-    
+
     def retrain(self, data):
         return self.retrain_strategy.execute(self.cat, data)
 
     def reset(self, data):
         return self.reset_strategy.execute(self.cat, data)
-    
-
-

@@ -1,18 +1,23 @@
+// Import necessary modules and hooks
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button, Select, Row, Col, Typography, message } from 'antd';
 import { registerUser } from './api';
 import { useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
+// Component definitions from Ant Design library
 const { Option } = Select;
 const { Title, Paragraph } = Typography;
 
+// Main component for the Register page
 const RegisterPage = () => {
+  // Initialize state and hooks
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Check if the URL contains an invite token, if yes, auto-fill the input field
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const inviteToken = searchParams.get('invite_token');
@@ -23,23 +28,25 @@ const RegisterPage = () => {
     }
   }, [location, form]);
 
+  // Function to handle form submission
   const onFinish = async (values) => {
     try {
       setLoading(true);
       const formData = new FormData();
+      // Append all input field values into a FormData object
       for (const key in values) {
         formData.append(key, values[key]);
       }
-      await registerUser(formData);
+      await registerUser(formData); // Send request to server to register user
       setLoading(false);
 
-      // show success message
+      // If successful, show message and redirect to login page after 3 seconds
       message.success('Registration successful, redirecting to login page...', 3);
       setTimeout(() => navigate('/login'), 3000); // redirect to login page after 3 seconds
     } catch (error) {
       console.error(error);
       setLoading(false);
-      // show error message
+      // If there's an error, display the error message
       if (error.response && error.response.data && error.response.data.message) {
         message.error(error.response.data.message);
       } else {
@@ -48,7 +55,9 @@ const RegisterPage = () => {
     }
   };
 
+  // The JSX to be rendered
   return (
+    // Many more JSX elements
     <Row justify="center" align="middle" style={{ minHeight: '100vh' }}>
       <Col span={8}>
         <Title level={2} style={{ textAlign: 'center' }}>

@@ -1,18 +1,13 @@
 export const BASE_URL =
-  process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : 'http://101.43.110.249:8000';
-export const ONTOSERVER_BASE_URL = 'https://r4.ontoserver.csiro.au/fhir';
+  process.env.NODE_ENV === 'development' ? 'http://localhost:8000' : process.env.REACT_APP_PROD_BASE_URL;
 
 export const DOMAIN_URL =
-  process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'http://101.43.110.249';
+  process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : process.env.REACT_APP_PROD_DOMAIN_URL;
 
 // Auth module
 export const EMAIL_LOGIN_URL = '/auth/login/email';
 export const LOG_OUT_URL = '/auth/logout';
 export const TEAM_INFO_URL = '/auth/team';
-
-// Mapping module
-export const SINGLE_TEXT_MAPPING_URL = '/map/ontoserver/translate';
-export const ONTOSERVER_TRANSLATE = '/ConceptMap/$translate';
 
 // UIL board
 export const MAP_BOARDS_URL = '/center/boards';

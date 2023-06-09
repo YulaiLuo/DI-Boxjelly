@@ -1,3 +1,4 @@
+// Importing necessary modules and components
 import React, { useState } from 'react';
 import { Button, Layout, Menu, Modal, Input, Space, Tooltip, Form, Select, Popconfirm } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -14,9 +15,10 @@ import { useMessageStore } from '../../store';
 
 const { Sider, Content } = Layout;
 
+// The main component of the module
 export default function CodeSystem() {
+  // Initialization of states
   const [form] = Form.useForm();
-
   const [conceptsInGroup, setConceptsInGroup] = useState([]);
   const [allGroups, setAllGroups] = useState([]);
   const [groups, setGroups] = useState([]);
@@ -25,7 +27,8 @@ export default function CodeSystem() {
 
   const msgApi = useMessageStore((state) => state.msgApi);
 
-  // get code system http request
+  // Get code system http request
+  // GET request to fetch the list of code systems
   const {
     data: codeSystemList,
     loading: getCodeSystemListLoading,
@@ -33,6 +36,7 @@ export default function CodeSystem() {
   } = useRequest(getCodeSystemList, {
     initialData: [],
     onSuccess: (data) => {
+      // When request is successful, update the states accordingly
       const groups = data?.data?.groups ?? [];
       const allGroups = groups
         .reduce((pre, cur) => [...pre, ...cur.concept_versions], [])
@@ -43,29 +47,17 @@ export default function CodeSystem() {
     },
   });
 
-  // create code system http request
+  // Create code system http request
+  // Request to create a new code system
   const { run: runCreateNewCodeSystem, loading: createNewCodeSystemLoading } = useRequest(
     createNewCodeSystem,
     {
       manual: true,
       onSuccess: (data) => {
+        // When request is successful, update the states and reload the page
         setIsModalOpen(false);
         msgApi.success('Updated successfully!');
         runGetAllCodeSystemVersion();
-      },
-    }
-  );
-
-  // delete code system http request
-  const { run: runDeleteCodeSystem, loading: deleteCodeSystemLoading } = useRequest(
-    deleteCodeSystem,
-    {
-      manual: true,
-      onSuccess: () => {
-        msgApi.success('Deleted successfully!');
-        runGetCodeSystemList();
-        runGetAllCodeSystemVersion();
-
         setTimeout(() => {
           window.location.reload();
         }, 500);
@@ -73,7 +65,26 @@ export default function CodeSystem() {
     }
   );
 
-  // get all code system versions http request
+  // Delete code system http request
+  // Request to delete a code system
+  const { run: runDeleteCodeSystem, loading: deleteCodeSystemLoading } = useRequest(
+    deleteCodeSystem,
+    {
+      manual: true,
+      onSuccess: () => {
+        // When request is successful, update the states and reload the page
+        msgApi.success('Deleted successfully!');
+        runGetCodeSystemList();
+        runGetAllCodeSystemVersion();
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+      },
+    }
+  );
+
+  // Get all code system versions http request
+  // Request to fetch all versions of code systems
   const { data: allCodeSystemVersionResponse, run: runGetAllCodeSystemVersion } =
     useRequest(getAllCodeSystemVersion);
 
@@ -82,6 +93,7 @@ export default function CodeSystem() {
     label: item?.version,
     value: item?.version,
   }));
+  // Generating sidebar items based on the groups
   const sidebarItems = [
     {
       label: 'All',
@@ -101,6 +113,7 @@ export default function CodeSystem() {
     }),
   ];
 
+  // Function to handle item click in the group
   const onGroupItemClick = (groupName) => {
     const group = groups
       .find((item) => item.group_name === groupName)
@@ -108,6 +121,7 @@ export default function CodeSystem() {
     setConceptsInGroup(group);
   };
 
+  // Function to handle menu item click
   const onMenuItemClick = (item) => {
     if (item.key === 'all') {
       setConceptsInGroup(allGroups);
@@ -116,6 +130,7 @@ export default function CodeSystem() {
     }
   };
 
+  // Function to handle Modal OK
   const handleModalOk = () => {
     form.validateFields().then((data) => {
       if (!files.length) {
@@ -126,15 +141,21 @@ export default function CodeSystem() {
     });
   };
 
+  // Function to handle Modal Cancel
   const handleModalCancel = () => {
     setIsModalOpen(false);
   };
 
+  // Function to handle file update
   const onFileUpdate = (files) => {
     setFiles(files);
   };
 
+  // Render the main component
   return (
+    // The component contains several parts including: code system selection, addition, deletion, 
+    // as well as display of the selected code system
+    // There's also a modal for creating a new code system
     <div class="p-4">
       <div class="mb-4 flex justify-between items-center">
         <div>
@@ -217,7 +238,7 @@ export default function CodeSystem() {
             <Input />
           </Form.Item>
           <Form.Item
-            label="version"
+            label="Version"
             name="version"
             rules={[
               {

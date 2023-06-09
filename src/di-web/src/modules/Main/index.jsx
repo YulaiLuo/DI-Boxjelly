@@ -1,4 +1,7 @@
+// This file defines the Main component of the application, 
+// which is the component responsible for rendering the main layout and the dashboard.
 import React, { useState } from 'react';
+// Importing required dependencies and components
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import {
   UserOutlined,
@@ -13,12 +16,16 @@ import { useRequest } from 'ahooks';
 import { useUserStore, useMessageStore } from '../../store';
 import { getBoardList, editBoard, createBoard, deleteBoard, logout } from './api';
 import { BASE_URL } from '../../utils/constant/url';
-// import { removeTokens } from '../../utils/auth';
 
+// Layout constants
 const { Sider, Header, Content } = Layout;
 const { PUBLIC_URL } = process.env;
 
+// The Main component
 export default function Main() {
+  // State variables and hooks used for various functionalities in the component
+  // These include flags for modals, form objects, and data from user store and message store
+  // Also includes API calls with ahooks' useRequest, to interact with backend
   const [collapsed, setCollapsed] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -157,6 +164,12 @@ export default function Main() {
     getSidebarItem(getBoardListTitle(), '/mapping-history', null, 'group', taskBoardItems),
   ];
 
+  const collapsedSidebarItems = [
+    getSidebarItem('Dashboard', '/dashboard', <HomeOutlined />),
+    getSidebarItem(getMemberItem(), '/team-profile', <UserOutlined />),
+    getSidebarItem('Code System', '/code-system', <InsertRowAboveOutlined />),
+  ];
+
   const ProfileDropdownItems = [
     {
       key: 'profile',
@@ -193,6 +206,7 @@ export default function Main() {
     });
   };
 
+  // Implementing the main return function
   return (
     <>
       <Layout hasSider>
@@ -209,12 +223,11 @@ export default function Main() {
             {!collapsed && <span class="font-bold text-primary ml-2 text-xl">Mapping</span>}
           </div>
           <Menu
-            // style={{ height: '100vh', overflowY: 'scroll' }}
             onClick={onMenuItemClick}
             defaultSelectedKeys={[selectedPath]}
             selectedKeys={[selectedPath]}
             mode="inline"
-            items={sidebarItems}
+            items={collapsed ? collapsedSidebarItems : sidebarItems}
             theme="light"
           />
         </Sider>

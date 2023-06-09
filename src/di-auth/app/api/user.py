@@ -89,7 +89,7 @@ class UserResource(Resource):
 
             user = User.objects(id=in_schema['user_id']).first()
             if not user:
-                return make_response(jsonify(code=404, err="USER_NOT_FOUND"), 404)
+                return make_response(jsonify(code=404, err="USER_NOT_FOUND", msg="The user is not found!"), 404)
             data = {
                 'user_id':str(user.id),
                 'name': f'{user.first_name} {user.last_name}',

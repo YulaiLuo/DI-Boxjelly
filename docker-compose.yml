@@ -1,7 +1,9 @@
 version: "2"
 volumes:
-  di-data:
-    name: di-data
+  onto:
+    driver: local
+  pgdata:
+    driver: local
   mongodb-data:
     name: mongodb-data
 
@@ -19,33 +21,31 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=boxjelly
       - MONGO_INITDB_ROOT_PASSWORD=di_boxjelly90082
+    ports:
+      - "27017:27017"
     networks:
       - di-network
 
   nginx:
-    build: 
-      context: ./src/di-web
-      dockerfile: Dockerfile
+    image: nginx:stable
     container_name: nginx
-    restart: always
-    privileged: true
     ports:
       - "80:80"
-      - "443:443"
+      - "8000:8000"
     volumes:
-      - /data/nginx/logs:/var/log/nginx
-      - /data/nginx/conf.d:/etc/nginx/conf.d
-      - /data/nginx/ssl:/etc/nginx/ssl
-      - /data/nginx/html:/usr/share/nginx/html
+      - ~/data/di-data/nginx/logs:/var/log/nginx
+      - ~/data/di-data/nginx/conf/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ~/data/di-data/nginx/ssl:/etc/nginx/ssl
+      - ~/data/di-data/nginx/html:/usr/share/nginx/html
+    networks:
+      - di-network
 
   di-gateway:
-    build: 
+    build:
       context: ./src/di-gateway
       dockerfile: Dockerfile
     image: di-gateway
     container_name: di-gateway
-    volumes:
-      - di-data:/data/di-data
     networks:
       - di-network
 
@@ -56,7 +56,7 @@ services:
     image: di-auth
     container_name: di-auth
     volumes:
-      - di-data:/data/di-data
+      - ~/data/di-data/di-auth:/data/di-data/di-auth
     networks:
       - di-network
 
@@ -64,9 +64,8 @@ services:
     build: 
       context: ./src/di-center
       dockerfile: Dockerfile
+    image: di-center
     container_name: di-center
-    volumes:
-      - di-data:/data/di-data
     networks:
       - di-network
 
@@ -74,8 +73,36 @@ services:
     build: 
       context: ./src/di-map
       dockerfile: Dockerfile
+    image: di-map
     container_name: di-map
     volumes:
-      - di-data:/data/di-data
+      - ~/data/di-data/di-map/medcat_model:/data/di-data/di-map/medcat_model
+    networks:
+      - di-network
+
+  db:
+    image: postgres
+    container_name: ontoserver-db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    networks:
+      - di-network
+
+  ontoserver:
+    image: quay.io/aehrc/ontoserver:ctsa-6.12.3
+    container_name: ontoserver
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    environment:
+      - authentication.oauth.endpoint.client_id.0=6i0p6pu3a05mv0rsuq0hds45mm
+      - authentication.oauth.endpoint.client_secret.0=1cnbh5btj2h40d0lp0uupnkn1pi0j1uemcl0nm32mgpf9akfiipu
+      - JAVA_OPTS=-Xmx4G
+    volumes:
+      - onto:/var/onto
     networks:
       - di-network

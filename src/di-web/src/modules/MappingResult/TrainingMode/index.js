@@ -1,4 +1,5 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRequest } from 'ahooks';
 import { BarChartOutlined, DownloadOutlined } from '@ant-design/icons';
 import { EditableProTable } from '@ant-design/pro-components';
@@ -8,6 +9,7 @@ import { getMappingTaskMetaDetail, exportFile, curateMapping } from '../../Mappi
 import { VisualizationDrawer } from '../../../components';
 import { getCodeSystemList } from '../../CodeSystem/api';
 
+// This component represents the main interface for interacting with the mapping results of a task
 const TrainingMode = forwardRef((props, ref) => {
   const {
     data,
@@ -22,9 +24,11 @@ const TrainingMode = forwardRef((props, ref) => {
   } = props;
 
   const team_id = localStorage.getItem('team');
+  const navigate = useNavigate();
 
   const [filterForm] = Form.useForm();
 
+  // This allows the parent component to get access to the filter form
   useImperativeHandle(ref, () => ({
     form: filterForm,
   }));
@@ -46,11 +50,19 @@ const TrainingMode = forwardRef((props, ref) => {
   const { data: meta_data } = useRequest(() => getMappingTaskMetaDetail(taskId));
   const { data: codeSystemList } = useRequest(getCodeSystemList, {
     initialData: [],
+    onError: (err) => {
+      if (err?.response?.data?.code === 404) {
+        setTimeout(() => {
+          navigate('/code-system', { replace: true });
+        }, 1000);
+      }
+    },
   });
   const { run: runCurateMapping } = useRequest(curateMapping, {
     manual: true,
   });
 
+  // Map code system list to the needed format
   const mappedCodeSystemList = codeSystemList?.data?.groups?.map((item) => {
     return {
       value: item.group_name,
@@ -71,6 +83,7 @@ const TrainingMode = forwardRef((props, ref) => {
     })
   );
 
+  // When the data prop changes, we reset the dataSource and clear editable row keys
   useEffect(() => {
     setDataSource(
       data.map((v, i) => {
@@ -92,6 +105,7 @@ const TrainingMode = forwardRef((props, ref) => {
     setOpen(false);
   };
 
+  // This is the main render function
   return (
     <div class="h-[calc(100vh-95px)] relative">
       <Form layout="vertical" form={filterForm}>

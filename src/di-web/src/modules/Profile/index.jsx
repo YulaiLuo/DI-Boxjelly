@@ -1,3 +1,4 @@
+// Import necessary modules and components
 import React, { useState } from 'react';
 import { useRequest } from 'ahooks';
 import { getUserProfile, updateUserProfile } from './api';
@@ -28,20 +29,26 @@ import { BASE_URL } from '../../utils/constant/url';
 import { getCSRFTokenHeader } from '../../utils/auth';
 import { useUserStore } from '../../store';
 
+// Define the Option component for Select field
 const { Option } = Select;
 
+// Main UserProfile component
 const UserProfile = () => {
-  // Use global state management so that other pages (Main) can receive the update
+  // Use global state management to share user data across components
   const userData = useUserStore((state) => state.user);
   const setUserData = useUserStore((state) => state.setUser);
 
+  // Retrieve user_id from local storage
   const user_id = localStorage.getItem('user');
+
+  // Define states for edit mode and form controls
   const [editMode, setEditMode] = useState(false);
   const [form] = Form.useForm();
 
-  // get user profile request
+  // Define a request to get user profile
   const { run: runGetUserProfile } = useRequest(() => getUserProfile(user_id), {
     onSuccess: (response) => {
+      // Process and store user profile details on successful fetch
       const [first_name, last_name] = response.data.name.split(' ');
       const userDetails = {
         email: response.data.email,
@@ -52,18 +59,19 @@ const UserProfile = () => {
         avatar: response.data.avatar || '', // Store avatar
       };
 
+      // Set user data in global state and local storage
       setUserData(userDetails);
-      // store the user detail in local storage
       localStorage.setItem('userDetail', JSON.stringify(userDetails));
     },
   });
 
-  // update user profile request
+  // Define a request to update user profile
   const { run: runUpdateUserProfile, loading: updateUserProfileLoading } = useRequest(
     updateUserProfile,
     {
       manual: true,
       onSuccess: () => {
+        // After successful update, turn off edit mode and refresh user profile data
         setEditMode(false);
         runGetUserProfile(user_id);
         notification.success({
@@ -75,6 +83,7 @@ const UserProfile = () => {
     }
   );
 
+  // Define handler for saving changes to user profile
   const handleSaveChanges = (values) => {
     runUpdateUserProfile(user_id, {
       first_name: values.first_name,
@@ -84,6 +93,7 @@ const UserProfile = () => {
     });
   };
 
+  // Render UserProfile component
   return (
     <div style={{ padding: '1rem' }}>
       <Row justify="center" align="middle" style={{ minHeight: '90vh' }}>
@@ -174,4 +184,5 @@ const UserProfile = () => {
   );
 };
 
+// Export UserProfile component
 export default UserProfile;

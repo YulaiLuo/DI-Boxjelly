@@ -7,6 +7,7 @@ from app.models import User, UserTeam, Team
 from mongoengine.errors import DoesNotExist, MultipleObjectsReturned
 from flask import current_app as app
 
+
 class EmailLoginSchema(Schema):
     """
     A class to represent a Email Login Schema, used to validate the input data
@@ -16,8 +17,11 @@ class EmailLoginSchema(Schema):
         >>> data = request.form
         >>> login_data = EmailLoginSchema().load(data)
     """
-    email = fields.Email(required=True, validate=validate.Length(min=6, max=128))
-    password = fields.String(required=True, validate=validate.Length(min=6, max=128))
+    email = fields.Email(
+        required=True, validate=validate.Length(min=6, max=128))
+    password = fields.String(
+        required=True, validate=validate.Length(min=6, max=128))
+
 
 class EmailLogin(Resource):
     """
@@ -31,7 +35,8 @@ class EmailLogin(Resource):
         >>> mongo = PyMongo()
         >>> bcrypt = Bcrypt()
         >>> login = Login(mongo, bcrypt)
-    """    
+    """
+
     def __init__(self, mongo, bcrypt):
         self.mongo = mongo
         self.bcrypt = bcrypt
@@ -56,37 +61,42 @@ class EmailLogin(Resource):
             in_schema = EmailLoginSchema()
             in_schema = in_schema.load(request.form)
         except ValidationError:
-            response = jsonify(code=400,err="INVALID_EMAIL_PASSWORD")
-            return make_response(response,400)
+            response = jsonify(code=400, err="INVALID_EMAIL_PASSWORD",
+                               msg="The Email format you entered is incorrect!")
+            return make_response(response, 400)
 
         # Find the user in the database
         try:
             user = User.objects(email=in_schema['email']).get()
         except DoesNotExist:
-            response = jsonify(code=404,err="USER_NOT_FOUND")
-            return make_response(response,404)
+            response = jsonify(code=404, err="USER_NOT_FOUND",
+                               msg="User is not found!")
+            return make_response(response, 404)
         except MultipleObjectsReturned:
-            response = jsonify(code=500,err="MULTIPLE_USERS_FOUND")
-            return make_response(response,500)
-            
+            response = jsonify(
+                code=500, err="MULTIPLE_USERS_FOUND", msg="Multiple users found!")
+            return make_response(response, 500)
+
         # Check the password
         if not self.bcrypt.check_password_hash(user.password, in_schema['password']):
-            response = jsonify(code=401,err="INCORRECT_PASSWORD")
-            return make_response(response,401)
+            response = jsonify(code=401, err="INCORRECT_PASSWORD",
+                               msg="The password you entered is incorrect!")
+            return make_response(response, 401)
 
         # TODO: There will only be one team, to support multiple team, change the following lines
         try:
-            user_team = UserTeam.objects(user_id=user.id, status='active').first()
+            user_team = UserTeam.objects(
+                user_id=user.id, status='active').first()
             if user_team.status == 'absent':
-                response = jsonify(code=401,err="USER_NOT_IN_TEAM")
-                return make_response(response,401)
+                response = jsonify(code=401, err="USER_NOT_IN_TEAM")
+                return make_response(response, 401)
             elif user_team.status == 'pending':
-                response = jsonify(code=401,err="ACTIVATE_ACCOUNT_FIRST")
-                return make_response(response,401)
+                response = jsonify(code=401, err="ACTIVATE_ACCOUNT_FIRST")
+                return make_response(response, 401)
         except DoesNotExist:
-            response = jsonify(code=404,err="USER_TEAM_NOT_FOUND")
-            return make_response(response,404)
-        
+            response = jsonify(code=404, err="USER_TEAM_NOT_FOUND")
+            return make_response(response, 404)
+
         # TODO: The system only need to support one team
         team = user_team.team_id
 
@@ -95,8 +105,8 @@ class EmailLogin(Resource):
         # refresh_token = create_refresh_token(identity=str(user.id))
 
         data = {
-            "user":{
-                "id":str(user.id),
+            "user": {
+                "id": str(user.id),
                 "avatar": user.avatar,
                 "username": user.username,
                 "first_name": user.first_name,
@@ -104,7 +114,7 @@ class EmailLogin(Resource):
                 "nickname": user.nickname,
                 "email": user.email
             },
-            "team":{
+            "team": {
                 "id": str(team.id),
                 "name": team.name,
                 "role": user_team.role,
@@ -117,9 +127,10 @@ class EmailLogin(Resource):
         user_team.save()
 
         # Add access token and refresh token cookies in headers
-        response = jsonify(code=200,msg='ok',data=data)
-        response.headers.add(app.config["JWT_ACCESS_COOKIE_NAME"],access_token)
+        response = jsonify(code=200, msg='ok', data=data)
+        response.headers.add(
+            app.config["JWT_ACCESS_COOKIE_NAME"], access_token)
         # response.headers.add(app.config["JWT_REFRESH_COOKIE_NAME"],refresh_token)
 
-        res = make_response(response,200)
+        res = make_response(response, 200)
         return res

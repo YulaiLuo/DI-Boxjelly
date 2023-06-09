@@ -113,7 +113,7 @@ class AcceptInviteResource(Resource):
             last_name = request.form.get('last_name')
             gender = request.form.get('gender')
         except ValidationError as err:
-            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+            return make_response(jsonify(code=400, err="INVALID_INPUT", msg="Please ensure you've entered the information correctly!"), 400)
 
         # Create a dictionary with the retrieved data
         data = {
@@ -137,7 +137,7 @@ class AcceptInviteResource(Resource):
 
             # Check if the invitation is still valid
             if datetime.utcnow() > invitation.expiry_date:
-                return make_response(jsonify(code=400, err="INVITATION_EXPIRED"), 400)
+                return make_response(jsonify(code=400, err="INVITATION_EXPIRED", msg="Invitation token expired"), 400)
 
             # Create a new user
             user = User(
