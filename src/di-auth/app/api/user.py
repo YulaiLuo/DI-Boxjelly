@@ -23,7 +23,19 @@ class PutUserInputSchema(Schema):
 class UserResource(Resource):
 
     def put(self):
-        """Update the user profile
+        """
+        Update the user profile.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the updated user details
+                    - user_id (str): The ID of the updated user
+                    - name (str): The updated name of the user
+                    - nickname (str): The updated nickname of the user
+                    - email (str): The email of the user
+                    - gender (str): The updated gender of the user
         """
         try:
             in_schema = PutUserInputSchema()
@@ -50,7 +62,20 @@ class UserResource(Resource):
         return make_response(jsonify(code=200, msg="ok", data=data), 200)
 
     def get(self):
-        """Get user profile
+        """
+        Get user profile.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the user profile
+                    - user_id (str): The ID of the user
+                    - name (str): The name of the user
+                    - nickname (str): The nickname of the user
+                    - email (str): The email of the user
+                    - gender (str): The gender of the user
+                    - avatar (str): The avatar of the user (default if not available)
         """
         try:
             in_schema = GetUserInputSchema()

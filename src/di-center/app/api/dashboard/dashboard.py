@@ -26,6 +26,19 @@ def get_start_of_weeks():
 class TopLeftResource(Resource):
 
     def get(self):
+        """
+        Get the statistics for the top left section of the dashboard.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the statistics
+                    - title (str): Title of the section
+                    - total_number (str): Total number of tasks submitted
+                    - delta (str): Change in the number of tasks since last week
+                    - percent (float): Percentage change in the number of tasks since last week
+        """
 
         # Calculate the start of this week and the start of the last week
         start_of_this_week, start_of_last_week = get_start_of_weeks()
@@ -45,8 +58,22 @@ class TopLeftResource(Resource):
         }))
 
 class TopMiddleResource(Resource):
+    
 
     def get(self):
+        """
+        Get the statistics for the top middle section of the dashboard.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the statistics
+                    - title (str): Title of the section
+                    - total_number (str): Total number of texts mapped
+                    - delta (str): Change in the number of texts mapped since last week
+                    - percent (float): Percentage change in the number of texts mapped since last week
+        """
 
         # Calculate the start of this week and the start of the last week
         start_of_this_week, start_of_last_week = get_start_of_weeks()
@@ -67,6 +94,19 @@ class TopMiddleResource(Resource):
 class TopRightResource(Resource):
 
     def get(self):
+        """
+        Get the statistics for the top right section of the dashboard.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the statistics
+                    - title (str): Title of the section
+                    - total_number (str): Total number of curated texts
+                    - delta (str): Change in the number of curated texts since last week
+                    - percent (float): Percentage change in the number of curated texts since last week
+        """
 
         # Calculate the start of this week and the start of the last week
         start_of_this_week, start_of_last_week = get_start_of_weeks()
@@ -87,6 +127,16 @@ class TopRightResource(Resource):
 class HelloResource(Resource):
 
     def get(self):
+        """
+        Get the greeting message for the dashboard.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the greeting message
+                    - hello (str): Greeting message with the current date and time
+        """
         user_id = request.headers.get('User-ID')
         if user_id is None:
             return make_response(jsonify(code=401, msg="Unauthorized", data={
@@ -167,6 +217,19 @@ class MapItemStatusRatioResource(Resource):
 class PredictSingleResource(Resource):
 
     def post(self):
+        """
+        Predict the mapping of a single text.
+
+        Args:
+            text (str): The text to be mapped.
+
+        Returns:
+            Response: HTTP Response containing the predicted mapping result.
+
+        Raises:
+            ValidationError: If the input data is invalid.
+            HTTPError: If there is an error during the prediction process.
+        """
 
         data = request.get_json()
         if 'text' not in data:

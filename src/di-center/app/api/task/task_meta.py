@@ -11,6 +11,20 @@ class GetMapTaskMetaSchema(Schema):
 
 class MapTaskMetaResource(Resource):
    def get(self):
+    """
+        Get the metadata of a map task.
+
+        Args:
+            task_id (str): The ID of the map task.
+
+        Returns:
+            Response: HTTP Response containing the map task metadata.
+
+        Raises:
+            ValidationError: If the input data is invalid.
+            DoesNotExist: If the map task is not found.
+            Exception: If any other error occurs during the process.
+    """
     try:
         in_schema = GetMapTaskMetaSchema()
         in_schema = in_schema.load(request.args)

@@ -25,7 +25,21 @@ class DeleteMapTaskBoardsInputSchema(Schema):
 class MapTaskBoardsResource(Resource):
 
     def put(self):
-        """modify a task board
+        """
+        Modify a task board.
+
+        Args:
+            team_id (str): The ID of the team.
+            board_id (str): The ID of the board to modify.
+            new_name (str): The new name for the board.
+            new_description (str): The new description for the board.
+
+        Returns:
+            Response: HTTP Response containing the modified board details.
+
+        Raises:
+            ValidationError: If the input data is invalid.
+            OperationFailure: If the database operation failed.
         """
         try:
             in_schema = PutMapTaskBoardsInputSchema()
@@ -53,7 +67,20 @@ class MapTaskBoardsResource(Resource):
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
 
     def post(self):
-        """Create a new task board
+        """
+        Create a new task board.
+
+        Args:
+            team_id (str): The ID of the team.
+            name (str): The name of the new board.
+            description (str, optional): The description of the new board.
+
+        Returns:
+            Response: HTTP Response containing the details of the newly created board.
+
+        Raises:
+            ValidationError: If the input data is invalid.
+            OperationFailure: If the database operation failed.
         """
         try:
             in_schema = PostMapTaskBoardsInputSchema()
@@ -81,7 +108,18 @@ class MapTaskBoardsResource(Resource):
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
 
     def get(self):
-        """Get task board list
+        """
+        Get the list of task boards.
+
+        Args:
+            team_id (str): The ID of the team.
+
+        Returns:
+            Response: HTTP Response containing the list of task boards.
+
+        Raises:
+            ValidationError: If the input data is invalid.
+            OperationFailure: If the database operation failed.
         """
         try:
             in_schema = GetTaskBoardsInputSchema()
@@ -107,7 +145,19 @@ class MapTaskBoardsResource(Resource):
             return make_response(jsonify(code=500, err="INTERNAL_SERVER_ERROR"), 500)
 
     def delete(self):
-        """Delete a task board
+        """
+        Delete a task board.
+
+        Args:
+            team_id (str): The ID of the team.
+            board_id (str): The ID of the board to delete.
+
+        Returns:
+            Response: HTTP Response indicating the success of the deletion.
+
+        Raises:
+            ValidationError: If the input data is invalid.
+            OperationFailure: If the database operation failed.
         """
         try:
             in_schema = DeleteMapTaskBoardsInputSchema()

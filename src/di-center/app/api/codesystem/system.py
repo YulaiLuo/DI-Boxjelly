@@ -35,17 +35,36 @@ class DeleteCodeSystemInputSchema(Schema):
 
 class CodeSystemResource(Resource):
 
-    def get(self):
-        """return the list of code system concept given the team id
+   def get(self):
+      """
+        Get code system information and concepts.
 
         Returns:
-            _type_: _description_
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the code system details and concepts
+                    - name (str): Name of the code system
+                    - description (str): Description of the code system
+                    - version (str): Version of the code system
+                    - create_at (datetime): Timestamp of code system creation
+                    - create_by (dict): Creator information
+                    - groups (list): List of concept group details
+                        - id (str): ID of the concept group
+                        - name (str): Name of the concept group
+                        - concepts (list): List of concept details
+                            - id (str): ID of the concept
+                            - name (str): Name of the concept
+                            - description (str): Description of the concept
+                            - update_at (datetime): Timestamp of concept update
+                            - create_at (datetime): Timestamp of concept creation
         """
 
-        try:
-            in_schema = GetCodeSystemInputSchema().load(request.args)
-        except ValidationError as err:
-            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+      try:
+         in_schema = GetCodeSystemInputSchema().load(request.args)
+      except ValidationError as err:
+         return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+      
 
         if in_schema['version'] == 'latest':
             code_system = CodeSystem.objects(
@@ -78,7 +97,17 @@ class CodeSystemResource(Resource):
 
     def post(self):
         """
-        Create a new version of code system
+        Create a new version of the code system.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the newly created code system details
+                    - code_system_id (str): ID of the code system
+                    - name (str): Name of the code system
+                    - version (str): Version of the code system
+                    - description (str): Description of the code system
         """
         data = {}
         data.update(request.files)
@@ -191,6 +220,26 @@ class CodeSystemResource(Resource):
         except ValidationError as err:
             return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
 
+   def delete(self):
+        """
+        Delete a code system version.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the details of the deleted code system
+                    - name (str): Name of the code system
+                    - description (str): Description of the code system
+                    - version (str): Version of the code system
+                    - deleted (bool): Flag indicating if the code system is deleted
+         """
+        try:
+             in_schema = DeleteCodeSystemInputSchema().load(request.args)
+        except ValidationError as err:
+            err
+            return make_response(jsonify(code=400, err="INVALID_INPUT"), 400)
+        
         # Delete the codesystem given a unique version as input
         code_system = CodeSystem.objects(version=in_schema['version']).first()
         if not code_system:
@@ -198,7 +247,6 @@ class CodeSystemResource(Resource):
         
         ConceptVersion.objects(code_system=code_system).delete()
         code_system.delete()
-        # code_system.save()
 
         data = {
             'name': code_system.name,

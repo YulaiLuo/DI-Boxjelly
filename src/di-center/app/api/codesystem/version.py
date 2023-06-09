@@ -8,9 +8,20 @@ import requests
 class CodeSystemVersionResource(Resource):
 
     def get(self):
-        """Get all version of code system
         """
+        Get all versions of the code system.
 
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the list of code system versions
+                    - code_systems (list): List of code system versions
+                        - name (str): Name of the code system
+                        - description (str): Description of the code system
+                        - version (str): Version of the code system
+                        - create_at (datetime): Timestamp of code system creation
+        """
         user_id = request.headers.get('User-ID')
 
         code_systems = CodeSystem.objects(deleted=False).order_by('-create_at').all()

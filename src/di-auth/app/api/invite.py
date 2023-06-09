@@ -44,7 +44,17 @@ class PostAcceptInviteInputSchema(Schema):
 
 class InviteResource(Resource):
     def get(self):
-        """ Generate an invitation token to invite members into the team
+        """
+        Generate an invitation token to invite members into the team.
+
+        Args:
+            team_id (str): The ID of the team to invite members to.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (str): The unique invitation token
         """
 
         try:
@@ -76,7 +86,22 @@ class AcceptInviteResource(Resource):
         self.bcrypt = bcrypt
 
     def post(self):
-        """Accept a team invitation
+        """
+        Accept a team invitation.
+
+        Returns:
+            res (Response): HTTP Response
+                - code (int): HTTP status code
+                - msg (str): Message indicating the status
+                - data (dict): Dictionary containing the user's information and team details
+                    - id (str): The user's ID
+                    - username (str): The user's username
+                    - email (str): The user's email
+                    - first_name (str): The user's first name
+                    - last_name (str): The user's last name
+                    - nickname (str): The user's nickname
+                    - team_id (str): The team's ID
+                    - role (str): The user's role in the team
         """
 
         try:

@@ -39,6 +39,28 @@ class MapTaskDetailResource(Resource):
     """
     # Get map task detail by id
     def get(self):
+        """
+        Get the details of a map task.
+
+        Args:
+            task_id (str): The ID of the map task.
+            team_id (str): The ID of the team associated with the map task.
+            board_id (str): The ID of the board associated with the map task.
+            page (int, optional): The page number. Defaults to 1.
+            size (int, optional): The number of items per page. Defaults to 20.
+            min_accuracy (float, optional): The minimum accuracy value for filtering. Defaults to None.
+            max_accuracy (float, optional): The maximum accuracy value for filtering. Defaults to None.
+            ontology (str, optional): The ontology for filtering. Defaults to None.
+            status (str, optional): The status for filtering. Defaults to None.
+
+        Returns:
+            Response: HTTP Response containing the map task details.
+
+        Raises:
+            ValidationError: If the input data is invalid.
+            DoesNotExist: If the map task is not found.
+            Exception: If any other error occurs during the process.
+        """
         
         try:
             in_schema = GetMapTaskInputSchema().load(request.args)
