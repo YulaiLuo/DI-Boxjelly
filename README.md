@@ -12,6 +12,7 @@
 	- [Background](#background)
 	- [Repository Structure](#repository-structure)
 	- [Features](#features)
+	- [Documentation](#documentation)
 	- [Requirements](#requirements)
 		- [System requirments](#system-requirments)
 		- [Prerequisites (for Windows/Windows Server)](#prerequisites-for-windowswindows-server)
@@ -58,8 +59,7 @@ More details about the sub-directories can be found in docs directory [repositor
 	├── src           # Source code
 	├── tests         # Code pieces and tests of source code
 	├── LICENSE       # <Not included for now>
-	├── docker-compose.yml  # deploy other services exclude ontoserver
-	├── ontoserver-docker-compose.yml   # deploy ontoserver
+	├── docker-compose.yml  # deploy services
 	├── README.md
 	└── .gitignore
 
@@ -72,6 +72,10 @@ More details about the sub-directories can be found in docs directory [repositor
 - Dashboard: System performance visulization
 - Team: Member management
 - Code system: Update code system version
+
+## Documentation
+
+In `docs/confluence-page`, you can find the confluence page exported file for product documentation.
 
 ## Requirements
 
