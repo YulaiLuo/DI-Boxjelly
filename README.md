@@ -18,6 +18,7 @@
 		- [Prerequisites (for Windows/Windows Server)](#prerequisites-for-windowswindows-server)
 		- [Prerequisites (for Ubuntu Linux)](#prerequisites-for-ubuntu-linux)
 		- [Prerequisites (for macOS)](#prerequisites-for-macos)
+		- [Setting Up Ports and Firewall](#setting-up-ports-and-firewall)
 		- [Ontoserver Licensing and Setup](#ontoserver-licensing-and-setup)
 		- [MedCAT Model Setup](#medcat-model-setup)
 		- [Environment Variables Setup](#environment-variables-setup)
@@ -125,6 +126,17 @@ Ensure that the following software is installed:
 2. Docker Compose: Docker Compose is included in the Docker Desktop installation package.
 
 3. Node.js and Yarn: Download and install Node.js from the [official Node.js website](https://nodejs.org/en/download). Please ensure you select a version that is 18.x or above. After installing Node.js, install Yarn by following the instructions on the [Yarn website](https://classic.yarnpkg.com/lang/en/docs/install/#mac-stable).
+
+### Setting Up Ports and Firewall
+
+If you're deploying the system on a remote server, you'll need to ensure specific ports are open and properly configured to allow necessary traffic. Here are the required settings:
+
+- HTTP Traffic: Ensure that your firewall allows incoming HTTP traffic on port 80 from all sources.
+- HTTPS Traffic: Similarly, incoming HTTPS traffic should be permitted on port 443 from all sources.
+- SSH Access: To enable secure shell (SSH) access to your server, open port 22 for traffic from all sources.
+- Gateway Service: The gateway service requires access through port 8000.
+  
+Remember to configure these settings in accordance with your organization's security policies and guidelines.
 
 ### Ontoserver Licensing and Setup
 - Root permission required
